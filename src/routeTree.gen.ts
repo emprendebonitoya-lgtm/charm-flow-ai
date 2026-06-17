@@ -9,8 +9,74 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TudiaRouteImport } from './routes/tudia'
+import { Route as SosRouteImport } from './routes/sos'
+import { Route as SimRouteImport } from './routes/sim'
+import { Route as HistorialRouteImport } from './routes/historial'
+import { Route as GuardadosRouteImport } from './routes/guardados'
+import { Route as FrasesRouteImport } from './routes/frases'
+import { Route as FeedRouteImport } from './routes/feed'
+import { Route as EscanerRouteImport } from './routes/escaner'
+import { Route as DateRouteImport } from './routes/date'
+import { Route as BibliotecaRouteImport } from './routes/biblioteca'
+import { Route as AcademiaRouteImport } from './routes/academia'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TudiaRoute = TudiaRouteImport.update({
+  id: '/tudia',
+  path: '/tudia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SosRoute = SosRouteImport.update({
+  id: '/sos',
+  path: '/sos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SimRoute = SimRouteImport.update({
+  id: '/sim',
+  path: '/sim',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistorialRoute = HistorialRouteImport.update({
+  id: '/historial',
+  path: '/historial',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuardadosRoute = GuardadosRouteImport.update({
+  id: '/guardados',
+  path: '/guardados',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FrasesRoute = FrasesRouteImport.update({
+  id: '/frases',
+  path: '/frases',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedRoute = FeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EscanerRoute = EscanerRouteImport.update({
+  id: '/escaner',
+  path: '/escaner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DateRoute = DateRouteImport.update({
+  id: '/date',
+  path: '/date',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BibliotecaRoute = BibliotecaRouteImport.update({
+  id: '/biblioteca',
+  path: '/biblioteca',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcademiaRoute = AcademiaRouteImport.update({
+  id: '/academia',
+  path: '/academia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +85,186 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/academia': typeof AcademiaRoute
+  '/biblioteca': typeof BibliotecaRoute
+  '/date': typeof DateRoute
+  '/escaner': typeof EscanerRoute
+  '/feed': typeof FeedRoute
+  '/frases': typeof FrasesRoute
+  '/guardados': typeof GuardadosRoute
+  '/historial': typeof HistorialRoute
+  '/sim': typeof SimRoute
+  '/sos': typeof SosRoute
+  '/tudia': typeof TudiaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/academia': typeof AcademiaRoute
+  '/biblioteca': typeof BibliotecaRoute
+  '/date': typeof DateRoute
+  '/escaner': typeof EscanerRoute
+  '/feed': typeof FeedRoute
+  '/frases': typeof FrasesRoute
+  '/guardados': typeof GuardadosRoute
+  '/historial': typeof HistorialRoute
+  '/sim': typeof SimRoute
+  '/sos': typeof SosRoute
+  '/tudia': typeof TudiaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/academia': typeof AcademiaRoute
+  '/biblioteca': typeof BibliotecaRoute
+  '/date': typeof DateRoute
+  '/escaner': typeof EscanerRoute
+  '/feed': typeof FeedRoute
+  '/frases': typeof FrasesRoute
+  '/guardados': typeof GuardadosRoute
+  '/historial': typeof HistorialRoute
+  '/sim': typeof SimRoute
+  '/sos': typeof SosRoute
+  '/tudia': typeof TudiaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/academia'
+    | '/biblioteca'
+    | '/date'
+    | '/escaner'
+    | '/feed'
+    | '/frases'
+    | '/guardados'
+    | '/historial'
+    | '/sim'
+    | '/sos'
+    | '/tudia'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/academia'
+    | '/biblioteca'
+    | '/date'
+    | '/escaner'
+    | '/feed'
+    | '/frases'
+    | '/guardados'
+    | '/historial'
+    | '/sim'
+    | '/sos'
+    | '/tudia'
+  id:
+    | '__root__'
+    | '/'
+    | '/academia'
+    | '/biblioteca'
+    | '/date'
+    | '/escaner'
+    | '/feed'
+    | '/frases'
+    | '/guardados'
+    | '/historial'
+    | '/sim'
+    | '/sos'
+    | '/tudia'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AcademiaRoute: typeof AcademiaRoute
+  BibliotecaRoute: typeof BibliotecaRoute
+  DateRoute: typeof DateRoute
+  EscanerRoute: typeof EscanerRoute
+  FeedRoute: typeof FeedRoute
+  FrasesRoute: typeof FrasesRoute
+  GuardadosRoute: typeof GuardadosRoute
+  HistorialRoute: typeof HistorialRoute
+  SimRoute: typeof SimRoute
+  SosRoute: typeof SosRoute
+  TudiaRoute: typeof TudiaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tudia': {
+      id: '/tudia'
+      path: '/tudia'
+      fullPath: '/tudia'
+      preLoaderRoute: typeof TudiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sos': {
+      id: '/sos'
+      path: '/sos'
+      fullPath: '/sos'
+      preLoaderRoute: typeof SosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sim': {
+      id: '/sim'
+      path: '/sim'
+      fullPath: '/sim'
+      preLoaderRoute: typeof SimRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/historial': {
+      id: '/historial'
+      path: '/historial'
+      fullPath: '/historial'
+      preLoaderRoute: typeof HistorialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guardados': {
+      id: '/guardados'
+      path: '/guardados'
+      fullPath: '/guardados'
+      preLoaderRoute: typeof GuardadosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/frases': {
+      id: '/frases'
+      path: '/frases'
+      fullPath: '/frases'
+      preLoaderRoute: typeof FrasesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feed': {
+      id: '/feed'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof FeedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/escaner': {
+      id: '/escaner'
+      path: '/escaner'
+      fullPath: '/escaner'
+      preLoaderRoute: typeof EscanerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/date': {
+      id: '/date'
+      path: '/date'
+      fullPath: '/date'
+      preLoaderRoute: typeof DateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/biblioteca': {
+      id: '/biblioteca'
+      path: '/biblioteca'
+      fullPath: '/biblioteca'
+      preLoaderRoute: typeof BibliotecaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/academia': {
+      id: '/academia'
+      path: '/academia'
+      fullPath: '/academia'
+      preLoaderRoute: typeof AcademiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +277,18 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AcademiaRoute: AcademiaRoute,
+  BibliotecaRoute: BibliotecaRoute,
+  DateRoute: DateRoute,
+  EscanerRoute: EscanerRoute,
+  FeedRoute: FeedRoute,
+  FrasesRoute: FrasesRoute,
+  GuardadosRoute: GuardadosRoute,
+  HistorialRoute: HistorialRoute,
+  SimRoute: SimRoute,
+  SosRoute: SosRoute,
+  TudiaRoute: TudiaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
