@@ -36,79 +36,136 @@
 
 :root {
   --radius: 1rem;
-  /* Deep navy with cyan neon — inspired by the reference */
-  --background: oklch(0.16 0.04 230);
-  --foreground: oklch(0.96 0.02 200);
-  --card: oklch(0.21 0.05 235);
-  --card-foreground: oklch(0.96 0.02 200);
-  --popover: oklch(0.18 0.04 232);
-  --popover-foreground: oklch(0.96 0.02 200);
-  --primary: oklch(0.86 0.16 200);          /* neon cyan */
-  --primary-foreground: oklch(0.16 0.04 230);
-  --secondary: oklch(0.25 0.05 240);
-  --secondary-foreground: oklch(0.96 0.02 200);
-  --muted: oklch(0.23 0.04 235);
-  --muted-foreground: oklch(0.68 0.04 220);
-  --accent: oklch(0.72 0.18 330);           /* hot pink accent */
-  --accent-foreground: oklch(0.16 0.04 230);
-  --destructive: oklch(0.7 0.22 25);
+  /* Cyberpunk masculino: negro puro + cian neón + cobalto + morado profundo */
+  --background: oklch(0 0 0);                    /* #000000 negro puro */
+  --foreground: oklch(0.97 0.005 220);
+  --card: oklch(0.14 0.005 250);                 /* grafito oscuro */
+  --card-foreground: oklch(0.97 0.005 220);
+  --popover: oklch(0.12 0.005 250);
+  --popover-foreground: oklch(0.97 0.005 220);
+  --primary: oklch(0.86 0.18 215);               /* #00F0FF cian neón */
+  --primary-foreground: oklch(0.08 0.01 250);
+  --secondary: oklch(0.18 0.04 270);
+  --secondary-foreground: oklch(0.97 0.005 220);
+  --muted: oklch(0.16 0.01 250);
+  --muted-foreground: oklch(0.62 0.02 230);
+  --accent: oklch(0.45 0.28 275);                /* #4D00FF morado/azul profundo */
+  --accent-foreground: oklch(0.98 0.005 220);
+  --destructive: oklch(0.65 0.24 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.86 0.16 200 / 18%);
-  --input: oklch(0.86 0.16 200 / 14%);
-  --ring: oklch(0.86 0.16 200 / 60%);
+  --border: oklch(0.86 0.18 215 / 14%);
+  --input: oklch(0.86 0.18 215 / 10%);
+  --ring: oklch(0.86 0.18 215 / 55%);
 }
 
 @layer base {
   html, body {
-    background: var(--color-background);
+    background: #000000;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
   body {
     background-image:
-      radial-gradient(1200px 600px at 50% -10%, oklch(0.86 0.16 200 / 0.10), transparent 60%),
-      radial-gradient(900px 600px at 90% 100%, oklch(0.72 0.18 330 / 0.08), transparent 60%);
+      radial-gradient(900px 500px at 10% -10%, oklch(0.86 0.18 215 / 0.08), transparent 60%),
+      radial-gradient(800px 500px at 100% 110%, oklch(0.45 0.28 275 / 0.10), transparent 60%);
     background-attachment: fixed;
     min-height: 100dvh;
   }
   * { border-color: var(--color-border); }
-  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
+  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.015em; }
 }
 
 @layer components {
-  .neon-card {
-    background: linear-gradient(180deg, oklch(0.22 0.05 235 / 0.85), oklch(0.18 0.04 232 / 0.85));
-    border: 1px solid oklch(0.86 0.16 200 / 0.22);
-    border-radius: 1.1rem;
-    box-shadow:
-      0 0 0 1px oklch(0.86 0.16 200 / 0.05) inset,
-      0 10px 40px -20px oklch(0.86 0.16 200 / 0.5);
-    backdrop-filter: blur(6px);
+  /* Glassmorphism masculino: fondo translúcido oscuro + blur + borde con reflejo cian */
+  .glass {
+    background: rgba(18, 18, 20, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid transparent;
+    background-clip: padding-box;
+    position: relative;
   }
+  .glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg,
+      rgba(0, 240, 255, 0.55),
+      rgba(77, 0, 255, 0.15) 40%,
+      rgba(0, 240, 255, 0.05) 70%,
+      rgba(0, 240, 255, 0.45));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+  .neon-card { @apply glass; border-radius: 1.25rem; }
   .neon-glow {
     box-shadow:
-      0 0 18px oklch(0.86 0.16 200 / 0.45),
-      0 0 1px oklch(0.86 0.16 200 / 0.8) inset;
+      0 0 24px rgba(0, 240, 255, 0.35),
+      0 0 1px rgba(0, 240, 255, 0.7) inset;
   }
   .neon-text {
-    color: var(--color-primary);
-    text-shadow: 0 0 14px oklch(0.86 0.16 200 / 0.55);
+    color: #00F0FF;
+    text-shadow: 0 0 18px rgba(0, 240, 255, 0.55);
   }
+  .grad-cyber {
+    background: linear-gradient(135deg, #00F0FF 0%, #0047FF 55%, #4D00FF 100%);
+  }
+  .grad-cyber-text {
+    background: linear-gradient(135deg, #00F0FF 0%, #4D00FF 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+  }
+  .btn-cyber {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl font-medium transition;
+    background: linear-gradient(135deg, #00F0FF 0%, #0047FF 60%, #4D00FF 100%);
+    color: #04060a;
+    box-shadow: 0 0 22px rgba(0, 240, 255, 0.35), 0 8px 30px -10px rgba(77, 0, 255, 0.5);
+  }
+  .btn-cyber:hover { transform: scale(1.03); box-shadow: 0 0 36px rgba(0, 240, 255, 0.55); }
+  .btn-cyber:disabled { opacity: 0.55; transform: none; }
   .pill {
-    border: 1px solid oklch(0.86 0.16 200 / 0.4);
-    color: var(--color-primary);
-    background: oklch(0.86 0.16 200 / 0.08);
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    color: #00F0FF;
+    background: rgba(0, 240, 255, 0.06);
     border-radius: 999px;
     padding: 0.25rem 0.75rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
   }
   .grid-bg {
     background-image:
-      linear-gradient(oklch(0.86 0.16 200 / 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, oklch(0.86 0.16 200 / 0.06) 1px, transparent 1px);
-    background-size: 28px 28px;
+      linear-gradient(rgba(0, 240, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  /* === Laser scanner === */
+  .scan-frame { position: relative; overflow: hidden; border-radius: 1rem; }
+  .scan-beam {
+    position: absolute; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, #00F0FF 30%, #0047FF 70%, transparent);
+    box-shadow: 0 0 15px #00F0FF, 0 0 40px rgba(0, 71, 255, 0.6);
+    top: 0;
+    animation: scan-sweep 1.75s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  .scan-fade { animation: scan-fadeout 0.4s ease forwards; }
+  @keyframes scan-sweep {
+    from { top: 0%; }
+    to   { top: calc(100% - 3px); }
+  }
+  @keyframes scan-fadeout {
+    to { opacity: 0; }
+  }
+  .blink-soft { animation: blink-soft 1.2s ease-in-out infinite; }
+  @keyframes blink-soft {
+    0%,100% { opacity: 1; }
+    50%     { opacity: 0.55; }
   }
 }
