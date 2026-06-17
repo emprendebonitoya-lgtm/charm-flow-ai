@@ -57,7 +57,7 @@ export function AppShell({
       <nav className="fixed bottom-3 inset-x-0 z-40 px-3 pointer-events-none">
         <div className="mx-auto max-w-md neon-card rounded-3xl px-1.5 py-1.5 flex items-center justify-between pointer-events-auto">
           {nav.map(({ to, label, icon: Icon }) => {
-            const active = path === to || (to !== "/" && path.startsWith(to));
+            const active = path === to || path.startsWith(to + "/");
             return (
               <Link
                 key={to}
