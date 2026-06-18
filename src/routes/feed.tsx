@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import {
-  Flame, Eye, MessageCircle, Instagram, Heart, Copy, Eye as EyeOpen, EyeOff,
+  Flame, Eye, MessageCircle, Instagram, Heart, Copy, EyeOff,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
