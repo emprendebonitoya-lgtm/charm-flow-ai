@@ -36,39 +36,39 @@
 
 :root {
   --radius: 1rem;
-  /* Cyberpunk masculino: negro puro + cian neón + cobalto + morado profundo */
-  --background: oklch(0 0 0);                    /* #000000 negro puro */
-  --foreground: oklch(0.97 0.005 220);
-  --card: oklch(0.14 0.005 250);                 /* grafito oscuro */
-  --card-foreground: oklch(0.97 0.005 220);
-  --popover: oklch(0.12 0.005 250);
-  --popover-foreground: oklch(0.97 0.005 220);
-  --primary: oklch(0.86 0.18 215);               /* #00F0FF cian neón */
-  --primary-foreground: oklch(0.08 0.01 250);
-  --secondary: oklch(0.18 0.04 270);
-  --secondary-foreground: oklch(0.97 0.005 220);
-  --muted: oklch(0.16 0.01 250);
-  --muted-foreground: oklch(0.62 0.02 230);
-  --accent: oklch(0.45 0.28 275);                /* #4D00FF morado/azul profundo */
-  --accent-foreground: oklch(0.98 0.005 220);
+  /* Solo azul + negro: negro profundo de fondo, azules vibrantes para acento */
+  --background: oklch(0.08 0.02 250);             /* casi negro con tinte azul */
+  --foreground: oklch(0.97 0.01 230);
+  --card: oklch(0.18 0.04 250);                   /* navy / azul oscuro para cards */
+  --card-foreground: oklch(0.97 0.01 230);
+  --popover: oklch(0.16 0.04 250);
+  --popover-foreground: oklch(0.97 0.01 230);
+  --primary: oklch(0.65 0.22 255);                /* #3B82F6 azul vibrante */
+  --primary-foreground: oklch(0.10 0.02 250);
+  --secondary: oklch(0.22 0.05 255);
+  --secondary-foreground: oklch(0.97 0.01 230);
+  --muted: oklch(0.22 0.03 250);
+  --muted-foreground: oklch(0.70 0.02 240);
+  --accent: oklch(0.55 0.20 250);                 /* azul cobalto */
+  --accent-foreground: oklch(0.98 0.01 230);
   --destructive: oklch(0.65 0.24 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.86 0.18 215 / 14%);
-  --input: oklch(0.86 0.18 215 / 10%);
-  --ring: oklch(0.86 0.18 215 / 55%);
+  --border: oklch(0.65 0.22 255 / 18%);
+  --input: oklch(0.65 0.22 255 / 12%);
+  --ring: oklch(0.65 0.22 255 / 55%);
 }
 
 @layer base {
   html, body {
-    background: #000000;
+    background: #050913;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
   body {
     background-image:
-      radial-gradient(900px 500px at 10% -10%, oklch(0.86 0.18 215 / 0.08), transparent 60%),
-      radial-gradient(800px 500px at 100% 110%, oklch(0.45 0.28 275 / 0.10), transparent 60%);
+      radial-gradient(900px 500px at 10% -10%, rgba(59, 130, 246, 0.18), transparent 60%),
+      radial-gradient(800px 500px at 100% 110%, rgba(37, 99, 235, 0.14), transparent 60%);
     background-attachment: fixed;
     min-height: 100dvh;
   }
@@ -77,68 +77,53 @@
 }
 
 @layer components {
-  /* Glassmorphism masculino: fondo translúcido oscuro + blur + borde con reflejo cian */
-  .glass {
-    background: rgba(18, 18, 20, 0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid transparent;
-    background-clip: padding-box;
-    position: relative;
-  }
-  .glass::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg,
-      rgba(0, 240, 255, 0.55),
-      rgba(77, 0, 255, 0.15) 40%,
-      rgba(0, 240, 255, 0.05) 70%,
-      rgba(0, 240, 255, 0.45));
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-            mask-composite: exclude;
-    pointer-events: none;
-  }
+  /* Card azul translúcida (más clara para que no se vea todo negro) */
   .neon-card {
-    background: rgba(18, 18, 20, 0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid transparent;
-    background-clip: padding-box;
-    position: relative;
+    background: linear-gradient(180deg, rgba(28, 48, 92, 0.55) 0%, rgba(18, 30, 60, 0.55) 100%);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(99, 160, 255, 0.18);
     border-radius: 1.25rem;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.04) inset,
+      0 12px 40px -16px rgba(0, 0, 0, 0.5);
+  }
+  .neon-card-strong {
+    background: linear-gradient(180deg, rgba(40, 72, 140, 0.7) 0%, rgba(20, 38, 80, 0.7) 100%);
+    border: 1px solid rgba(120, 180, 255, 0.28);
   }
   .neon-glow {
     box-shadow:
-      0 0 24px rgba(0, 240, 255, 0.35),
-      0 0 1px rgba(0, 240, 255, 0.7) inset;
-  }
-  .neon-text {
-    color: #00F0FF;
-    text-shadow: 0 0 18px rgba(0, 240, 255, 0.55);
+      0 0 24px rgba(59, 130, 246, 0.45),
+      0 0 1px rgba(99, 160, 255, 0.8) inset;
   }
   .grad-cyber {
-    background: linear-gradient(135deg, #00F0FF 0%, #0047FF 55%, #4D00FF 100%);
+    background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 55%, #1D4ED8 100%);
   }
   .grad-cyber-text {
-    background: linear-gradient(135deg, #00F0FF 0%, #4D00FF 100%);
+    background: linear-gradient(135deg, #93C5FD 0%, #3B82F6 60%, #1D4ED8 100%);
     -webkit-background-clip: text;
             background-clip: text;
     color: transparent;
   }
   .btn-cyber {
     @apply inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl font-medium transition;
-    background: linear-gradient(135deg, #00F0FF 0%, #0047FF 60%, #4D00FF 100%);
-    color: #04060a;
-    box-shadow: 0 0 22px rgba(0, 240, 255, 0.35), 0 8px 30px -10px rgba(77, 0, 255, 0.5);
+    background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 60%, #1D4ED8 100%);
+    color: #ffffff;
+    box-shadow: 0 0 22px rgba(59, 130, 246, 0.4), 0 8px 30px -10px rgba(29, 78, 216, 0.55);
   }
-  .btn-cyber:hover { transform: scale(1.03); box-shadow: 0 0 36px rgba(0, 240, 255, 0.55); }
+  .btn-cyber:hover { transform: translateY(-1px); box-shadow: 0 0 36px rgba(59, 130, 246, 0.6); }
   .btn-cyber:disabled { opacity: 0.55; transform: none; }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl font-medium transition text-sm;
+    background: rgba(99, 160, 255, 0.08);
+    border: 1px solid rgba(99, 160, 255, 0.25);
+    color: #BFDBFE;
+  }
+  .btn-ghost:hover { background: rgba(99, 160, 255, 0.16); }
   .pill {
-    border: 1px solid rgba(0, 240, 255, 0.4);
-    color: #00F0FF;
-    background: rgba(0, 240, 255, 0.06);
+    border: 1px solid rgba(99, 160, 255, 0.4);
+    color: #BFDBFE;
+    background: rgba(59, 130, 246, 0.10);
     border-radius: 999px;
     padding: 0.25rem 0.75rem;
     font-size: 0.7rem;
@@ -147,17 +132,16 @@
   }
   .grid-bg {
     background-image:
-      linear-gradient(rgba(0, 240, 255, 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 240, 255, 0.06) 1px, transparent 1px);
+      linear-gradient(rgba(99, 160, 255, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99, 160, 255, 0.07) 1px, transparent 1px);
     background-size: 32px 32px;
   }
 
-  /* === Laser scanner === */
   .scan-frame { position: relative; overflow: hidden; border-radius: 1rem; }
   .scan-beam {
     position: absolute; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, transparent, #00F0FF 30%, #0047FF 70%, transparent);
-    box-shadow: 0 0 15px #00F0FF, 0 0 40px rgba(0, 71, 255, 0.6);
+    background: linear-gradient(90deg, transparent, #60A5FA 30%, #1D4ED8 70%, transparent);
+    box-shadow: 0 0 15px #3B82F6, 0 0 40px rgba(29, 78, 216, 0.6);
     top: 0;
     animation: scan-sweep 1.75s ease-in-out infinite alternate;
     pointer-events: none;
