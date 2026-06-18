@@ -53,42 +53,66 @@ export function AppShell({
 
       <main className="mx-auto max-w-2xl px-4 py-5">{children}</main>
 
-      {/* Floating bottom navbar */}
-      <nav className="fixed bottom-3 inset-x-0 z-40 px-3 pointer-events-none">
-        <div className="mx-auto max-w-md neon-card rounded-3xl px-1.5 py-1.5 flex items-center justify-between pointer-events-auto">
-          {nav.map(({ to, label, icon: Icon }) => {
-            const active = path === to || path.startsWith(to + "/");
-            return (
-              <Link
-                key={to}
-                to={to}
-                className={`flex-1 flex flex-col items-center gap-0.5 py-2 rounded-2xl transition-all ${
-                  active ? "scale-105" : ""
-                }`}
-                style={
-                  active
-                    ? {
-                        background:
-                          "linear-gradient(135deg, rgba(0,240,255,0.18), rgba(77,0,255,0.18))",
-                        boxShadow: "0 0 18px rgba(0,240,255,0.45)",
-                      }
-                    : undefined
-                }
-              >
-                <Icon
-                  className="h-[18px] w-[18px]"
-                  style={{ color: active ? "#00F0FF" : "rgba(255,255,255,0.55)" }}
-                  strokeWidth={1.6}
-                />
-                <span
-                  className="text-[9px] tracking-wider uppercase"
-                  style={{ color: active ? "#00F0FF" : "rgba(255,255,255,0.55)" }}
+      {/* Minimal bottom navbar — discreto, casi invisible hasta el hover */}
+      <nav
+        className="fixed bottom-0 inset-x-0 z-40 pointer-events-none"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 6px)" }}
+      >
+        {/* Soft fade under the bar to merge with content */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0) 100%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-md px-4">
+          <div
+            className="pointer-events-auto flex items-center justify-between rounded-full px-2 py-1.5"
+            style={{
+              background: "rgba(10,12,18,0.55)",
+              backdropFilter: "blur(18px) saturate(140%)",
+              border: "1px solid rgba(255,255,255,0.05)",
+            }}
+          >
+            {nav.map(({ to, label, icon: Icon }) => {
+              const active = path === to || path.startsWith(to + "/");
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  aria-label={label}
+                  className="flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-full transition-colors"
                 >
-                  {label}
-                </span>
-              </Link>
-            );
-          })}
+                  <Icon
+                    className="h-[17px] w-[17px] transition-colors"
+                    style={{
+                      color: active ? "#00F0FF" : "rgba(255,255,255,0.38)",
+                    }}
+                    strokeWidth={1.5}
+                  />
+                  <span
+                    className="text-[8.5px] tracking-[0.14em] uppercase transition-colors"
+                    style={{
+                      color: active ? "rgba(0,240,255,0.95)" : "rgba(255,255,255,0.32)",
+                    }}
+                  >
+                    {label}
+                  </span>
+                  {active && (
+                    <span
+                      className="block h-[2px] w-[14px] rounded-full -mt-0.5"
+                      style={{
+                        background: "#00F0FF",
+                        boxShadow: "0 0 6px rgba(0,240,255,0.7)",
+                      }}
+                    />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </nav>
     </div>
