@@ -101,7 +101,14 @@
             mask-composite: exclude;
     pointer-events: none;
   }
-  .neon-card { @apply glass; border-radius: 1.25rem; }
+  .neon-card {
+    background: rgba(18, 18, 20, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+    border-radius: 1.25rem;
+  }
   .neon-glow {
     box-shadow:
       0 0 24px rgba(0, 240, 255, 0.35),
