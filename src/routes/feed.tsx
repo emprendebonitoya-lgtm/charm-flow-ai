@@ -117,7 +117,7 @@ function Card({
           onClick={() => setRevealChat((v) => !v)}
           className="mt-2 text-[10px] uppercase tracking-widest text-[#93C5FD] inline-flex items-center gap-1 hover:underline"
         >
-          {revealChat ? <><EyeOff className="h-3 w-3" /> Ocultar chat</> : <><EyeOpen className="h-3 w-3" /> Ver chat</>}
+          {revealChat ? <><EyeOff className="h-3 w-3" /> Ocultar chat</> : <><Eye className="h-3 w-3" /> Ver chat</>}
         </button>
       </div>
 
