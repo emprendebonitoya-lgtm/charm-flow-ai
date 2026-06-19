@@ -16,9 +16,16 @@ export const Route = createFileRoute("/date")({
   component: DatePlanner,
 });
 
-const INTERESTS = ["Arte", "Fitness", "Música", "Viajes", "Cine", "Naturaleza", "Gastronomía", "Lectura"];
-const BUDGET = ["Bajo", "Medio", "Alto"] as const;
-const VIBES = ["Aventura", "Romántica", "Relax", "Intelectual"] as const;
+const INTERESTS = [
+  "Arte", "Fitness", "Música", "Viajes", "Cine", "Naturaleza",
+  "Gastronomía", "Lectura", "Café", "Vino", "Baile", "Fotografía",
+  "Tatuajes", "Animales", "Yoga", "Gaming", "Series", "Moda",
+];
+const BUDGET = ["Bajo", "Medio", "Alto", "Sin límite"] as const;
+const VIBES = [
+  "Aventura", "Romántica", "Relax", "Intelectual",
+  "Sensual", "Divertida", "Cultural", "Nocturna",
+] as const;
 
 type Plan = { fase: string; titulo: string; detalle: string }[];
 
