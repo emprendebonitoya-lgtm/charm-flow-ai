@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import {
-  Flame, Eye, MessageCircle, Instagram, Heart, Copy, EyeOff,
+  Flame, Eye, MessageCircle, Instagram, Heart, Copy, EyeOff, Shuffle,
 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/feed")({
@@ -18,39 +18,53 @@ export const Route = createFileRoute("/feed")({
 
 type Platform = "Instagram" | "Tinder" | "Bumble" | "WhatsApp" | "TikTok";
 
-const POSTS: {
+type Post = {
   user: string; age: number; vibe: string; platform: Platform;
   text: string; fires: number; views: number;
   chat: string; technique: { name: string; how: string };
-}[] = [
-  {
-    user: "Mateo", age: 24, vibe: "Directo · humor seco", platform: "Instagram",
+};
+
+const POSTS: Post[] = [
+  { user: "Mateo", age: 24, vibe: "Directo · humor seco", platform: "Instagram",
     text: "Subí la foto de su perfil al Escáner. La apertura me consiguió el número en 3 mensajes 🔥",
     fires: 248, views: 1820,
     chat: "Yo: 'Tu sonrisa rompe mi algoritmo'\nElla: 'jajaja qué loco, pasame tu insta'",
-    technique: { name: "Observación + cumplido indirecto", how: "Fijate en UN detalle de la foto (sonrisa, fondo, ropa) y conectalo con algo tuyo o un juego de palabras. No es halago plano, es un guiño." },
-  },
-  {
-    user: "Diego", age: 27, vibe: "Tranquilo · empático", platform: "WhatsApp",
+    technique: { name: "Observación + cumplido indirecto", how: "Fijate en UN detalle de la foto y conectalo con algo tuyo o un juego de palabras. No es halago plano, es un guiño." } },
+  { user: "Diego", age: 27, vibe: "Tranquilo · empático", platform: "WhatsApp",
     text: "Llevaba 4 días en visto. Salvavidas me devolvió la conversa con un solo mensaje.",
     fires: 412, views: 3105,
-    chat: "Yo: 'No te pregunté cómo te fue con la mudanza, ¿sobrevivió la planta?'\nElla: 'jaja sí, la salvé. ¿Cómo te acordaste?'",
-    technique: { name: "Callback específico", how: "Rescatá un detalle puntual de la conversación previa (que ella mencionó al pasar). Demuestra atención sin parecer obsesivo. Funciona mejor con humor leve." },
-  },
-  {
-    user: "Tomás", age: 22, vibe: "Frame fuerte · juguetón", platform: "Tinder",
+    chat: "Yo: 'No te pregunté cómo te fue con la mudanza, ¿sobrevivió la planta?'\nElla: 'jaja sí. ¿Cómo te acordaste?'",
+    technique: { name: "Callback específico", how: "Rescatá un detalle puntual que ella mencionó al pasar. Demuestra atención sin parecer obsesivo." } },
+  { user: "Tomás", age: 22, vibe: "Frame fuerte · juguetón", platform: "Tinder",
     text: "El Sim con 'Camila Difícil' me destruyó el ego. Volví 5 veces, mejoré, y cerré la cita real.",
     fires: 187, views: 990,
     chat: "Score Sim final: 9/10\nReal: cita el sábado en bar de vinos.",
-    technique: { name: "Mantener frame ante shit tests", how: "Cuando ella te testea con 'y vos qué tenés de especial', NO te justifiques. Respondé con humor que reframea: 'Mi modestia. Después te muestro otras virtudes.'" },
-  },
-  {
-    user: "Joaco", age: 29, vibe: "Romántico · old school", platform: "Bumble",
+    technique: { name: "Mantener frame ante shit tests", how: "Cuando te testea, NO te justifiques. Respondé con humor que reframea: 'Mi modestia. Después te muestro otras virtudes.'" } },
+  { user: "Joaco", age: 29, vibe: "Romántico · old school", platform: "Bumble",
     text: "Date Planner me armó una cita low-budget que terminó en segunda. La fase Cierre es oro.",
     fires: 305, views: 2210,
     chat: "Fase 3 · Cierre: caminar al parque, banco, silencio cómodo, beso.",
-    technique: { name: "Silencio estratégico en el cierre", how: "Después de la actividad principal, llevala a un lugar tranquilo y NO llenes el silencio. El espacio crea tensión y permite que el momento se construya solo." },
-  },
+    technique: { name: "Silencio estratégico en el cierre", how: "Después de la actividad principal, llevala a un lugar tranquilo y NO llenes el silencio. El espacio crea tensión." } },
+  { user: "Bruno", age: 31, vibe: "Maduro · misterioso", platform: "Instagram",
+    text: "Un mensaje cada 3 días y ella me terminó escribiendo a mí. Less is more, hermanos.",
+    fires: 521, views: 4022,
+    chat: "Yo: (silencio 3 días)\nElla: '¿desapareciste? jaja'",
+    technique: { name: "Ratio inverso", how: "Bajá la frecuencia. La gente desea lo que no puede tener todos los días." } },
+  { user: "Lucas", age: 26, vibe: "Atrevido · juguetón", platform: "TikTok",
+    text: "Comenté un video suyo con una observación rara y terminó en mi DM en 20 min.",
+    fires: 174, views: 1402,
+    chat: "Comentario: 'Te delata el fondo, sos de zona norte 100%'\nElla DM: 'cómo sabés? jaja'",
+    technique: { name: "Cold-read específico", how: "Tirá una observación arriesgada pero plausible. Si pegás, sos un mago. Si no, sos un loco gracioso." } },
+  { user: "Nacho", age: 23, vibe: "Tímido en remisión", platform: "WhatsApp",
+    text: "Antes me trababa. Apliqué el ritual de la mañana 21 días y me animé a invitarla en persona.",
+    fires: 389, views: 2680,
+    chat: "Yo (en bar): 'Esta semana me prometí invitar a la chica más interesante que vea. Sos vos.'",
+    technique: { name: "Honestidad de alto frame", how: "Decir la verdad con calma proyecta más confianza que cualquier técnica. Pero practicala antes." } },
+  { user: "Pablo", age: 28, vibe: "Sarcástico · culto", platform: "Bumble",
+    text: "Frases de la app + mi propio toque. Match → cita en 48hs.",
+    fires: 256, views: 1995,
+    chat: "Yo: 'Spoiler: este mensaje probablemente cambie tu semana'\nElla: 'okay, escucho'",
+    technique: { name: "Frame alto desde el opener", how: "El primer mensaje setea la dinámica. Empezá ya como premio." } },
 ];
 
 const PLATFORM_ICONS: Record<Platform, typeof Instagram> = {
@@ -61,15 +75,44 @@ const PLATFORM_COLOR: Record<Platform, string> = {
   WhatsApp: "#25D366", TikTok: "#69C9D0",
 };
 
+const ALL_PLATFORMS: ("Todas" | Platform)[] = ["Todas", "Instagram", "Tinder", "Bumble", "WhatsApp", "TikTok"];
+
 function Feed() {
+  const [filter, setFilter] = useState<"Todas" | Platform>("Todas");
+  const [seed, setSeed] = useState(0);
+
+  const list = useMemo(() => {
+    const base = filter === "Todas" ? POSTS : POSTS.filter((p) => p.platform === filter);
+    // Shuffle deterministic por seed
+    const arr = [...base];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(((Math.sin(seed * 9301 + i * 49297) + 1) / 2) * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, [filter, seed]);
+
   return (
     <AppShell title="Feed" subtitle="La comunidad cierra. Copiá la técnica.">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex-1 flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          {ALL_PLATFORMS.map((p) => (
+            <button key={p} onClick={() => setFilter(p)}
+              className={`chip whitespace-nowrap ${filter === p ? "chip-active" : ""}`}>{p}</button>
+          ))}
+        </div>
+        <button onClick={() => setSeed((s) => s + 1)} className="btn-ghost !py-2 !px-3 shrink-0" aria-label="Mezclar">
+          <Shuffle className="h-4 w-4" />
+        </button>
+      </div>
+
       <div className="space-y-3">
-        {POSTS.map((p, i) => <Card key={i} {...p} />)}
+        {list.map((p, i) => <Card key={`${seed}-${i}`} {...p} />)}
       </div>
     </AppShell>
   );
 }
+
 
 function Card({
   user, age, vibe, platform, text, fires, views, chat, technique,
