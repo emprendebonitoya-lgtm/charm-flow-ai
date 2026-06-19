@@ -116,7 +116,7 @@ function Feed() {
 
 function Card({
   user, age, vibe, platform, text, fires, views, chat, technique,
-}: typeof POSTS[number]) {
+}: Post) {
   const [n, setN] = useState(fires);
   const [hit, setHit] = useState(false);
   const [revealChat, setRevealChat] = useState(false);
