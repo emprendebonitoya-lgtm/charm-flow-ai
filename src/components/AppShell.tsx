@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useUser } from "@/lib/user";
 import { loadPremiumProgressHistory } from "@/lib/storage";
 import { Logo } from "@/components/Logo";
+import { AdBanner } from "@/components/AdBanner";
 import {
   Home, Scan, LifeBuoy, MessagesSquare, MessageSquare, CalendarHeart, Library,
   GraduationCap, Quote, Sun, Bookmark, History,
@@ -46,7 +47,7 @@ export function AppShell({
   title?: string;
   subtitle?: string;
 }) {
-  const { state } = useUser();
+  const { state, authUser } = useUser();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [premiumStats, setPremiumStats] = useState({ streak: 0, days: 0 });
   const planLabel = state.isPremium ? "Premium activo" : "Acceso Gratis";
@@ -113,6 +114,13 @@ export function AppShell({
             <Link to="/historial" aria-label="Historial" className="p-2 rounded-full hover:bg-white/10 text-[#f8fafc]">
               <History className="h-4 w-4" />
             </Link>
+            <Link
+              to="/login"
+              className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white transition hover:bg-white/15 max-w-[8rem] truncate"
+              title={authUser?.email ?? "Entrar"}
+            >
+              {authUser ? authUser.email?.split("@")[0] : "Entrar"}
+            </Link>
           </div>
         </div>
         {title && (
@@ -143,7 +151,12 @@ export function AppShell({
         </div>
       </Link>
 
-      <main className="mx-auto max-w-4xl px-4 sm:px-6 py-6">{children}</main>
+      <main className="mx-auto max-w-4xl px-4 sm:px-6 py-6">
+        {!state.isPremium && path !== "/premium" && path !== "/login" && (
+          <AdBanner slot="header" className="mb-5" />
+        )}
+        {children}
+      </main>
 
       {/* Bottom navbar */}
       <nav

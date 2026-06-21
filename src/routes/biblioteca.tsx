@@ -3,6 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { Play, Clock, Users, Lock } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useUser } from "@/lib/user";
+import { FREE_LIMITS } from "@/lib/plans";
 
 export const Route = createFileRoute("/biblioteca")({
   head: () => ({
@@ -156,7 +157,7 @@ function Biblioteca() {
   const [cat, setCat] = useState<Cat>("Todo");
   const [selected, setSelected] = useState<number>(-1);
   const list = cat === "Todo" ? PILLS : PILLS.filter((p) => p.cat === cat);
-  const previewLimit = state.isPremium ? list.length : 4;
+  const previewLimit = state.isPremium ? list.length : FREE_LIMITS.bibliotecaPills;
 
   useEffect(() => {
     setSelected(-1);
@@ -247,7 +248,7 @@ function Biblioteca() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">Biblioteca gratis</div>
-              <div className="font-display text-[18px] font-semibold text-white">4 píldoras gratis. El resto es premium.</div>
+              <div className="font-display text-[18px] font-semibold text-white">{FREE_LIMITS.bibliotecaPills} píldoras gratis. El resto es premium.</div>
             </div>
             <Link to="/premium" className="btn-cyber">
               Desbloquear todo

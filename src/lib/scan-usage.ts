@@ -1,5 +1,7 @@
+import { FREE_LIMITS } from "@/lib/plans";
+
 const SCAN_USAGE_KEY = "magneto_scan_usage";
-const MAX_FREE_SCANS = 3;
+const MAX_FREE_SCANS = FREE_LIMITS.scannerDaily;
 
 type ScanUsage = {
   date: string;

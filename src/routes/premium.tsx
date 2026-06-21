@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { PlanComparison } from "@/components/PlanComparison";
 import { useUser } from "@/lib/user";
+import { PRICING } from "@/lib/plans";
 import { createCheckoutSession, isStripeConfigured } from "@/lib/stripe.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
@@ -56,16 +58,29 @@ function Premium() {
   };
 
   return (
-    <AppShell title="MAGNETO Premium" subtitle="Desbloqueá lo mejor: Academia, Biblioteca y el onboarding guiado.">
+    <AppShell title="MAGNETO Premium" subtitle="Gratis para probar · Premium para desbloquear todo y quitar anuncios.">
       <div className="grid gap-6">
+        <div className="neon-card rounded-3xl p-6 border border-[rgba(168,85,247,0.16)]">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">Gratis vs Premium</div>
+              <h2 className="mt-2 text-2xl font-semibold text-white">Elegí cómo usar MAGNETO</h2>
+              <p className="mt-2 text-sm text-[#E0E7FF]/75 max-w-2xl">
+                El plan gratis incluye herramientas IA core con límites y anuncios. Premium desbloquea Academia, Biblioteca y escaneos ilimitados sin publicidad.
+              </p>
+            </div>
+            <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-[#E0E7FF]/85">
+              {state.isPremium ? `${activeLabel} activo` : "Plan Gratis"}
+            </div>
+          </div>
+          <PlanComparison />
+        </div>
+
         <div className="neon-card rounded-3xl p-6 border border-[rgba(168,85,247,0.16)]">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">Beneficios premium</div>
               <h2 className="mt-2 text-3xl font-semibold text-white">Accedé al próximo nivel.</h2>
-            </div>
-            <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-[#E0E7FF]/85">
-              {state.isPremium ? `${activeLabel} activo` : "Sin suscripción"}
             </div>
           </div>
           {stripeReady === false && !state.isPremium && (
@@ -123,7 +138,7 @@ function Premium() {
                 <Shield className="h-5 w-5 text-violet-300" />
                 <div>
                   <div className="text-sm uppercase tracking-[0.3em] text-[#D8B4FE]/60">Plan mensual</div>
-                  <div className="text-3xl font-semibold">$19</div>
+                  <div className="text-3xl font-semibold">${PRICING.monthly.amount}</div>
                 </div>
               </div>
               <p className="text-sm text-[#E0E7FF]/75 leading-relaxed">Acceso completo a Academia, Biblioteca y onboarding VIP. Ideal si querés escalar rápido.</p>
@@ -141,7 +156,7 @@ function Premium() {
                 <Sparkles className="h-5 w-5 text-fuchsia-300" />
                 <div>
                   <div className="text-sm uppercase tracking-[0.3em] text-[#D8B4FE]/60">Plan anual</div>
-                  <div className="text-3xl font-semibold">$149</div>
+                  <div className="text-3xl font-semibold">${PRICING.annual.amount}</div>
                 </div>
               </div>
               <p className="text-sm text-[#E0E7FF]/75 leading-relaxed">Todo el contenido desbloqueado con un ahorro real. Incluye onboarding guiado y mejoras futuras.</p>

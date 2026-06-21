@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useUser } from "@/lib/user";
+import { FREE_LIMITS } from "@/lib/plans";
 
 export const Route = createFileRoute("/academia")({
   head: () => ({
@@ -184,7 +185,7 @@ function Academia() {
   const [done, setDone] = useState<Record<string, boolean>>({});
   const k = (m: number, l: number) => `${m}:${l}`;
   const count = (mi: number) => MODULES[mi].lessons.filter((_, li) => done[k(mi, li)]).length;
-  const previewCount = state.isPremium ? MODULES.length : 2;
+  const previewCount = state.isPremium ? MODULES.length : FREE_LIMITS.academiaModules;
 
   return (
     <AppShell title="Academia" subtitle="6 módulos. 30 lecciones para subir de nivel.">
@@ -192,7 +193,7 @@ function Academia() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">Academia</div>
-            <div className="mt-2 text-white text-lg font-semibold">{state.isPremium ? "Todo desbloqueado" : "2 módulos gratis, lo demás premium"}</div>
+            <div className="mt-2 text-white text-lg font-semibold">{state.isPremium ? "Todo desbloqueado" : `${FREE_LIMITS.academiaModules} módulos gratis, lo demás premium`}</div>
           </div>
           {!state.isPremium && (
             <Link to="/premium" className="btn-cyber shrink-0">

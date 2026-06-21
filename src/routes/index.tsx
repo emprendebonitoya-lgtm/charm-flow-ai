@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { useMemo } from "react";
 import { useUser } from "@/lib/user";
+import { FREE_LIMITS } from "@/lib/plans";
 import { loadPremiumProgressHistory } from "@/lib/storage";
 import {
   Scan, LifeBuoy, MessagesSquare, MessageSquare, CalendarHeart, Flame, Library,
@@ -135,11 +136,26 @@ function Home() {
       <section className="mb-6 rounded-[2rem] glass-panel border border-white/10 p-6 shadow-[0_24px_90px_-50px_rgba(168,85,247,0.22)]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="text-[10px] uppercase tracking-[0.32em] text-[#cbd5e1]/70">MAGNETO Premium</div>
-            <h2 className="mt-2 text-2xl font-semibold text-white">Subscribite y desbloqueá todo el contenido.</h2>
-            <p className="mt-2 max-w-2xl text-sm text-slate-300">Academia completa, Biblioteca premium y onboarding guiado para tu perfil. Esto convierte la app en una experiencia de nivel superior.</p>
+            <div className="text-[10px] uppercase tracking-[0.32em] text-[#cbd5e1]/70">Plan Gratis</div>
+            <h2 className="mt-2 text-2xl font-semibold text-white">Probá MAGNETO sin pagar.</h2>
+            <p className="mt-2 max-w-2xl text-sm text-slate-300">
+              Escáner ({FREE_LIMITS.scannerDaily}/día), SOS, Sim, Asistente, Date Planner, Frases y Feed incluidos.
+              Academia ({FREE_LIMITS.academiaModules} módulos) y Biblioteca ({FREE_LIMITS.bibliotecaPills} píldoras) con preview.
+              Anuncios discretos en plan gratis.
+            </p>
           </div>
-          <Link to="/premium" className="btn-cyber shrink-0">Ver planes premium</Link>
+          <Link to="/login" className="btn-ghost shrink-0">Crear cuenta</Link>
+        </div>
+      </section>
+
+      <section className="mb-6 rounded-[2rem] glass-panel border border-white/10 p-6 shadow-[0_24px_90px_-50px_rgba(168,85,247,0.22)]">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="text-[10px] uppercase tracking-[0.32em] text-[#cbd5e1]/70">MAGNETO Premium</div>
+            <h2 className="mt-2 text-2xl font-semibold text-white">Sin anuncios · todo desbloqueado.</h2>
+            <p className="mt-2 max-w-2xl text-sm text-slate-300">Academia completa, Biblioteca VIP, escaneos ilimitados y progreso premium.</p>
+          </div>
+          <Link to="/premium" className="btn-cyber shrink-0">Ver comparación</Link>
         </div>
       </section>
 
