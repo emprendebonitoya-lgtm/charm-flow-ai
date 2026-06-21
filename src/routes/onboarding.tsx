@@ -74,7 +74,7 @@ function Onboarding() {
       return;
     }
     completeOnboarding(goal, style);
-    navigate("/");
+    navigate({ to: "/" });
   };
 
   const handleSkip = () => {
