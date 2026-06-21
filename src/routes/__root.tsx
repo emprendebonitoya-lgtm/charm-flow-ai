@@ -85,10 +85,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "MAGNETO — Carisma y seducción con IA" },
       { property: "og:description", content: "Escáner de perfiles + Salvavidas + Simulador + Date Planner para hombres tímidos." },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "/logo.png" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/logo.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/logo.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
