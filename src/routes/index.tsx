@@ -3,6 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { useMemo } from "react";
 import { useUser } from "@/lib/user";
 import { loadPremiumProgressHistory } from "@/lib/storage";
+import heroVideo from "@/assets/hero-bg.mp4.asset.json";
 import {
   Scan, LifeBuoy, MessagesSquare, MessageSquare, CalendarHeart, Flame, Library,
   ArrowRight, Zap, GraduationCap, Quote, Sun, Bookmark,
