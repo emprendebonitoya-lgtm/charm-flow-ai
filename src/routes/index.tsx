@@ -77,7 +77,7 @@ function Home() {
           muted
           loop
           playsInline
-          className="absolute inset-0 z-0 h-full w-full object-cover object-center"
+          className="absolute inset-0 z-0 h-full w-full object-contain sm:object-cover object-center"
         >
           <source src={heroVideo.url} type="video/mp4" />
         </video>
