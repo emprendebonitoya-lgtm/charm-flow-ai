@@ -31,8 +31,8 @@ export const isStripeConfigured = createServerFn({ method: "GET" }).handler(asyn
 });
 
 export const createCheckoutSession = createServerFn({ method: "POST" })
-  .validator((data: unknown) => PlanSchema.parse(data))
-  .handler(async ({ data }) => {
+  .inputValidator((data: unknown) => PlanSchema.parse(data))
+  .handler(async ({ data }: { data: z.infer<typeof PlanSchema> }) => {
     const stripe = getStripe();
     const priceId = getPriceId(data.plan);
     if (!stripe || !priceId) {
@@ -55,8 +55,8 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
   });
 
 export const verifyCheckoutSession = createServerFn({ method: "POST" })
-  .validator((data: unknown) => SessionSchema.parse(data))
-  .handler(async ({ data }) => {
+  .inputValidator((data: unknown) => SessionSchema.parse(data))
+  .handler(async ({ data }: { data: z.infer<typeof SessionSchema> }) => {
     const stripe = getStripe();
     if (!stripe) {
       throw new Error("Stripe no está configurado.");
