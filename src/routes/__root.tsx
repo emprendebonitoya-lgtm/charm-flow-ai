@@ -110,10 +110,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const adClient = import.meta.env.VITE_ADSENSE_CLIENT as string | undefined;
+
   return (
     <html lang="es">
       <head>
         <HeadContent />
+        {adClient && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClient}`}
+            crossOrigin="anonymous"
+          />
+        )}
       </head>
       <body>
         {children}
