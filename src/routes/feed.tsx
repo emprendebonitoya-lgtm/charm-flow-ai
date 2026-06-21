@@ -150,7 +150,7 @@ function Card({
       <p className="text-[14px] leading-relaxed text-white/90">{text}</p>
 
       {/* Chat preview */}
-      <div className="mt-3 rounded-xl border border-[rgba(99,160,255,0.2)] bg-[rgba(15,25,55,0.55)] p-3 relative">
+      <div className="mt-3 rounded-xl border border-[rgba(168,85,247,0.2)] bg-[rgba(15,25,55,0.55)] p-3 relative">
         <div
           className={`text-[12px] text-white/90 whitespace-pre-line transition ${revealChat ? "" : "blur-[4px] select-none"}`}
         >
@@ -173,7 +173,7 @@ function Card({
           {showTech ? "Ocultar técnica" : "Ver técnica"}
         </button>
         {showTech && (
-          <div className="mt-2 rounded-xl border border-[rgba(99,160,255,0.28)] bg-[rgba(40,72,140,0.35)] p-3 animate-fade-in">
+          <div className="mt-2 rounded-xl border border-[rgba(168,85,247,0.28)] bg-[rgba(55,24,70,0.35)] p-3 animate-fade-in">
             <div className="flex items-center justify-between mb-1.5">
               <div className="text-[10px] uppercase tracking-[0.25em] text-[#93C5FD]">Técnica</div>
               <button
@@ -181,7 +181,7 @@ function Card({
                   navigator.clipboard.writeText(`${technique.name}\n\n${technique.how}`);
                   toast.success("Técnica copiada");
                 }}
-                className="p-1.5 rounded-lg hover:bg-[rgba(99,160,255,0.15)]"
+                className="p-1.5 rounded-lg hover:bg-[rgba(168,85,247,0.15)]"
                 aria-label="Copiar técnica"
               >
                 <Copy className="h-3.5 w-3.5 text-[#93C5FD]" />
@@ -197,7 +197,7 @@ function Card({
       <div className="flex items-center gap-4 mt-3 text-xs text-[#BFDBFE]/70">
         <button
           onClick={() => { setN(n + 1); setHit(true); setTimeout(() => setHit(false), 500); }}
-          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl transition-all ${hit ? "neon-glow text-[#60A5FA]" : "hover:text-[#60A5FA]"}`}
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl transition-all ${hit ? "neon-glow text-[#D946EF]" : "hover:text-[#D946EF]"}`}
         >
           <Flame className="h-3.5 w-3.5" /> {n}
         </button>

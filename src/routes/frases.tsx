@@ -17,6 +17,7 @@ export const Route = createFileRoute("/frases")({
 type Platform = "Instagram" | "Tinder" | "Bumble" | "WhatsApp" | "TikTok" | "Todas";
 type Escenario = "Opener" | "Romper hielo" | "Subir tensión" | "Rescate" | "Cierre" | "Todos";
 type Rollo = "Ingenioso" | "Coqueto" | "Atrevido" | "Tierno" | "Casual" | "Todos";
+type Contexto = "Todas" | "Cuando ella tiene un feed muy estético" | "Para arrancar sin presión y forzar respuesta" | "Genera curiosidad inmediata" | "Cuando la conversa fluye y querés marcar interés" | "Después de una respuesta característica" | "Reactivar un chat usando un detalle previo" | "Cerrar cita con opciones cerradas" | "Cuando ya hubo química en el chat" | "Solo después de buena química" | "Para foto que muestra personalidad" | "Frame alto desde el primer mensaje" | "Crea bucle abierto y excusa para volver";
 
 type Frase = {
   text: string;
@@ -44,6 +45,21 @@ const FRASES: Frase[] = [
 const PLATFORMS: Platform[] = ["Todas", "Instagram", "Tinder", "Bumble", "WhatsApp", "TikTok"];
 const ESCENARIOS: Escenario[] = ["Todos", "Opener", "Romper hielo", "Subir tensión", "Rescate", "Cierre"];
 const ROLLOS: Rollo[] = ["Todos", "Ingenioso", "Coqueto", "Atrevido", "Tierno", "Casual"];
+const CONTEXTOS: Contexto[] = [
+  "Todas",
+  "Cuando ella tiene un feed muy estético",
+  "Para arrancar sin presión y forzar respuesta",
+  "Genera curiosidad inmediata",
+  "Cuando la conversa fluye y querés marcar interés",
+  "Después de una respuesta característica",
+  "Reactivar un chat usando un detalle previo",
+  "Cerrar cita con opciones cerradas",
+  "Cuando ya hubo química en el chat",
+  "Solo después de buena química",
+  "Para foto que muestra personalidad",
+  "Frame alto desde el primer mensaje",
+  "Crea bucle abierto y excusa para volver",
+];
 
 const PICON: Record<Frase["platform"], any> = { Instagram, Tinder: Heart, Bumble: Heart, WhatsApp: MessageCircle, TikTok: Heart };
 const PCOLOR: Record<Frase["platform"], string> = { Instagram: "#E1306C", Tinder: "#FE3C72", Bumble: "#FFC629", WhatsApp: "#25D366", TikTok: "#69C9D0" };
@@ -52,14 +68,26 @@ function Frases() {
   const [p, setP] = useState<Platform>("Todas");
   const [e, setE] = useState<Escenario>("Todos");
   const [r, setR] = useState<Rollo>("Todos");
+  const [c, setC] = useState<Contexto>("Todas");
+  const [generated, setGenerated] = useState<Frase | null>(null);
 
   const list = useMemo(
     () => FRASES.filter(
       (f) => (p === "Todas" || f.platform === p)
           && (e === "Todos" || f.escenario === e)
-          && (r === "Todos" || f.rollo === r),
-    ), [p, e, r],
+          && (r === "Todos" || f.rollo === r)
+          && (c === "Todas" || f.contexto === c),
+    ), [p, e, r, c],
   );
+
+  const generate = () => {
+    if (list.length === 0) {
+      return toast.error("No hay frases con esa combinación");
+    }
+
+    const chosen = list[Math.floor(Math.random() * list.length)];
+    setGenerated(chosen);
+  };
 
   return (
     <AppShell title="Frases" subtitle="Filtrá por plataforma, escenario y rollo.">
@@ -67,7 +95,29 @@ function Frases() {
         <Row label="Plataforma" items={PLATFORMS} value={p} onChange={setP} />
         <Row label="Escenario"  items={ESCENARIOS} value={e} onChange={setE} />
         <Row label="Rollo"      items={ROLLOS}     value={r} onChange={setR} />
+        <Row label="Contexto"   items={CONTEXTOS}  value={c} onChange={setC} />
       </div>
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <button
+          onClick={generate}
+          className="btn-cyber px-5 py-3"
+        >
+          Generar frase
+        </button>
+        <span className="text-[11px] text-muted-foreground">Usá los filtros y creá una frase que encaje con la situación.</span>
+      </div>
+      {generated && (
+        <div className="neon-card rounded-2xl p-4 border border-[rgba(168,85,247,0.18)] mb-4">
+          <div className="text-[11px] uppercase tracking-[0.28em] text-[#D8B4FE]/80 mb-2">Frase generada</div>
+          <p className="text-[15px] font-semibold text-white leading-relaxed">"{generated.text}"</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="chip">{generated.platform}</span>
+            <span className="chip">{generated.escenario}</span>
+            <span className="chip">{generated.rollo}</span>
+          </div>
+          <div className="mt-2 text-[11px] text-[#BFDBFE]/70">Contexto: {generated.contexto}</div>
+        </div>
+      )}
 
       {list.length === 0 ? (
         <div className="neon-card rounded-2xl p-6 text-center text-sm text-muted-foreground">

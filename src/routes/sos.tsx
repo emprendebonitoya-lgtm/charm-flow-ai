@@ -74,12 +74,12 @@ function Salvavidas() {
         <div className="neon-card rounded-2xl p-4">
           <label
             onClick={() => fileRef.current?.click()}
-            className="cursor-pointer block scan-frame border border-dashed border-[rgba(0,240,255,0.25)] hover:border-[rgba(0,240,255,0.6)] transition"
+            className="cursor-pointer block scan-frame border border-dashed border-[rgba(236,72,153,0.25)] hover:border-[rgba(236,72,153,0.6)] transition"
           >
             {imgUrl ? (
               <img src={imgUrl} alt="chat" className="w-full max-h-60 object-cover" />
             ) : (
-              <div className="flex flex-col items-center gap-2 py-10 bg-[rgba(0,240,255,0.03)]">
+              <div className="flex flex-col items-center gap-2 py-10 bg-[rgba(236,72,153,0.03)]">
                 <div className="h-11 w-11 rounded-2xl grad-cyber flex items-center justify-center neon-glow">
                   <Upload className="h-5 w-5 text-[#04060a]" />
                 </div>
@@ -95,7 +95,7 @@ function Salvavidas() {
             value={ctx}
             onChange={(e) => setCtx(e.target.value)}
             placeholder="Opcional: contame qué pasó (te dejó en visto, te dijo 'tengo novio', etc.)"
-            className="mt-3 w-full bg-[rgba(0,240,255,0.04)] border border-[rgba(0,240,255,0.15)] rounded-2xl p-3 text-sm outline-none focus:border-[rgba(0,240,255,0.5)] min-h-[80px]"
+            className="mt-3 w-full bg-[rgba(236,72,153,0.04)] border border-[rgba(236,72,153,0.15)] rounded-2xl p-3 text-sm outline-none focus:border-[rgba(236,72,153,0.5)] min-h-[80px]"
           />
           <button onClick={run} disabled={loading} className="btn-cyber mt-3 w-full">
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LifeBuoy className="h-4 w-4" />}
@@ -128,9 +128,9 @@ function ChatBubble({ idx, text }: { idx: number; text: string }) {
             setGlow(true); setTimeout(() => setGlow(false), 600);
             toast.success("Copiado");
           }}
-          className={`shrink-0 p-2 rounded-xl transition-all ${glow ? "neon-glow bg-[rgba(0,240,255,0.18)]" : "hover:bg-[rgba(0,240,255,0.08)]"}`}
+          className={`shrink-0 p-2 rounded-xl transition-all ${glow ? "neon-glow bg-[rgba(236,72,153,0.18)]" : "hover:bg-[rgba(236,72,153,0.08)]"}`}
         >
-          <Copy className="h-4 w-4 text-[#00F0FF]" />
+          <Copy className="h-4 w-4 text-[#F472B6]" />
         </button>
       </div>
     </div>

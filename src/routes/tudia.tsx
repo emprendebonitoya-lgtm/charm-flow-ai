@@ -3,7 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import {
   Sun, Sparkles, Dumbbell, Brain, MessageCircleQuestion, Loader2, Send,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { chatCompletion } from "@/lib/ai.functions";
 import { toast } from "sonner";
@@ -48,15 +48,25 @@ const RITUAL = [
 ];
 
 function TuDia() {
-  const day = new Date().getDate();
-  const afirm = AFIRMACIONES[day % AFIRMACIONES.length];
+  const [affirmIndex, setAffirmIndex] = useState(() => new Date().getDate() % AFIRMACIONES.length);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentDay = new Date().getDate();
+      setAffirmIndex(currentDay % AFIRMACIONES.length);
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const afirm = AFIRMACIONES[affirmIndex];
+  const changeAfirm = () => setAffirmIndex((prev) => (prev + 1) % AFIRMACIONES.length);
 
   return (
     <AppShell>
       <section className="relative overflow-hidden rounded-3xl neon-card neon-card-strong p-6 mb-5">
         <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
         <div className="absolute -top-20 -right-16 h-48 w-48 rounded-full blur-3xl opacity-60"
-             style={{ background: "radial-gradient(circle, #22D3EE 0%, transparent 60%)" }} />
+             style={{ background: "radial-gradient(circle, #EC4899 0%, transparent 60%)" }} />
         <div className="absolute -bottom-20 -left-16 h-48 w-48 rounded-full blur-3xl opacity-50"
              style={{ background: "radial-gradient(circle, #8B5CF6 0%, transparent 60%)" }} />
         <div className="relative">
@@ -68,10 +78,17 @@ function TuDia() {
         </div>
       </section>
 
-      <Section icon={Sparkles} title="Afirmación de hoy" sub={`Día ${day} · cambia cada 24 hs`}>
+      <Section icon={Sparkles} title="Afirmación de hoy" sub={`Día ${new Date().getDate()} · cambia cada 24 hs`}>
         <div className="neon-card rounded-2xl p-5 text-center">
           <p className="font-display text-[18px] leading-snug">"{afirm}"</p>
-          <p className="text-[10.5px] uppercase tracking-[0.25em] text-[#93C5FD] mt-3">Repetila 3 veces frente al espejo</p>
+          <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button onClick={changeAfirm} className="btn-ghost px-4 py-2">
+              Cambiar afirmación
+            </button>
+            <p className="text-[10.5px] uppercase tracking-[0.25em] text-[#93C5FD]">
+              Se renueva según el día o cuando querés un empujón extra.
+            </p>
+          </div>
         </div>
       </Section>
 
@@ -88,7 +105,7 @@ function TuDia() {
 
       <Section icon={Dumbbell} title="Ritual de la mañana" sub="40 minutos que te ponen por delante del 95%">
         <div className="neon-card rounded-2xl overflow-hidden">
-          <div className="divide-y divide-[rgba(99,160,255,0.12)]">
+          <div className="divide-y divide-[rgba(168,85,247,0.12)]">
             {RITUAL.map((r, i) => (
               <div key={i} className="flex items-start gap-3 p-3.5">
                 <div className="h-10 w-12 rounded-lg grad-cyber flex items-center justify-center text-[11px] font-display font-bold text-white shrink-0">
@@ -159,7 +176,7 @@ function AskAdvice() {
         onChange={(e) => setQ(e.target.value)}
         placeholder="Ej: Llevo 3 días sin saber qué responderle a una chica que me gusta…"
         rows={3}
-        className="w-full bg-[rgba(8,14,32,0.55)] border border-[rgba(99,160,255,0.22)] rounded-xl p-3 text-[13px] placeholder:text-white/35 outline-none focus:border-[rgba(34,211,238,0.5)] resize-none"
+        className="w-full bg-[rgba(8,14,32,0.55)] border border-[rgba(168,85,247,0.22)] rounded-xl p-3 text-[13px] placeholder:text-white/35 outline-none focus:border-[rgba(236,72,153,0.5)] resize-none"
       />
       <button onClick={run} disabled={loading} className="btn-cyber w-full mt-3">
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
@@ -167,7 +184,7 @@ function AskAdvice() {
       </button>
       {answer && (
         <div className="mt-3 rounded-xl border border-[rgba(34,211,238,0.3)] bg-[rgba(20,38,92,0.45)] p-3.5 animate-fade-in">
-          <div className="text-[10px] uppercase tracking-[0.25em] text-[#22D3EE] mb-1.5">Coach MAGNETO</div>
+          <div className="text-[10px] uppercase tracking-[0.25em] text-[#EC4899] mb-1.5">Coach MAGNETO</div>
           <p className="text-[13px] leading-relaxed whitespace-pre-line">{answer}</p>
         </div>
       )}

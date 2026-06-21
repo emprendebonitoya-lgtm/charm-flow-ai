@@ -12,6 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TudiaRouteImport } from './routes/tudia'
 import { Route as SosRouteImport } from './routes/sos'
 import { Route as SimRouteImport } from './routes/sim'
+import { Route as PremiumSuccessRouteImport } from './routes/premium-success'
+import { Route as PremiumProgresoRouteImport } from './routes/premium-progreso'
+import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as HistorialRouteImport } from './routes/historial'
 import { Route as GuardadosRouteImport } from './routes/guardados'
 import { Route as FrasesRouteImport } from './routes/frases'
@@ -19,6 +23,7 @@ import { Route as FeedRouteImport } from './routes/feed'
 import { Route as EscanerRouteImport } from './routes/escaner'
 import { Route as DateRouteImport } from './routes/date'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
+import { Route as AyudaRouteImport } from './routes/ayuda'
 import { Route as AcademiaRouteImport } from './routes/academia'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -35,6 +40,26 @@ const SosRoute = SosRouteImport.update({
 const SimRoute = SimRouteImport.update({
   id: '/sim',
   path: '/sim',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumSuccessRoute = PremiumSuccessRouteImport.update({
+  id: '/premium-success',
+  path: '/premium-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumProgresoRoute = PremiumProgresoRouteImport.update({
+  id: '/premium-progreso',
+  path: '/premium-progreso',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumRoute = PremiumRouteImport.update({
+  id: '/premium',
+  path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistorialRoute = HistorialRouteImport.update({
@@ -72,6 +97,11 @@ const BibliotecaRoute = BibliotecaRouteImport.update({
   path: '/biblioteca',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AyudaRoute = AyudaRouteImport.update({
+  id: '/ayuda',
+  path: '/ayuda',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AcademiaRoute = AcademiaRouteImport.update({
   id: '/academia',
   path: '/academia',
@@ -86,6 +116,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRoute
+  '/ayuda': typeof AyudaRoute
   '/biblioteca': typeof BibliotecaRoute
   '/date': typeof DateRoute
   '/escaner': typeof EscanerRoute
@@ -93,6 +124,10 @@ export interface FileRoutesByFullPath {
   '/frases': typeof FrasesRoute
   '/guardados': typeof GuardadosRoute
   '/historial': typeof HistorialRoute
+  '/onboarding': typeof OnboardingRoute
+  '/premium': typeof PremiumRoute
+  '/premium-progreso': typeof PremiumProgresoRoute
+  '/premium-success': typeof PremiumSuccessRoute
   '/sim': typeof SimRoute
   '/sos': typeof SosRoute
   '/tudia': typeof TudiaRoute
@@ -100,6 +135,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRoute
+  '/ayuda': typeof AyudaRoute
   '/biblioteca': typeof BibliotecaRoute
   '/date': typeof DateRoute
   '/escaner': typeof EscanerRoute
@@ -107,6 +143,10 @@ export interface FileRoutesByTo {
   '/frases': typeof FrasesRoute
   '/guardados': typeof GuardadosRoute
   '/historial': typeof HistorialRoute
+  '/onboarding': typeof OnboardingRoute
+  '/premium': typeof PremiumRoute
+  '/premium-progreso': typeof PremiumProgresoRoute
+  '/premium-success': typeof PremiumSuccessRoute
   '/sim': typeof SimRoute
   '/sos': typeof SosRoute
   '/tudia': typeof TudiaRoute
@@ -115,6 +155,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRoute
+  '/ayuda': typeof AyudaRoute
   '/biblioteca': typeof BibliotecaRoute
   '/date': typeof DateRoute
   '/escaner': typeof EscanerRoute
@@ -122,6 +163,10 @@ export interface FileRoutesById {
   '/frases': typeof FrasesRoute
   '/guardados': typeof GuardadosRoute
   '/historial': typeof HistorialRoute
+  '/onboarding': typeof OnboardingRoute
+  '/premium': typeof PremiumRoute
+  '/premium-progreso': typeof PremiumProgresoRoute
+  '/premium-success': typeof PremiumSuccessRoute
   '/sim': typeof SimRoute
   '/sos': typeof SosRoute
   '/tudia': typeof TudiaRoute
@@ -131,6 +176,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/academia'
+    | '/ayuda'
     | '/biblioteca'
     | '/date'
     | '/escaner'
@@ -138,6 +184,10 @@ export interface FileRouteTypes {
     | '/frases'
     | '/guardados'
     | '/historial'
+    | '/onboarding'
+    | '/premium'
+    | '/premium-progreso'
+    | '/premium-success'
     | '/sim'
     | '/sos'
     | '/tudia'
@@ -145,6 +195,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/academia'
+    | '/ayuda'
     | '/biblioteca'
     | '/date'
     | '/escaner'
@@ -152,6 +203,10 @@ export interface FileRouteTypes {
     | '/frases'
     | '/guardados'
     | '/historial'
+    | '/onboarding'
+    | '/premium'
+    | '/premium-progreso'
+    | '/premium-success'
     | '/sim'
     | '/sos'
     | '/tudia'
@@ -159,6 +214,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/academia'
+    | '/ayuda'
     | '/biblioteca'
     | '/date'
     | '/escaner'
@@ -166,6 +222,10 @@ export interface FileRouteTypes {
     | '/frases'
     | '/guardados'
     | '/historial'
+    | '/onboarding'
+    | '/premium'
+    | '/premium-progreso'
+    | '/premium-success'
     | '/sim'
     | '/sos'
     | '/tudia'
@@ -174,6 +234,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AcademiaRoute: typeof AcademiaRoute
+  AyudaRoute: typeof AyudaRoute
   BibliotecaRoute: typeof BibliotecaRoute
   DateRoute: typeof DateRoute
   EscanerRoute: typeof EscanerRoute
@@ -181,6 +242,10 @@ export interface RootRouteChildren {
   FrasesRoute: typeof FrasesRoute
   GuardadosRoute: typeof GuardadosRoute
   HistorialRoute: typeof HistorialRoute
+  OnboardingRoute: typeof OnboardingRoute
+  PremiumRoute: typeof PremiumRoute
+  PremiumProgresoRoute: typeof PremiumProgresoRoute
+  PremiumSuccessRoute: typeof PremiumSuccessRoute
   SimRoute: typeof SimRoute
   SosRoute: typeof SosRoute
   TudiaRoute: typeof TudiaRoute
@@ -207,6 +272,34 @@ declare module '@tanstack/react-router' {
       path: '/sim'
       fullPath: '/sim'
       preLoaderRoute: typeof SimRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium-success': {
+      id: '/premium-success'
+      path: '/premium-success'
+      fullPath: '/premium-success'
+      preLoaderRoute: typeof PremiumSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium-progreso': {
+      id: '/premium-progreso'
+      path: '/premium-progreso'
+      fullPath: '/premium-progreso'
+      preLoaderRoute: typeof PremiumProgresoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium': {
+      id: '/premium'
+      path: '/premium'
+      fullPath: '/premium'
+      preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/historial': {
@@ -258,6 +351,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BibliotecaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ayuda': {
+      id: '/ayuda'
+      path: '/ayuda'
+      fullPath: '/ayuda'
+      preLoaderRoute: typeof AyudaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/academia': {
       id: '/academia'
       path: '/academia'
@@ -278,6 +378,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AcademiaRoute: AcademiaRoute,
+  AyudaRoute: AyudaRoute,
   BibliotecaRoute: BibliotecaRoute,
   DateRoute: DateRoute,
   EscanerRoute: EscanerRoute,
@@ -285,6 +386,10 @@ const rootRouteChildren: RootRouteChildren = {
   FrasesRoute: FrasesRoute,
   GuardadosRoute: GuardadosRoute,
   HistorialRoute: HistorialRoute,
+  OnboardingRoute: OnboardingRoute,
+  PremiumRoute: PremiumRoute,
+  PremiumProgresoRoute: PremiumProgresoRoute,
+  PremiumSuccessRoute: PremiumSuccessRoute,
   SimRoute: SimRoute,
   SosRoute: SosRoute,
   TudiaRoute: TudiaRoute,
@@ -292,3 +397,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -21,7 +21,7 @@ export const Route = createFileRoute("/sim")({
 const PERSONAS = [
   {
     id: "timida", label: "Valentina", age: 24, vibe: "Tímida",
-    icon: Sparkles, color: "#60A5FA",
+    icon: Sparkles, color: "#C084FC",
     prompt: "Sos Valentina, 24 años, tímida e introvertida pero curiosa y con humor seco cuando agarrás confianza. Te encanta el café de especialidad, los libros de no-ficción y los planes tranquilos. Respondés corto al principio (1-2 frases, emojis raros) y empezás a soltarte cuando el chico te pregunta cosas reales y no clichés. Si te tira un opener flojo, respondés con un 'jaja' seco. Si te interesa, dejás caer indirectas sutiles."
   },
   {
@@ -169,7 +169,7 @@ function Sim() {
               <div
                 className={`max-w-[80%] px-3.5 py-2 rounded-2xl text-sm ${
                   m.role === "user"
-                    ? "bg-[rgba(59,130,246,0.25)] border border-[rgba(99,160,255,0.35)] text-white"
+                    ? "bg-[rgba(168,85,247,0.25)] border border-[rgba(168,85,247,0.35)] text-white"
                     : "text-white"
                 }`}
                 style={m.role === "assistant"
@@ -182,7 +182,7 @@ function Sim() {
           ))}
           {loading && (
             <div className="flex justify-start">
-              <div className="px-3 py-2 rounded-2xl bg-[rgba(59,130,246,0.15)]">
+              <div className="px-3 py-2 rounded-2xl bg-[rgba(168,85,247,0.15)]">
                 <Loader2 className="h-3.5 w-3.5 animate-spin text-[#93C5FD]" />
               </div>
             </div>
@@ -195,7 +195,7 @@ function Sim() {
               value={text} onChange={(e) => setText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
               placeholder={`Escribile a ${current.label}…`}
-              className="flex-1 bg-[rgba(15,25,55,0.6)] border border-[rgba(99,160,255,0.2)] rounded-2xl px-4 py-3 text-sm outline-none focus:border-[rgba(99,160,255,0.5)]"
+              className="flex-1 bg-[rgba(15,25,55,0.6)] border border-[rgba(168,85,247,0.2)] rounded-2xl px-4 py-3 text-sm outline-none focus:border-[rgba(236,72,153,0.5)]"
             />
             <button onClick={send} disabled={loading || !text.trim()} className="btn-cyber !px-4">
               <Send className="h-4 w-4" />
@@ -228,11 +228,11 @@ function FeedbackCard({
             <circle cx="50" cy="50" r={R} stroke="rgba(255,255,255,0.08)" strokeWidth="6" fill="none" />
             <circle cx="50" cy="50" r={R} stroke="url(#g)" strokeWidth="6" fill="none"
               strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C - (pct / 100) * C}
-              style={{ filter: "drop-shadow(0 0 8px #3B82F6)" }} />
+              style={{ filter: "drop-shadow(0 0 8px #A855F7)" }} />
             <defs>
               <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#60A5FA" />
-                <stop offset="100%" stopColor="#1D4ED8" />
+                <stop offset="0%" stopColor="#C084FC" />
+                <stop offset="100%" stopColor="#7C3AED" />
               </linearGradient>
             </defs>
           </svg>
@@ -259,7 +259,7 @@ function FeedbackCard({
       <ul className="mt-4 space-y-2">
         {fb.tips.map((t, i) => (
           <li key={i} className="flex gap-2 text-sm">
-            <span className="text-[#60A5FA] font-bold">·</span>
+            <span className="text-[#D946EF] font-bold">·</span>
             <span className="text-white/90">{t}</span>
           </li>
         ))}

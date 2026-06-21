@@ -1,12 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { chatCompletion } from "@/lib/ai.functions";
 import { getProfile, pushHistory, toggleSaved } from "@/lib/storage";
+import { loadScanUsage, recordScan, claimAdBonus, getAvailableScans, getFreeScansText } from "@/lib/scan-usage";
+import { useUser } from "@/lib/user";
 import {
   Upload, Sparkles, Bookmark, Copy, Loader2, RotateCcw, Crop, X,
-  Instagram, MessageCircle, Heart, Camera,
+  Instagram, MessageCircle, Heart, Camera, Lock,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -57,6 +59,29 @@ function parseSuggestions(raw: string, max = 5): string[] {
     .slice(0, max);
 }
 
+function buildOfflineScanResults(count: number, tone: Tone, platform: PlatformId, hasImage: boolean): string[] {
+  const base = [
+    "Hola, me gustó tu estilo. ¿Cuál fue el mejor plan que hiciste este mes?",
+    "Tu perfil transmite buena onda. Abrí con: ‘¿Sos más de noche tranquila o plan con energía?’",
+    "Veo que tenés estilo propio. Podés arrancar con: ‘Me llamó la atención tu vibra. ¿Qué buscás hoy?’",
+    "Si querés algo directo: ‘Tu perfil me quedó en la cabeza. ¿Qué te impulsa a responder rápido?’",
+    "Tu bio sugiere confianza. Podés decir: ‘Me gustó cómo te presentás. ¿Cuál es tu idea de una conversación con onda?’",
+  ];
+  const imageBoost = hasImage
+    ? [
+        "Tu foto habla claro. ¿Cuál fue el detalle que más te representa?",
+        "La imagen tiene mucha presencia. Podés seguir con: ‘Se nota que te cuidas. ¿Cómo te divertís en serio?’",
+      ]
+    : [];
+  const platformTag = platform === "instagram" ? " (Instagram)" : platform === "tinder" ? " (Tinder)" : platform === "whatsapp" ? " (WhatsApp)" : platform === "tiktok" ? " (TikTok)" : platform === "bumble" ? " (Bumble)" : "";
+
+  return Array.from({ length: count }, (_, i) => {
+    const option = base[i % base.length];
+    const imageHint = hasImage ? " Tu foto da un plus para que suene más real." : "";
+    return `${option}${imageHint}${platformTag}`.trim();
+  });
+}
+
 const SCAN_STEPS = [
   { at: 400,  text: "🔍 Extrayendo metadatos del perfil..." },
   { at: 1400, text: "🧠 Analizando lenguaje corporal y entorno..." },
@@ -65,6 +90,7 @@ const SCAN_STEPS = [
 ];
 
 function Escaner() {
+  const { state } = useUser();
   const chat = useServerFn(chatCompletion);
   const [tone, setTone] = useState<Tone>((getProfile().tone as Tone) ?? "ingenioso");
   const [platform, setPlatform] = useState<PlatformId>("instagram");
@@ -75,6 +101,8 @@ function Escaner() {
   const [stepText, setStepText] = useState("");
   const [results, setResults] = useState<string[]>([]);
   const [objectFit, setObjectFit] = useState<"cover" | "contain">("cover");
+  const [usage, setUsage] = useState(loadScanUsage());
+  const [adLoading, setAdLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -98,21 +126,50 @@ function Escaner() {
     if (fileRef.current) fileRef.current.value = "";
   };
 
+  const remainingScans = getAvailableScans(usage, state.isPremium);
+  const resultCount = state.isPremium ? 10 : 5;
+
+  const watchAdForExtraScan = async () => {
+    if (state.isPremium) return;
+    if (adLoading) return;
+    setAdLoading(true);
+    toast.success("Viendo anuncio... esto te dará un escaneo extra.");
+    await new Promise((resolve) => setTimeout(resolve, 1800));
+    setUsage((current) => claimAdBonus(current));
+    setAdLoading(false);
+    toast.success("Escaneo extra desbloqueado.");
+  };
+
   const run = async () => {
     if (!imgUrl && !text.trim()) return toast.error("Subí una imagen o escribí el mensaje");
+    const remaining = getAvailableScans(usage, state.isPremium);
+    if (remaining <= 0) {
+      toast.error("Agotaste tus escaneos gratis. Suscribite o mirá un anuncio para obtener uno extra.");
+      return;
+    }
+
     setLoading(true); setScanning(true); setResults([]);
 
     const scanPromise = new Promise<void>((r) => setTimeout(r, 3500));
 
     try {
-      const system = `Sos un coach de carisma y seducción para hombres tímidos. Hablás español neutro masculino, directo, con frame fuerte pero sin ser cringe. Devolvés EXACTAMENTE un array JSON con 5 aperturas listas para enviar al match. Tono solicitado: ${tone}. Plataforma de origen: ${platform} (adaptá el código a esa red). Cada apertura: ≤140 caracteres, natural, con gancho conversacional. NO expliques nada fuera del JSON.`;
+      const system = `Sos un coach de carisma y seducción para hombres tímidos. Hablás español neutro masculino, directo, con frame fuerte pero sin ser cringe. Devolvés EXACTAMENTE un array JSON con ${resultCount} aperturas listas para enviar al match. Tono solicitado: ${tone}. Plataforma de origen: ${platform} (adaptá el código a esa red). Cada apertura: ≤140 caracteres, natural, con gancho conversacional. NO expliques nada fuera del JSON.`;
       const userContent: any[] = [];
-      if (imgUrl) userContent.push({ type: "image_url", image_url: { url: imgUrl } });
+      if (imgUrl) {
+        userContent.push({ type: "image_url", image_url: { url: imgUrl } });
+        userContent.push({
+          type: "text",
+          text: "Hay una imagen de perfil adjunta. Analizá su estilo, vibra y posibles intereses para generar aperturas de alto impacto.",
+        });
+      }
+      if (text.trim()) {
+        userContent.push({ type: "text", text: `Contexto / último mensaje: ${text.trim()}` });
+      }
       userContent.push({
         type: "text",
         text:
-          (text.trim() ? `Contexto / último mensaje: ${text.trim()}\n` : "") +
-          `Plataforma: ${platform}. Tono: ${tone}. Devolvé un JSON array con 5 opciones distintas entre sí.`,
+          `Plataforma: ${platform}. Tono: ${tone}. Devolvé un JSON array con ${resultCount} opciones distintas entre sí.` +
+          (state.isPremium ? " Incluí un breve análisis extra del perfil y la mejor apertura estratégica." : ""),
       });
 
       const [out] = await Promise.all([
@@ -128,8 +185,9 @@ function Escaner() {
         scanPromise,
       ]);
 
-      const sugs = parseSuggestions(out.content, 5);
+      const sugs = parseSuggestions(out.content, resultCount);
       setResults(sugs);
+      if (out.mock) toast.info("Modo demo: configurá LOVABLE_API_KEY para respuestas con IA real.");
       if (sugs.length) {
         pushHistory({
           kind: "escaner",
@@ -137,16 +195,54 @@ function Escaner() {
           body: sugs.map((s, i) => `${i + 1}. ${s}`).join("\n"),
         });
       }
+      if (!state.isPremium) {
+        setUsage((current) => recordScan(current));
+      }
     } catch (e: any) {
-      toast.error(e?.message ?? "Algo falló");
+      const errorMessage = String(e?.message ?? "");
+      if (errorMessage.includes("LOVABLE_API_KEY") || errorMessage.includes("AI Gateway")) {
+        const fallbackResults = buildOfflineScanResults(resultCount, tone, platform, Boolean(imgUrl));
+        setResults(fallbackResults);
+        toast.success("Escaneo offline generado sin conexión a Lovable.");
+      } else {
+        toast.error(errorMessage || "Algo falló");
+      }
     } finally {
       setScanning(false); setLoading(false);
     }
   };
 
   return (
-    <AppShell title="Escáner" subtitle="5 aperturas de alto impacto a partir de su foto.">
+    <AppShell title="Escáner" subtitle={state.isPremium ? "10 aperturas premium de alto impacto a partir de su foto." : "5 aperturas de alto impacto a partir de su foto."}>
       <div className="space-y-4">
+        <div className="neon-card rounded-3xl p-4 border border-[rgba(168,85,247,0.16)]">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.28em] text-[#BFDBFE]/70">Escaneos gratis</div>
+              <div className="text-white font-semibold">{getFreeScansText(usage, state.isPremium)}</div>
+              {state.isPremium && (
+                <div className="mt-1 text-[11px] text-[#A5B4FC]/80">Escáner Premium: {resultCount} aperturas por uso</div>
+              )}
+            </div>
+            {!state.isPremium ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <Link to="/premium" className="btn-cyber">
+                  Hacerme premium
+                </Link>
+                <button
+                  onClick={watchAdForExtraScan}
+                  disabled={adLoading}
+                  className="btn-ghost"
+                >
+                  {adLoading ? "Anuncio..." : "Ver anuncio +1 escaneo"}
+                </button>
+              </div>
+            ) : (
+              <div className="rounded-full bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-[#D8B4FE]/80">Usos ilimitados</div>
+            )}
+          </div>
+        </div>
+
         {/* Plataforma */}
         <div className="neon-card rounded-2xl p-4">
           <div className="text-[10px] uppercase tracking-[0.28em] text-[#BFDBFE]/70 mb-3">Plataforma de origen</div>
@@ -158,7 +254,7 @@ function Escaner() {
                 className={`flex items-center gap-1.5 justify-center px-2 py-2 rounded-xl text-xs transition-all border ${
                   platform === id
                     ? "grad-cyber text-white border-transparent neon-glow"
-                    : "border-[rgba(99,160,255,0.18)] text-[#BFDBFE]/70 hover:border-[rgba(99,160,255,0.4)] bg-[rgba(59,130,246,0.06)]"
+                    : "border-[rgba(168,85,247,0.18)] text-[#D8B4FE]/70 hover:border-[rgba(168,85,247,0.4)] bg-[rgba(168,85,247,0.08)]"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" /> {label}
@@ -178,7 +274,7 @@ function Escaner() {
                 className={`px-3.5 py-1.5 rounded-2xl text-sm transition-all border capitalize ${
                   tone === t
                     ? "grad-cyber text-white border-transparent neon-glow"
-                    : "border-[rgba(99,160,255,0.18)] text-[#BFDBFE]/70 hover:text-white hover:border-[rgba(99,160,255,0.4)] bg-[rgba(59,130,246,0.06)]"
+                    : "border-[rgba(168,85,247,0.18)] text-[#D8B4FE]/70 hover:text-white hover:border-[rgba(168,85,247,0.4)] bg-[rgba(168,85,247,0.08)]"
                 }`}
               >
                 {t}
@@ -189,7 +285,7 @@ function Escaner() {
 
         {/* Subida + scanner */}
         <div className="neon-card rounded-2xl p-4">
-          <div className="scan-frame border border-[rgba(99,160,255,0.22)] bg-[rgba(15,25,55,0.6)]">
+          <div className="scan-frame border border-[rgba(168,85,247,0.22)] bg-[rgba(15,25,55,0.6)]">
             <label
               onClick={() => !scanning && fileRef.current?.click()}
               className={`relative block cursor-pointer ${scanning ? "pointer-events-none" : ""}`}
@@ -202,7 +298,7 @@ function Escaner() {
                   style={{ objectFit, background: "#0a1428" }}
                 />
               ) : (
-                <div className="flex flex-col items-center justify-center gap-3 py-14 bg-[rgba(59,130,246,0.04)]">
+                <div className="flex flex-col items-center justify-center gap-3 py-14 bg-[rgba(168,85,247,0.05)]">
                   <div className="h-12 w-12 rounded-2xl grad-cyber flex items-center justify-center neon-glow">
                     <Upload className="h-5 w-5 text-white" />
                   </div>
@@ -247,8 +343,11 @@ function Escaner() {
             onChange={(e) => setText(e.target.value)}
             placeholder="Opcional: pegá su bio o el último mensaje…"
             disabled={scanning}
-            className="mt-3 w-full bg-[rgba(15,25,55,0.6)] border border-[rgba(99,160,255,0.2)] rounded-2xl p-3 text-sm outline-none focus:border-[rgba(99,160,255,0.5)] focus:ring-2 focus:ring-[rgba(59,130,246,0.25)] min-h-[88px]"
+            className="mt-3 w-full bg-[rgba(15,25,55,0.6)] border border-[rgba(168,85,247,0.2)] rounded-2xl p-3 text-sm outline-none focus:border-[rgba(236,72,153,0.5)] focus:ring-2 focus:ring-[rgba(168,85,247,0.2)] min-h-[88px]"
           />
+          <div className="text-[11px] text-[#BFDBFE]/60 mt-2">
+            Si el escáner no devuelve resultados con la imagen, probá también con la bio o el último mensaje.
+          </div>
 
           <div className="flex gap-2 mt-3">
             <button onClick={run} disabled={loading} className="btn-cyber flex-1">
@@ -264,7 +363,7 @@ function Escaner() {
 
           {scanning && (
             <div className="mt-4 flex flex-col items-center gap-2">
-              <Loader2 className="h-6 w-6 animate-spin text-[#60A5FA]" />
+              <Loader2 className="h-6 w-6 animate-spin text-[#D946EF]" />
               <div className="text-xs text-[#93C5FD] blink-soft text-center min-h-[1.2em]">
                 {stepText}
               </div>
@@ -306,7 +405,7 @@ function ResultCard({ idx, text, tone }: { idx: number; text: string; tone: stri
               setGlow(true); setTimeout(() => setGlow(false), 600);
               toast.success("Copiado");
             }}
-            className={`p-2 rounded-xl transition-all ${glow ? "neon-glow bg-[rgba(59,130,246,0.25)]" : "hover:bg-[rgba(59,130,246,0.15)]"}`}
+            className={`p-2 rounded-xl transition-all ${glow ? "neon-glow bg-[rgba(168,85,247,0.25)]" : "hover:bg-[rgba(168,85,247,0.15)]"}`}
             aria-label="Copiar"
           >
             <Copy className="h-4 w-4 text-[#93C5FD]" />
@@ -322,7 +421,7 @@ function ResultCard({ idx, text, tone }: { idx: number; text: string; tone: stri
               });
               toast.success("Guardado");
             }}
-            className="p-2 rounded-xl hover:bg-[rgba(59,130,246,0.15)]"
+            className="p-2 rounded-xl hover:bg-[rgba(168,85,247,0.15)]"
             aria-label="Guardar"
           >
             <Bookmark className="h-4 w-4 text-[#93C5FD]" />
