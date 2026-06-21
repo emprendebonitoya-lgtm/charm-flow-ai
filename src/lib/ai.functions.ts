@@ -103,8 +103,8 @@ function createMockResponse(data: Input) {
 }
 
 export const chatCompletion = createServerFn({ method: "POST" })
-  .validator((data: unknown) => InputSchema.parse(data))
-  .handler(async ({ data }) => {
+  .inputValidator((data: unknown) => InputSchema.parse(data))
+  .handler(async ({ data }: { data: Input }) => {
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) {
       console.warn("[MAGNETO] LOVABLE_API_KEY no configurada — usando respuestas de respaldo.");
