@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useUser } from "@/lib/user";
 import { FREE_LIMITS } from "@/lib/plans";
 import { loadPremiumProgressHistory } from "@/lib/storage";
+import heroVideo from "@/assets/hero-bg.mp4.asset.json";
 import {
   Scan, LifeBuoy, MessagesSquare, MessageSquare, CalendarHeart, Flame, Library,
   ArrowRight, Zap, GraduationCap, Quote, Sun, Bookmark,
@@ -71,8 +72,17 @@ function Home() {
   return (
     <AppShell>
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-[2rem] glass-panel p-8 mb-8 shadow-[0_30px_90px_-50px_rgba(34,211,238,0.26)] min-h-[32rem]">
-        <div className="absolute inset-0 z-0" style={{ background: heroMedia.poster }} />
+      <section className="relative overflow-hidden rounded-[2rem] glass-panel p-5 sm:p-8 mb-8 shadow-[0_30px_90px_-50px_rgba(34,211,238,0.26)] min-h-[22rem] sm:min-h-[32rem]">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 z-0 h-full w-full object-contain sm:object-cover object-center"
+        >
+          <source src={heroVideo.url} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 z-[1] bg-gradient-to-br from-[rgba(4,6,15,0.75)] via-[rgba(8,12,30,0.6)] to-[rgba(15,23,42,0.85)]" />
         <div className="absolute inset-0 z-[5] opacity-30">
           <div className="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-fuchsia-500/20 blur-3xl animate-pulse" />
           <div className="absolute bottom-1/4 right-1/4 h-48 w-48 rounded-full bg-violet-500/20 blur-3xl animate-pulse [animation-delay:1s]" />
@@ -82,39 +92,39 @@ function Home() {
         <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full blur-3xl opacity-55 bg-fuchsia-500/18 z-20" />
         <div className="absolute -bottom-16 -left-16 h-56 w-56 rounded-full blur-3xl opacity-55 bg-violet-500/18 z-20" />
         <div className="relative z-30 max-w-3xl">
-          <div className="flex flex-wrap items-center gap-2 mb-4">
+          <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
             <span className="pill inline-flex items-center gap-2 bg-white/10 border-white/10 text-white/80"> 
               <Zap className="h-3.5 w-3.5" />
               MAGNETO v1
             </span>
             <span className="text-[11px] uppercase tracking-[0.32em] text-[#cbd5e1]/70">Premium AI para carisma</span>
           </div>
-          <h1 className="font-display text-5xl sm:text-6xl font-black tracking-tight text-white">
+          <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white">
             Carisma operativo para el hombre moderno.
-            <span className="block mt-3 text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-300 via-purple-300 to-violet-300">
+            <span className="block mt-2 sm:mt-3 text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-300 via-purple-300 to-violet-300">
               Magnetismo en código.
             </span>
           </h1>
-          <p className="mt-6 max-w-2xl text-base sm:text-lg leading-8 text-slate-300">
+          <p className="mt-4 sm:mt-6 max-w-2xl text-sm sm:text-base md:text-lg leading-7 sm:leading-8 text-slate-300">
             Diseñado para hombres que exigen resultados: subí su perfil, rescata un chat o planifica una cita con una experiencia de IA elegante y efectiva.
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-6 sm:mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Link to="/escaner" className="btn-cyber inline-flex items-center gap-2 px-6 py-3">
+              <Link to="/escaner" className="btn-cyber inline-flex items-center gap-2 px-5 sm:px-6 py-3 text-sm sm:text-base">
                 Iniciar escaneo <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to="/ayuda" className="btn-ghost inline-flex items-center gap-2 px-6 py-3 text-white/90 border border-white/10 hover:bg-white/5">
+              <Link to="/ayuda" className="btn-ghost inline-flex items-center gap-2 px-5 sm:px-6 py-3 text-white/90 border border-white/10 hover:bg-white/5 text-sm sm:text-base">
                 <MessageSquare className="h-4 w-4" /> Asistente
               </Link>
             </div>
-            <span className="text-sm text-[#cbd5e1]/80 max-w-md">
+            <span className="text-xs sm:text-sm text-[#cbd5e1]/80 max-w-md">
               Explora los módulos de carisma en tiempo real y convoca respuestas rápidas con estilo.
             </span>
           </div>
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            <span className="chip chip-active">Aperturas instantáneas</span>
-            <span className="chip">Rescates en segundos</span>
-            <span className="chip">Plan diario claro</span>
+          <div className="mt-4 sm:mt-6 grid gap-2 sm:gap-3 sm:grid-cols-3">
+            <span className="chip chip-active text-xs sm:text-[11px]">Aperturas instantáneas</span>
+            <span className="chip text-xs sm:text-[11px]">Rescates en segundos</span>
+            <span className="chip text-xs sm:text-[11px]">Plan diario claro</span>
           </div>
         </div>
       </section>

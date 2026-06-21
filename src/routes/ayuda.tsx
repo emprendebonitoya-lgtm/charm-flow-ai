@@ -33,7 +33,7 @@ function Asistente() {
   const send = async () => {
     const trimmed = text.trim();
     if (!trimmed) return;
-    const next = [...messages, { role: "user", content: trimmed }];
+    const next: ChatMessage[] = [...messages, { role: "user", content: trimmed }];
     setMessages(next);
     setText("");
     setLoading(true);
