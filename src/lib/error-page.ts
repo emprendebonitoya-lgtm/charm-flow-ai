@@ -21,10 +21,15 @@ export function renderErrorPage(): string {
       <h1>No se pudo cargar la página</h1>
       <p>Algo salió mal. Podés intentar de nuevo o volver al inicio.</p>
       <div class="actions">
-        <button class="primary" onclick="location.reload()">Reintentar</button>
+        <button class="primary" id="retry-btn">Reintentar</button>
         <a class="secondary" href="/">Volver al inicio</a>
       </div>
     </div>
+    <script>
+      document.getElementById("retry-btn").addEventListener("click", function() {
+        location.reload();
+      });
+    </script>
   </body>
 </html>`;
 }
