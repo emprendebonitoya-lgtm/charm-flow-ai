@@ -72,7 +72,16 @@ function Home() {
     <AppShell>
       {/* Hero */}
       <section className="relative overflow-hidden rounded-[2rem] glass-panel p-8 mb-8 shadow-[0_30px_90px_-50px_rgba(34,211,238,0.26)] min-h-[32rem]">
-        <div className="absolute inset-0 z-0" style={{ background: heroMedia.poster }} />
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 z-0 h-full w-full object-cover"
+        >
+          <source src={heroVideo.url} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 z-[1] bg-gradient-to-br from-[rgba(4,6,15,0.75)] via-[rgba(8,12,30,0.6)] to-[rgba(15,23,42,0.85)]" />
         <div className="absolute inset-0 z-[5] opacity-30">
           <div className="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-fuchsia-500/20 blur-3xl animate-pulse" />
           <div className="absolute bottom-1/4 right-1/4 h-48 w-48 rounded-full bg-violet-500/20 blur-3xl animate-pulse [animation-delay:1s]" />
