@@ -17,6 +17,7 @@ import { Route as PremiumProgresoRouteImport } from './routes/premium-progreso'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LandingRouteImport } from './routes/landing'
 import { Route as HistorialRouteImport } from './routes/historial'
 import { Route as GuardadosRouteImport } from './routes/guardados'
 import { Route as FrasesRouteImport } from './routes/frases'
@@ -66,6 +67,11 @@ const OnboardingRoute = OnboardingRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LandingRoute = LandingRouteImport.update({
+  id: '/landing',
+  path: '/landing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistorialRoute = HistorialRouteImport.update({
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/frases': typeof FrasesRoute
   '/guardados': typeof GuardadosRoute
   '/historial': typeof HistorialRoute
+  '/landing': typeof LandingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/premium': typeof PremiumRoute
@@ -150,6 +157,7 @@ export interface FileRoutesByTo {
   '/frases': typeof FrasesRoute
   '/guardados': typeof GuardadosRoute
   '/historial': typeof HistorialRoute
+  '/landing': typeof LandingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/premium': typeof PremiumRoute
@@ -171,6 +179,7 @@ export interface FileRoutesById {
   '/frases': typeof FrasesRoute
   '/guardados': typeof GuardadosRoute
   '/historial': typeof HistorialRoute
+  '/landing': typeof LandingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/premium': typeof PremiumRoute
@@ -193,6 +202,7 @@ export interface FileRouteTypes {
     | '/frases'
     | '/guardados'
     | '/historial'
+    | '/landing'
     | '/login'
     | '/onboarding'
     | '/premium'
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
     | '/frases'
     | '/guardados'
     | '/historial'
+    | '/landing'
     | '/login'
     | '/onboarding'
     | '/premium'
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/frases'
     | '/guardados'
     | '/historial'
+    | '/landing'
     | '/login'
     | '/onboarding'
     | '/premium'
@@ -254,6 +266,7 @@ export interface RootRouteChildren {
   FrasesRoute: typeof FrasesRoute
   GuardadosRoute: typeof GuardadosRoute
   HistorialRoute: typeof HistorialRoute
+  LandingRoute: typeof LandingRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
   PremiumRoute: typeof PremiumRoute
@@ -320,6 +333,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/landing': {
+      id: '/landing'
+      path: '/landing'
+      fullPath: '/landing'
+      preLoaderRoute: typeof LandingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/historial': {
@@ -406,6 +426,7 @@ const rootRouteChildren: RootRouteChildren = {
   FrasesRoute: FrasesRoute,
   GuardadosRoute: GuardadosRoute,
   HistorialRoute: HistorialRoute,
+  LandingRoute: LandingRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
   PremiumRoute: PremiumRoute,
