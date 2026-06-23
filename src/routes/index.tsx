@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useUser } from "@/lib/user";
 import { FREE_LIMITS } from "@/lib/plans";
 import { loadPremiumProgressHistory } from "@/lib/storage";
-import heroVideo from "@/assets/hero-bg.mp4.asset.json";
+
 import {
   Scan, LifeBuoy, MessagesSquare, MessageSquare, CalendarHeart, Flame, Library,
   ArrowRight, Zap, GraduationCap, Quote, Sun, Bookmark,
@@ -72,17 +72,11 @@ function Home() {
   return (
     <AppShell>
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-[2rem] glass-panel p-5 sm:p-8 mb-8 shadow-[0_30px_90px_-50px_rgba(34,211,238,0.26)] min-h-[22rem] sm:min-h-[32rem]">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 z-0 h-full w-full object-contain sm:object-cover object-center"
-        >
-          <source src={heroVideo.url} type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 z-[1] bg-gradient-to-br from-[rgba(4,6,15,0.75)] via-[rgba(8,12,30,0.6)] to-[rgba(15,23,42,0.85)]" />
+      <section
+        className="relative overflow-hidden rounded-[2rem] glass-panel p-5 sm:p-8 mb-8 shadow-[0_30px_90px_-50px_rgba(34,211,238,0.26)] min-h-[22rem] sm:min-h-[32rem]"
+        style={{ backgroundImage: heroMedia.poster }}
+      >
+        <div className="absolute inset-0 z-[1] bg-gradient-to-br from-[rgba(4,6,15,0.55)] via-[rgba(8,12,30,0.4)] to-[rgba(15,23,42,0.65)]" />
         <div className="absolute inset-0 z-[5] opacity-30">
           <div className="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-fuchsia-500/20 blur-3xl animate-pulse" />
           <div className="absolute bottom-1/4 right-1/4 h-48 w-48 rounded-full bg-violet-500/20 blur-3xl animate-pulse [animation-delay:1s]" />
