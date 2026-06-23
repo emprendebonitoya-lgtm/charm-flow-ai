@@ -106,19 +106,32 @@ export const chatCompletion = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }: { data: Input }) => {
     const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) {
-      console.warn("[MAGNETO] LOVABLE_API_KEY no configurada — usando respuestas de respaldo.");
+    const groqApiKey = process.env.GROQ_API_KEY;
+
+    if (!apiKey && !groqApiKey) {
+      console.warn("[MAGNETO] Ni LOVABLE_API_KEY ni GROQ_API_KEY configuradas — usando respuestas de respaldo.");
       return { content: createMockResponse(data), mock: true as const };
     }
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    let url = "https://ai.gateway.lovable.dev/v1/chat/completions";
+    let token = apiKey;
+    let model = data.model;
+
+    if (groqApiKey && !apiKey) {
+      url = "https://api.groq.com/openai/v1/chat/completions";
+      token = groqApiKey;
+      // Groq does not support Gemini. We map it to Llama-3.3-70b-versatile, which is Groq's best, smartest and fastest free-tier model.
+      model = "llama-3.3-70b-versatile";
+    }
+
+    const res = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: data.model,
+        model: model,
         messages: data.messages,
         temperature: data.temperature ?? 0.9,
       }),
