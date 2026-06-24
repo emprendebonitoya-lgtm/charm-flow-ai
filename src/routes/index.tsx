@@ -74,7 +74,7 @@ function Home() {
     <AppShell>
       {/* Hero */}
       <section
-        className="relative overflow-hidden rounded-[2rem] glass-panel p-5 sm:p-8 mb-8 shadow-[0_30px_90px_-50px_rgba(34,211,238,0.26)] min-h-[22rem] sm:min-h-[32rem]"
+        className="relative overflow-hidden rounded-[2rem] glass-panel p-5 sm:p-8 mb-8 shadow-[0_30px_90px_-50px_rgba(34,211,238,0.26)] aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] min-h-[20rem] sm:min-h-[28rem]"
         style={{ backgroundImage: heroMedia.poster }}
       >
         <video
