@@ -174,10 +174,9 @@ function Landing() {
         <div className="magneto-cinematic-bg absolute inset-0 z-0" />
         <FadingVideo
           src={heroVideo.url}
-          className="absolute left-1/2 top-0 -translate-x-1/2 object-cover object-top z-[1]"
-          style={{ width: "120%", height: "120%" }}
+          className="absolute inset-0 w-full h-full object-contain md:object-cover object-center z-[1]"
         />
-        <div className="absolute inset-0 z-[2] bg-gradient-to-b from-black/20 via-black/10 to-black/55" />
+        <div className="absolute inset-0 z-[2] bg-gradient-to-b from-black/10 via-transparent to-black/45" />
 
         <div className="relative z-10 flex flex-col h-full">
           {/* Navbar */}
@@ -298,9 +297,9 @@ function Landing() {
         <div className="magneto-cinematic-bg absolute inset-0 z-0" />
         <FadingVideo
           src={heroVideo.url}
-          className="absolute inset-0 w-full h-full object-cover z-[1]"
+          className="absolute inset-0 w-full h-full object-contain md:object-cover object-center z-[1]"
         />
-        <div className="absolute inset-0 z-[2] bg-gradient-to-b from-black/45 via-black/25 to-black/70" />
+        <div className="absolute inset-0 z-[2] bg-gradient-to-b from-black/25 via-black/10 to-black/55" />
 
         <div className="relative z-10 px-6 md:px-16 lg:px-20 pt-24 pb-12 flex flex-col min-h-screen">
           <div className="mb-auto">
