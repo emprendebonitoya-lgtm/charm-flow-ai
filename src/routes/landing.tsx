@@ -36,17 +36,22 @@ function FadingVideo({
 }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [opacity, setOpacity] = useState(0);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     const v = ref.current;
     if (!v) return;
     let raf = 0;
+    let isMounted = true;
     const fadeTo = (target: number, duration: number) => {
+      cancelAnimationFrame(raf);
       const start = performance.now();
-      const from = opacity;
+      const from = Number(v.dataset.opacity ?? "0");
       const tick = (t: number) => {
         const p = Math.min(1, (t - start) / duration);
-        setOpacity(from + (target - from) * p);
+        const next = from + (target - from) * p;
+        v.dataset.opacity = String(next);
+        if (isMounted) setOpacity(next);
         if (p < 1) raf = requestAnimationFrame(tick);
       };
       raf = requestAnimationFrame(tick);
@@ -60,16 +65,22 @@ function FadingVideo({
       v.play().catch(() => {});
       fadeTo(1, 500);
     };
+    const onError = () => setFailed(true);
     v.addEventListener("loadeddata", onLoaded);
     v.addEventListener("timeupdate", onTime);
     v.addEventListener("ended", onEnded);
+    v.addEventListener("error", onError);
     return () => {
+      isMounted = false;
       cancelAnimationFrame(raf);
       v.removeEventListener("loadeddata", onLoaded);
       v.removeEventListener("timeupdate", onTime);
       v.removeEventListener("ended", onEnded);
+      v.removeEventListener("error", onError);
     };
-  }, [opacity]);
+  }, []);
+
+  if (failed) return null;
 
   return (
     <video
@@ -102,7 +113,7 @@ function BlurText({ text, className }: { text: string; className?: string }) {
   }, []);
   const words = text.split(" ");
   return (
-    <div
+    <h1
       ref={ref}
       className={className}
       style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", rowGap: "0.1em" }}
@@ -118,7 +129,7 @@ function BlurText({ text, className }: { text: string; className?: string }) {
           {w}
         </motion.span>
       ))}
-    </div>
+    </h1>
   );
 }
 
@@ -159,13 +170,14 @@ function Landing() {
   return (
     <div className="bg-black text-white font-body min-h-screen">
       {/* ============== HERO ============== */}
-      <section className="relative h-screen overflow-hidden bg-black">
+      <section className="magneto-cinematic-bg relative h-screen overflow-hidden bg-black">
+        <div className="magneto-cinematic-bg absolute inset-0 z-0" />
         <FadingVideo
           src={heroVideo.url}
-          className="absolute left-1/2 top-0 -translate-x-1/2 object-cover object-top z-0"
+          className="absolute left-1/2 top-0 -translate-x-1/2 object-cover object-top z-[1]"
           style={{ width: "120%", height: "120%" }}
         />
-        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
+        <div className="absolute inset-0 z-[2] bg-gradient-to-b from-black/20 via-black/10 to-black/55" />
 
         <div className="relative z-10 flex flex-col h-full">
           {/* Navbar */}
@@ -282,12 +294,13 @@ function Landing() {
       </section>
 
       {/* ============== CAPABILITIES ============== */}
-      <section className="relative min-h-screen overflow-hidden bg-black">
+      <section className="magneto-cinematic-bg relative min-h-screen overflow-hidden bg-black">
+        <div className="magneto-cinematic-bg absolute inset-0 z-0" />
         <FadingVideo
           src={heroVideo.url}
-          className="absolute inset-0 w-full h-full object-cover z-0"
+          className="absolute inset-0 w-full h-full object-cover z-[1]"
         />
-        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
+        <div className="absolute inset-0 z-[2] bg-gradient-to-b from-black/45 via-black/25 to-black/70" />
 
         <div className="relative z-10 px-6 md:px-16 lg:px-20 pt-24 pb-12 flex flex-col min-h-screen">
           <div className="mb-auto">
