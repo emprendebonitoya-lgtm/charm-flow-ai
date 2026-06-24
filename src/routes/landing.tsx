@@ -41,12 +41,16 @@ function FadingVideo({
     const v = ref.current;
     if (!v) return;
     let raf = 0;
+    let isMounted = true;
     const fadeTo = (target: number, duration: number) => {
+      cancelAnimationFrame(raf);
       const start = performance.now();
-      const from = opacity;
+      const from = Number(v.dataset.opacity ?? "0");
       const tick = (t: number) => {
         const p = Math.min(1, (t - start) / duration);
-        setOpacity(from + (target - from) * p);
+        const next = from + (target - from) * p;
+        v.dataset.opacity = String(next);
+        if (isMounted) setOpacity(next);
         if (p < 1) raf = requestAnimationFrame(tick);
       };
       raf = requestAnimationFrame(tick);
@@ -64,12 +68,13 @@ function FadingVideo({
     v.addEventListener("timeupdate", onTime);
     v.addEventListener("ended", onEnded);
     return () => {
+      isMounted = false;
       cancelAnimationFrame(raf);
       v.removeEventListener("loadeddata", onLoaded);
       v.removeEventListener("timeupdate", onTime);
       v.removeEventListener("ended", onEnded);
     };
-  }, [opacity]);
+  }, []);
 
   return (
     <video
@@ -159,7 +164,7 @@ function Landing() {
   return (
     <div className="bg-black text-white font-body min-h-screen">
       {/* ============== HERO ============== */}
-      <section className="relative h-screen overflow-hidden bg-black">
+      <section className="magneto-cinematic-bg relative h-screen overflow-hidden bg-black">
         <FadingVideo
           src={heroVideo.url}
           className="absolute left-1/2 top-0 -translate-x-1/2 object-cover object-top z-0"
@@ -282,7 +287,7 @@ function Landing() {
       </section>
 
       {/* ============== CAPABILITIES ============== */}
-      <section className="relative min-h-screen overflow-hidden bg-black">
+      <section className="magneto-cinematic-bg relative min-h-screen overflow-hidden bg-black">
         <FadingVideo
           src={heroVideo.url}
           className="absolute inset-0 w-full h-full object-cover z-0"
