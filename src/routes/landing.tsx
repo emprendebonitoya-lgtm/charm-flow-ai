@@ -113,7 +113,7 @@ function BlurText({ text, className }: { text: string; className?: string }) {
   }, []);
   const words = text.split(" ");
   return (
-    <div
+    <h1
       ref={ref}
       className={className}
       style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", rowGap: "0.1em" }}
@@ -129,7 +129,7 @@ function BlurText({ text, className }: { text: string; className?: string }) {
           {w}
         </motion.span>
       ))}
-    </div>
+    </h1>
   );
 }
 
