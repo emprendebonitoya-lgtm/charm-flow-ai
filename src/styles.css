@@ -351,5 +351,23 @@
           mask-composite: exclude;
   pointer-events: none;
 }
+.magneto-cinematic-bg {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.16), transparent 10rem),
+    radial-gradient(circle at 24% 28%, rgba(47, 184, 255, 0.24), transparent 18rem),
+    radial-gradient(circle at 78% 18%, rgba(255, 63, 135, 0.2), transparent 16rem),
+    linear-gradient(135deg, #03050b 0%, #101525 42%, #050608 100%);
+}
+.magneto-cinematic-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  mask-image: radial-gradient(circle at center, black, transparent 72%);
+  pointer-events: none;
+}
 .font-heading { font-family: "Instrument Serif", serif; }
 .font-body { font-family: "Barlow", sans-serif; }
