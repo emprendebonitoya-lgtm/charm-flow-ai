@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useUser } from "@/lib/user";
 import { FREE_LIMITS } from "@/lib/plans";
 import { loadPremiumProgressHistory } from "@/lib/storage";
@@ -67,6 +67,7 @@ const heroMedia = {
 
 function Home() {
   const { state, skipOnboarding } = useUser();
+  const [videoFailed, setVideoFailed] = useState(false);
   const premiumHistory = useMemo(() => (state.isPremium ? loadPremiumProgressHistory() : []), [state.isPremium]);
   const premiumStreak = useMemo(() => computePremiumStreak(premiumHistory), [premiumHistory]);
 
@@ -77,15 +78,25 @@ function Home() {
         className="relative overflow-hidden rounded-[2rem] glass-panel p-5 sm:p-8 mb-8 shadow-[0_30px_90px_-50px_rgba(34,211,238,0.26)] aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] min-h-[20rem] sm:min-h-[28rem]"
         style={{ backgroundImage: heroMedia.poster }}
       >
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 z-0 h-full w-full object-cover object-center"
-        >
-          <source src={heroVideo.url} type="video/mp4" />
-        </video>
+        {!videoFailed ? (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 z-0 h-full w-full object-cover object-center"
+            onError={() => setVideoFailed(true)}
+          >
+            <source src={heroVideo.url} type="video/mp4" />
+          </video>
+        ) : (
+          <div
+            className="absolute inset-0 z-0 h-full w-full"
+            style={{
+              background: "linear-gradient(135deg, #0c1224 0%, #1a0a2e 50%, #0f172a 100%)",
+            }}
+          />
+        )}
         <div className="absolute inset-0 z-[1] bg-gradient-to-br from-[rgba(4,6,15,0.6)] via-[rgba(8,12,30,0.45)] to-[rgba(15,23,42,0.7)]" />
         <div className="absolute inset-0 z-[5] opacity-30">
           <div className="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-fuchsia-500/20 blur-3xl animate-pulse" />

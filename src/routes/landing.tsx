@@ -80,7 +80,18 @@ function FadingVideo({
     };
   }, []);
 
-  if (failed) return null;
+  if (failed) {
+    // Fallback gradient background cuando el video no carga
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          background: "linear-gradient(135deg, #0a0f1e 0%, #1a1f3e 50%, #0a0f1e 100%)",
+        }}
+      />
+    );
+  }
 
   return (
     <video
