@@ -6,17 +6,17 @@ import heroVideo from "@/assets/hero-bg.mp4.asset.json";
 export const Route = createFileRoute("/landing")({
   head: () => ({
     meta: [
-      { title: "MAGNETO — Carisma operativo para el hombre moderno" },
+      { title: "Charm Flow AI — Carisma operativo para el hombre moderno (MAGNETO)" },
       {
         name: "description",
         content:
-          "Software masculino de carisma con IA. Aperturas, rescates de chat, simulador, planes de cita y academia diaria. Diseñado para resultados.",
+          "Charm Flow AI (MAGNETO): Software de carisma con IA para hombres. Aperturas, salvavidas de chat, simulador de citas, planes de cita y academia diaria. Diseñado para resultados.",
       },
-      { property: "og:title", content: "MAGNETO — Carisma operativo para el hombre moderno" },
+      { property: "og:title", content: "Charm Flow AI (MAGNETO) — Carisma con IA" },
       {
         property: "og:description",
         content:
-          "Aperturas, rescates de chat y planes de cita con IA. Una experiencia de estudio para hombres que exigen resultados.",
+          "Charm Flow AI: Aperturas, rescates de chat y planes de cita con IA. Una experiencia de estudio para hombres que exigen resultados.",
       },
       { property: "og:type", content: "website" },
     ],
@@ -192,8 +192,9 @@ function Landing() {
         <div className="relative z-10 flex flex-col h-full">
           {/* Navbar */}
           <nav className="fixed top-4 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-16">
-            <div className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center">
-              <span className="font-heading italic text-2xl">m</span>
+            <div className="liquid-glass h-12 px-4 rounded-full flex items-center justify-center gap-2">
+              <span className="font-heading italic text-2xl bg-gradient-to-r from-fuchsia-400 to-violet-400 bg-clip-text text-transparent">cf</span>
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/60">Charm Flow</span>
             </div>
             <div className="hidden md:flex liquid-glass rounded-full px-1.5 py-1.5 items-center gap-1">
               {navLinks.map((l) => (
@@ -228,7 +229,15 @@ function Landing() {
               </span>
             </motion.div>
 
-            <div className="mt-6 max-w-3xl">
+            {/* Fondo de luces de colores para resaltar el vidrio translúcido */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+              <div className="absolute top-[10%] left-[15%] w-[400px] h-[400px] rounded-full bg-fuchsia-600/25 blur-[120px] animate-pulse" style={{ animationDuration: "8s" }} />
+              <div className="absolute top-[40%] right-[10%] w-[500px] h-[500px] rounded-full bg-violet-600/20 blur-[150px] animate-pulse" style={{ animationDuration: "12s" }} />
+              <div className="absolute bottom-[15%] left-[25%] w-[350px] h-[350px] rounded-full bg-cyan-500/15 blur-[100px] animate-pulse" style={{ animationDuration: "10s" }} />
+              <div className="absolute top-[25%] right-[30%] w-[300px] h-[300px] rounded-full bg-pink-500/15 blur-[110px]" />
+            </div>
+
+            <div className="mt-6 max-w-3xl z-10">
               <BlurText
                 text="Carisma operativo para el hombre moderno"
                 className="text-5xl md:text-7xl lg:text-[5.5rem] font-heading italic text-white leading-[0.85] tracking-[-3px]"
@@ -238,46 +247,44 @@ function Landing() {
             <motion.p
               {...fadeUp}
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.8 }}
-              className="mt-5 text-sm md:text-base text-white max-w-2xl font-body font-light leading-tight"
+              className="mt-5 text-sm md:text-base text-white max-w-2xl font-body font-light leading-tight z-10"
             >
-              MAGNETO es el estudio de IA para tu vida amorosa. Subí una foto de su perfil y la IA te
-              entrega aperturas, rescata chats fríos, entrena conversaciones y planea citas con
-              tipografía precisa y código que se nota.
+              <strong className="font-semibold text-fuchsia-300">Charm Flow AI (MAGNETO)</strong> es el estudio definitivo de carisma con inteligencia artificial. Subí una captura, rescata chats enfriados, entrena roleplay interactivo y planifica citas con herramientas diseñadas exclusivamente para obtener resultados reales.
             </motion.p>
 
             <motion.div
               {...fadeUp}
               transition={{ duration: 0.8, ease: "easeOut", delay: 1.1 }}
-              className="mt-6 flex flex-wrap items-center justify-center gap-4"
+              className="mt-6 flex flex-wrap items-center justify-center gap-4 z-10"
             >
               <Link
                 to="/"
-                className="liquid-glass-strong rounded-full px-5 py-2.5 inline-flex items-center gap-2 text-sm font-medium"
+                className="liquid-glass-strong hover:bg-white/10 transition-colors rounded-full px-6 py-3 inline-flex items-center gap-2 text-sm font-semibold text-white tracking-wide shadow-[0_0_30px_rgba(168,85,247,0.2)]"
               >
                 Probar gratis <ArrowUpRight />
               </Link>
-              <button className="inline-flex items-center gap-2 text-sm text-white/90">
-                <Play className="h-3.5 w-3.5" /> Ver demo
+              <button className="inline-flex items-center gap-2 text-sm text-white/90 hover:text-white transition-colors">
+                <Play className="h-3.5 w-3.5 text-fuchsia-400" /> Ver demo
               </button>
             </motion.div>
 
             <motion.div
               {...fadeUp}
               transition={{ duration: 0.8, ease: "easeOut", delay: 1.3 }}
-              className="mt-8 flex flex-wrap items-center justify-center gap-4"
+              className="mt-8 flex flex-wrap items-center justify-center gap-6 z-10"
             >
-              <div className="liquid-glass p-5 w-[220px] rounded-[1.25rem] text-left">
-                <Clock />
+              <div className="liquid-glass p-6 w-[240px] rounded-[1.5rem] text-left hover:scale-[1.02] transition-transform duration-300">
+                <div className="text-fuchsia-400"><Clock /></div>
                 <div className="text-4xl font-heading italic tracking-[-1px] leading-none mt-4">5 min</div>
-                <div className="mt-2 text-xs text-white/80 font-body font-light">
-                  De foto a 5 aperturas listas para enviar
+                <div className="mt-2 text-xs text-white/80 font-body font-light leading-relaxed">
+                  De captura de pantalla a <strong className="font-medium text-white">5 aperturas de impacto</strong> listas para enviar.
                 </div>
               </div>
-              <div className="liquid-glass p-5 w-[220px] rounded-[1.25rem] text-left">
-                <Globe />
-                <div className="text-4xl font-heading italic tracking-[-1px] leading-none mt-4">4 IA</div>
-                <div className="mt-2 text-xs text-white/80 font-body font-light">
-                  Personalidades distintas para entrenar en el simulador
+              <div className="liquid-glass p-6 w-[240px] rounded-[1.5rem] text-left hover:scale-[1.02] transition-transform duration-300">
+                <div className="text-violet-400"><Globe /></div>
+                <div className="text-4xl font-heading italic tracking-[-1px] leading-none mt-4">4 Modelos</div>
+                <div className="mt-2 text-xs text-white/80 font-body font-light leading-relaxed">
+                  Diferentes arquetipos de IA y <strong className="font-medium text-white">personalidades</strong> para dominar el simulador.
                 </div>
               </div>
             </motion.div>
@@ -287,10 +294,10 @@ function Landing() {
           <motion.div
             {...fadeUp}
             transition={{ duration: 0.8, ease: "easeOut", delay: 1.4 }}
-            className="flex flex-col items-center gap-4 pb-8 px-4"
+            className="flex flex-col items-center gap-4 pb-8 px-4 z-10"
           >
             <div className="liquid-glass rounded-full px-5 py-2 text-xs md:text-sm text-white/85">
-              Usado por hombres que prefieren mostrar resultados antes que excusas
+              Impulsado por <strong className="text-fuchsia-300">Charm Flow AI</strong>: la suite secreta del carisma moderno
             </div>
             <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
               {["Aeon", "Vela", "Apex", "Orbit", "Zeno"].map((n) => (
@@ -304,59 +311,68 @@ function Landing() {
       </section>
 
       {/* ============== CAPABILITIES ============== */}
-      <section className="magneto-cinematic-bg relative min-h-screen overflow-hidden bg-black">
+      <section className="magneto-cinematic-bg relative min-h-screen overflow-hidden bg-black py-16">
         <div className="magneto-cinematic-bg absolute inset-0 z-0" />
         <FadingVideo
           src={heroVideo.url}
           className="absolute inset-0 w-full h-full object-cover object-center z-[1]"
         />
-        <div className="absolute inset-0 z-[2] bg-gradient-to-b from-black/25 via-black/10 to-black/55" />
+        <div className="absolute inset-0 z-[2] bg-gradient-to-b from-black/35 via-black/20 to-black/65" />
 
-        <div className="relative z-10 px-6 md:px-16 lg:px-20 pt-24 pb-12 flex flex-col min-h-screen">
+        {/* Luces de fondo dinámicas para potenciar el efecto vidrio en Capacidades */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-[2]">
+          <div className="absolute top-[20%] right-[15%] w-[450px] h-[450px] rounded-full bg-violet-600/20 blur-[130px] animate-pulse" style={{ animationDuration: "14s" }} />
+          <div className="absolute bottom-[20%] left-[10%] w-[400px] h-[400px] rounded-full bg-fuchsia-600/20 blur-[120px] animate-pulse" style={{ animationDuration: "9s" }} />
+        </div>
+
+        <div className="relative z-10 px-6 md:px-16 lg:px-20 pt-16 pb-12 flex flex-col min-h-screen">
           <div className="mb-auto">
-            <div className="text-sm font-body text-white/80 mb-6">// Capacidades</div>
-            <h2 className="font-heading italic text-5xl md:text-7xl lg:text-[6rem] leading-[0.9] tracking-[-3px] whitespace-pre-line">
+            <div className="text-sm font-body text-fuchsia-400 mb-4 tracking-[0.2em] uppercase">// El ecosistema de Charm Flow AI</div>
+            <h2 className="font-heading italic text-5xl md:text-7xl lg:text-[6.5rem] leading-[0.9] tracking-[-3px] whitespace-pre-line text-white">
               {"Estudio de carisma,\nde principio a fin"}
             </h2>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
                 title: "Escáner & Aperturas",
-                icon: <ImageIcon />,
+                icon: <ImageIcon className="text-fuchsia-400" />,
                 tags: ["Foto → IA", "Tinder", "Bumble", "Instagram"],
                 body:
-                  "Subí su perfil y obtené 5 aperturas con tono ingenioso, casual y atrevido. Rescatá chats fríos con líneas que recuperan la conversación sin sonar desesperado.",
+                  "Subí la captura de cualquier perfil de chat y obtené de inmediato 5 abridores con tono ingenioso, calibrado y atrevido. Olvidate de quedarte en blanco.",
+                glow: "group-hover:shadow-[0_0_30px_rgba(217,70,239,0.15)]",
               },
               {
                 title: "Simulador & Citas",
-                icon: <Movie />,
+                icon: <Movie className="text-violet-400" />,
                 tags: ["4 Personalidades", "Roleplay", "Date Planner"],
                 body:
-                  "Entrená en chats simulados con 4 perfiles femeninos distintos. Planificá citas en 3 fases — apertura, conexión, cierre — con escenarios reales.",
+                  "Practicá en chats de entrenamiento interactivo con 4 arquetipos femeninos. Planificá citas memorables en 3 fases: apertura, conexión y cierre.",
+                glow: "group-hover:shadow-[0_0_30px_rgba(139,92,246,0.15)]",
               },
               {
                 title: "Academia & Tu Día",
-                icon: <Bulb />,
+                icon: <Bulb className="text-cyan-400" />,
                 tags: ["Lecciones", "Mindset", "Rituales", "Frases"],
                 body:
-                  "Lecciones cortas accionables, frases listas para copiar, biblioteca de mindset y una misión diaria de 5 minutos para construir el hombre que querés ser.",
+                  "Lecciones ultra-cortas accionables, plantillas listas para copiar, biblioteca de psicología masculina y una misión diaria de 5 minutos para entrenar racha.",
+                glow: "group-hover:shadow-[0_0_30px_rgba(6,182,212,0.15)]",
               },
             ].map((c) => (
               <div
                 key={c.title}
-                className="liquid-glass rounded-[1.25rem] p-6 min-h-[360px] flex flex-col"
+                className={`group liquid-glass rounded-[1.75rem] p-8 min-h-[380px] flex flex-col transition-all duration-300 hover:scale-[1.03] hover:bg-white/10 ${c.glow}`}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="liquid-glass h-11 w-11 rounded-[0.75rem] flex items-center justify-center">
+                  <div className="liquid-glass h-12 w-12 rounded-[1rem] flex items-center justify-center bg-white/5">
                     {c.icon}
                   </div>
                   <div className="flex flex-wrap gap-1.5 justify-end max-w-[70%]">
                     {c.tags.map((t) => (
                       <span
                         key={t}
-                        className="liquid-glass rounded-full px-3 py-1 text-[11px] text-white/90 font-body whitespace-nowrap"
+                        className="liquid-glass rounded-full px-3 py-1 text-[11px] text-white/90 font-medium whitespace-nowrap bg-white/5"
                       >
                         {t}
                       </span>
@@ -364,11 +380,11 @@ function Landing() {
                   </div>
                 </div>
                 <div className="flex-1" />
-                <div>
-                  <h3 className="font-heading italic text-3xl md:text-4xl tracking-[-1px] leading-none">
+                <div className="mt-8">
+                  <h3 className="font-heading italic text-3xl md:text-4xl tracking-[-1px] leading-none text-white group-hover:text-fuchsia-300 transition-colors">
                     {c.title}
                   </h3>
-                  <p className="mt-3 text-sm text-white/90 font-body font-light leading-snug max-w-[32ch]">
+                  <p className="mt-4 text-sm text-slate-300 font-body font-light leading-relaxed">
                     {c.body}
                   </p>
                 </div>
@@ -377,15 +393,20 @@ function Landing() {
           </div>
 
           {/* Final CTA */}
-          <div className="mt-16 flex flex-col items-center text-center gap-5">
-            <h3 className="font-heading italic text-4xl md:text-5xl tracking-[-2px] leading-none max-w-2xl">
+          <div className="mt-24 flex flex-col items-center text-center gap-6 relative">
+            {/* Brillo detrás del CTA */}
+            <div className="absolute inset-0 pointer-events-none bg-fuchsia-500/10 blur-[80px] rounded-full scale-75 z-0" />
+            <h3 className="font-heading italic text-4xl md:text-5xl lg:text-6xl tracking-[-2px] leading-none max-w-2xl text-white z-10">
               Dejá de improvisar. Empezá a operar.
             </h3>
+            <p className="text-slate-400 text-xs md:text-sm max-w-md font-body font-light z-10 leading-relaxed">
+              Únete a miles de hombres que utilizan el motor de <strong className="text-white">Charm Flow AI</strong> para transformar sus habilidades de conversación y citas.
+            </p>
             <Link
               to="/"
-              className="liquid-glass-strong rounded-full px-6 py-3 inline-flex items-center gap-2 text-sm font-medium"
+              className="liquid-glass-strong hover:bg-white/10 transition-all rounded-full px-8 py-4 inline-flex items-center gap-3 text-base font-semibold text-white tracking-wide shadow-[0_10px_40px_-10px_rgba(168,85,247,0.4)] z-10 scale-100 hover:scale-[1.02] duration-300"
             >
-              Entrar a MAGNETO <ArrowUpRight />
+              Entrar a MAGNETO <ArrowUpRight className="h-5 w-5" />
             </Link>
           </div>
         </div>
