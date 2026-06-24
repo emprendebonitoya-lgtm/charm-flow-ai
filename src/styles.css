@@ -207,60 +207,6 @@
     min-width: 0;
   }
   .feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 26px 70px -24px rgba(168, 85, 247, 0.24), 0 0 30px -8px rgba(236, 72, 153, 0.18);
-  }
-  .btn-cyber {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-[1.5rem] font-semibold transition duration-300;
-    background: linear-gradient(135deg, rgba(216, 70, 239, 0.97) 0%, rgba(124, 58, 237, 0.94) 52%, rgba(236, 72, 153, 0.95) 100%);
-    color: #ffffff;
-    box-shadow:
-      0 0 30px rgba(216, 70, 239, 0.22),
-      0 16px 42px -24px rgba(16, 8, 37, 0.72);
-  }
-  .btn-cyber:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0 48px rgba(236, 72, 153, 0.34), 0 18px 44px -20px rgba(16, 8, 37, 0.7);
-  }
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-3 rounded-[1.5rem] font-medium transition duration-200 text-sm;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(18px);
-  }
-  .btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(168, 85, 247, 0.25);
-  }
-  .pill {
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    color: rgba(255, 255, 255, 0.82);
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 999px;
-    padding: 0.28rem 0.85rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    backdrop-filter: blur(14px);
-  }
-  .chip {
-    @apply inline-flex items-center gap-1 px-4 py-2 rounded-full text-[11px] font-medium border transition duration-200;
-    border-color: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.85);
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(18px);
-  }
-  .chip-active {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.16), rgba(236, 72, 153, 0.20));
-    border-color: rgba(168, 85, 247, 0.32);
-    color: #ffffff;
-    box-shadow: 0 0 22px rgba(168, 85, 247, 0.16);
-  }
-  .feature-card * {
-    min-width: 0;
-  }
-  .feature-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 20px 50px -26px rgba(0, 0, 0, 0.7), 0 0 24px rgba(168, 85, 247, 0.16);
   }
