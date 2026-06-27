@@ -128,7 +128,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         setState((current) => ({
           ...current,
           isPremium: status.active,
-          plan: status.active ? status.plan : null,
+          plan: status.active ? (status.plan === "annual" || status.plan === "monthly" ? status.plan : null) : null,
         }));
       } catch {
         if (!cancelled) {
@@ -192,7 +192,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
     if (!supabase) throw new Error("Supabase no está configurado.");
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/login` },
+      options: { 
+        redirectTo: `${window.location.origin}/auth/v1/callback`,
+        skipBrowserRedirect: false,
+      },
     });
     if (error) throw error;
   };
