@@ -193,8 +193,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { 
-        redirectTo: `${window.location.origin}/auth/v1/callback`,
-        skipBrowserRedirect: false,
+        redirectTo: `${window.location.origin}/`,
       },
     });
     if (error) throw error;

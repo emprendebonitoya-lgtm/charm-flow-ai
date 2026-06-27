@@ -156,9 +156,19 @@ function Escaner() {
 
   const handleFile = async (f: File | null) => {
     if (!f) return;
-    if (f.size > 6 * 1024 * 1024) return toast.error("Imagen muy grande (máx 6MB)");
-    setImgUrl(await fileToDataUrl(f));
-    setObjectFit("cover");
+    if (f.size > 6 * 1024 * 1024) {
+      toast.error("Imagen muy grande (máx 6MB)");
+      if (fileRef.current) fileRef.current.value = "";
+      return;
+    }
+    try {
+      const dataUrl = await fileToDataUrl(f);
+      setImgUrl(dataUrl);
+      setObjectFit("cover");
+    } catch (e) {
+      toast.error("Error al procesar la imagen");
+      if (fileRef.current) fileRef.current.value = "";
+    }
   };
 
   const reset = () => {
