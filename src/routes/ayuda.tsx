@@ -10,7 +10,11 @@ export const Route = createFileRoute("/ayuda")({
   head: () => ({
     meta: [
       { title: "Asistente · MAGNETO" },
-      { name: "description", content: "Consultá al asistente de carisma para preguntas, mensajes y estrategias de perfil." },
+      {
+        name: "description",
+        content:
+          "Consultá al asistente de carisma para preguntas, mensajes y estrategias de perfil.",
+      },
     ],
   }),
   component: Asistente,
@@ -53,15 +57,18 @@ function Asistente() {
         },
       });
       setMessages((current) => [...current, { role: "assistant", content: res.content.trim() }]);
-    } catch (e: any) {
-      toast.error(e?.message ?? "Algo falló");
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Algo falló");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AppShell title="Asistente" subtitle="Consultá al coach para mensajes, apertura y estrategia rápida.">
+    <AppShell
+      title="Asistente"
+      subtitle="Consultá al coach para mensajes, apertura y estrategia rápida."
+    >
       <div className="space-y-4">
         <div className="flex flex-col gap-3 rounded-[2rem] border border-white/10 bg-[rgba(15,23,42,0.88)] p-4 shadow-[0_30px_90px_-50px_rgba(99,102,241,0.22)]">
           <div className="flex items-center gap-3">
@@ -69,12 +76,17 @@ function Asistente() {
               <MessageSquare className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-sm uppercase tracking-[0.28em] text-[#cbd5e1]/70">Asistente IA</div>
-              <div className="text-base font-semibold text-white">Tu coach instantáneo de carisma</div>
+              <div className="text-sm uppercase tracking-[0.28em] text-[#cbd5e1]/70">
+                Asistente IA
+              </div>
+              <div className="text-base font-semibold text-white">
+                Tu coach instantáneo de carisma
+              </div>
             </div>
           </div>
           <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-4 text-sm leading-7 text-slate-200">
-            Hacé una pregunta concreta y te doy una respuesta que puedas usar ahora: frase de apertura, rescate de chat, cómo responder un mensaje difícil o sugerencias de perfil.
+            Hacé una pregunta concreta y te doy una respuesta que puedas usar ahora: frase de
+            apertura, rescate de chat, cómo responder un mensaje difícil o sugerencias de perfil.
           </div>
         </div>
 
@@ -123,7 +135,8 @@ function Asistente() {
         </div>
 
         <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-4 text-sm text-slate-300">
-          Consejo rápido: preguntá con contexto breve. Ej: "Necesito una apertura para Tinder basada en mi perfil de foto con café" o "Cómo respondo si me dice 'estoy ocupada'?".
+          Consejo rápido: preguntá con contexto breve. Ej: "Necesito una apertura para Tinder basada
+          en mi perfil de foto con café" o "Cómo respondo si me dice 'estoy ocupada'?".
         </div>
       </div>
     </AppShell>

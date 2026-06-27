@@ -2,14 +2,22 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { useEffect, useMemo, useState } from "react";
 import { useUser } from "@/lib/user";
-import { loadPremiumOnboardingProgress, loadPremiumProgressHistory, recordPremiumProgressDay, togglePremiumOnboardingTask } from "@/lib/storage";
+import {
+  loadPremiumOnboardingProgress,
+  loadPremiumProgressHistory,
+  recordPremiumProgressDay,
+  togglePremiumOnboardingTask,
+} from "@/lib/storage";
 import { CheckCircle2, Trophy, Shield } from "lucide-react";
 
 export const Route = createFileRoute("/premium-progreso")({
   head: () => ({
     meta: [
       { title: "Progreso Premium · MAGNETO" },
-      { name: "description", content: "Tu historial de retos premium, rachas y certificados diarios." },
+      {
+        name: "description",
+        content: "Tu historial de retos premium, rachas y certificados diarios.",
+      },
     ],
   }),
   component: PremiumProgreso,
@@ -25,17 +33,20 @@ const PREMIUM_CHALLENGES: Challenge[] = [
   {
     id: "photo",
     title: "Elegí tu mejor foto de perfil",
-    description: "Seleccioná una imagen que muestre seguridad, estilo y autenticidad para atraer match instantáneo.",
+    description:
+      "Seleccioná una imagen que muestre seguridad, estilo y autenticidad para atraer match instantáneo.",
   },
   {
     id: "opener",
     title: "Creá un opener premium",
-    description: "Escribí un mensaje inicial poderoso que funcione para tu app favorita y genere curiosidad.",
+    description:
+      "Escribí un mensaje inicial poderoso que funcione para tu app favorita y genere curiosidad.",
   },
   {
     id: "invite",
     title: "Planeá una cita de impacto",
-    description: "Diseñá una propuesta clara y atractiva para que el interés se transforme en un encuentro real.",
+    description:
+      "Diseñá una propuesta clara y atractiva para que el interés se transforme en un encuentro real.",
   },
 ];
 
@@ -98,17 +109,30 @@ function PremiumProgreso() {
 
   const handleRecordDay = () => {
     if (!allDone) return;
-    setHistory(recordPremiumProgressDay(completedCount, PREMIUM_CHALLENGES.length, Object.keys(progress.completed).filter((id) => progress.completed[id])));
+    setHistory(
+      recordPremiumProgressDay(
+        completedCount,
+        PREMIUM_CHALLENGES.length,
+        Object.keys(progress.completed).filter((id) => progress.completed[id]),
+      ),
+    );
   };
 
   return (
-    <AppShell title="Progreso Premium" subtitle="Historial, rachas y certificados por tu constancia." >
+    <AppShell
+      title="Progreso Premium"
+      subtitle="Historial, rachas y certificados por tu constancia."
+    >
       <div className="space-y-6">
         <div className="neon-card rounded-3xl p-6 border border-[rgba(168,85,247,0.16)]">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">Estado premium</div>
-              <div className="mt-2 text-3xl font-semibold text-white">{state.isPremium ? "Premium activo" : "Necesitás premium"}</div>
+              <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">
+                Estado premium
+              </div>
+              <div className="mt-2 text-3xl font-semibold text-white">
+                {state.isPremium ? "Premium activo" : "Necesitás premium"}
+              </div>
             </div>
             <div className="rounded-full bg-white/5 px-4 py-2 text-sm text-[#E0E7FF]/85">
               {state.isPremium ? "Acceso completo" : "Suscribite para ver todo"}
@@ -127,16 +151,24 @@ function PremiumProgreso() {
           <>
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-4">
-                <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">Racha actual</div>
+                <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">
+                  Racha actual
+                </div>
                 <div className="mt-3 text-3xl font-semibold text-white">{streak} días</div>
               </div>
               <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-4">
-                <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">Días registrados</div>
+                <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">
+                  Días registrados
+                </div>
                 <div className="mt-3 text-3xl font-semibold text-white">{history.length}</div>
               </div>
               <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-4">
-                <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">Certificado</div>
-                <div className="mt-3 text-3xl font-semibold text-white">{certificate ?? "En camino"}</div>
+                <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">
+                  Certificado
+                </div>
+                <div className="mt-3 text-3xl font-semibold text-white">
+                  {certificate ?? "En camino"}
+                </div>
               </div>
             </div>
 
@@ -144,7 +176,9 @@ function PremiumProgreso() {
               <div className="flex items-center gap-3 text-white mb-4">
                 <Shield className="h-5 w-5 text-fuchsia-300" />
                 <div>
-                  <div className="text-sm uppercase tracking-[0.28em] text-[#D8B4FE]/70">Retos diarios</div>
+                  <div className="text-sm uppercase tracking-[0.28em] text-[#D8B4FE]/70">
+                    Retos diarios
+                  </div>
                   <div className="text-lg font-semibold">Marca tus avances para el día de hoy</div>
                 </div>
               </div>
@@ -162,7 +196,9 @@ function PremiumProgreso() {
                           <div className="text-sm font-semibold text-white">{task.title}</div>
                           <p className="mt-2 text-[13px] text-[#E0E7FF]/75">{task.description}</p>
                         </div>
-                        <div className={`rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${done ? "bg-emerald-500/15 text-emerald-200" : "bg-white/10 text-[#BFDBFE]/80"}`}>
+                        <div
+                          className={`rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${done ? "bg-emerald-500/15 text-emerald-200" : "bg-white/10 text-[#BFDBFE]/80"}`}
+                        >
                           {done ? "Completado" : "Marcar"}
                         </div>
                       </div>
@@ -178,30 +214,46 @@ function PremiumProgreso() {
                 >
                   Guardar día completo
                 </button>
-                <div className="text-sm text-[#BFDBFE]/70">Completa todas las tareas para registrar el día premium.</div>
+                <div className="text-sm text-[#BFDBFE]/70">
+                  Completa todas las tareas para registrar el día premium.
+                </div>
               </div>
             </div>
 
             <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-6">
               <div className="flex items-center justify-between gap-3 mb-4">
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">Historial de progreso</div>
+                  <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">
+                    Historial de progreso
+                  </div>
                   <div className="text-lg font-semibold text-white">Tus días registrados</div>
                 </div>
                 <Trophy className="h-6 w-6 text-yellow-300" />
               </div>
               {history.length === 0 ? (
-                <p className="text-sm text-[#E0E7FF]/80">Aún no registraste un día completo. Marca tus retos y guarda tu progreso para ver el historial.</p>
+                <p className="text-sm text-[#E0E7FF]/80">
+                  Aún no registraste un día completo. Marca tus retos y guarda tu progreso para ver
+                  el historial.
+                </p>
               ) : (
                 <div className="space-y-3">
                   {history.map((entry) => (
-                    <div key={entry.date} className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.05)] p-4">
+                    <div
+                      key={entry.date}
+                      className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.05)] p-4"
+                    >
                       <div className="flex items-center justify-between gap-3">
                         <div>
-                          <div className="text-sm uppercase tracking-[0.24em] text-[#BFDBFE]/70">{entry.date}</div>
-                          <div className="mt-2 font-semibold text-white">{entry.completed}/{entry.total} retos completos</div>
+                          <div className="text-sm uppercase tracking-[0.24em] text-[#BFDBFE]/70">
+                            {entry.date}
+                          </div>
+                          <div className="mt-2 font-semibold text-white">
+                            {entry.completed}/{entry.total} retos completos
+                          </div>
                         </div>
-                        <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-[#E0E7FF]/80">{entry.completed === entry.total ? "Perfecto" : "Parcial"}</span>
+                        <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-[#E0E7FF]/80">
+                          {entry.completed === entry.total ? "Perfecto" : "Parcial"}
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -211,7 +263,10 @@ function PremiumProgreso() {
           </>
         ) : (
           <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-6">
-            <div className="text-sm text-[#E0E7FF]/80">Para ver tu progreso, rachas y certificados necesitas activar Premium. Aquí podés suscribirte y volver a esta página cuando tu cuenta esté activa.</div>
+            <div className="text-sm text-[#E0E7FF]/80">
+              Para ver tu progreso, rachas y certificados necesitas activar Premium. Aquí podés
+              suscribirte y volver a esta página cuando tu cuenta esté activa.
+            </div>
             <div className="mt-4">
               <Link to="/premium" className="btn-cyber">
                 Suscribirme ahora

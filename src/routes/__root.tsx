@@ -81,14 +81,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#000000" },
       { title: "MAGNETO — Carisma y seducción con IA" },
-      { name: "description", content: "Software masculino de carisma. Subí una foto de la chica desde cualquier red y la IA te entrega aperturas, rescates y planes de cita." },
+      {
+        name: "description",
+        content:
+          "Software masculino de carisma. Subí una foto de la chica desde cualquier red y la IA te entrega aperturas, rescates y planes de cita.",
+      },
       { property: "og:title", content: "MAGNETO — Carisma y seducción con IA" },
-      { property: "og:description", content: "Software masculino de carisma. Subí una foto de la chica desde cualquier red y la IA te entrega aperturas, rescates y planes de cita." },
+      {
+        property: "og:description",
+        content:
+          "Software masculino de carisma. Subí una foto de la chica desde cualquier red y la IA te entrega aperturas, rescates y planes de cita.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:image", content: "/logo.png" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MAGNETO — Carisma y seducción con IA" },
-      { name: "twitter:description", content: "Software masculino de carisma. Subí una foto de la chica desde cualquier red y la IA te entrega aperturas, rescates y planes de cita." },
+      {
+        name: "twitter:description",
+        content:
+          "Software masculino de carisma. Subí una foto de la chica desde cualquier red y la IA te entrega aperturas, rescates y planes de cita.",
+      },
       { name: "twitter:image", content: "/logo.png" },
     ],
     links: [

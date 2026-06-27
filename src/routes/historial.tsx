@@ -38,7 +38,11 @@ function Historial() {
       {items.length > 0 && (
         <div className="flex justify-end mb-3">
           <button
-            onClick={() => { clearHistory(); setItems([]); toast.success("Historial limpiado"); }}
+            onClick={() => {
+              clearHistory();
+              setItems([]);
+              toast.success("Historial limpiado");
+            }}
             className="text-xs text-muted-foreground inline-flex items-center gap-1 hover:text-destructive"
           >
             <Trash2 className="h-3 w-3" /> Limpiar todo

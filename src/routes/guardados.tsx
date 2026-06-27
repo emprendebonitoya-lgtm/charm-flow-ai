@@ -9,7 +9,10 @@ export const Route = createFileRoute("/guardados")({
   head: () => ({
     meta: [
       { title: "Guardados · MAGNETO" },
-      { name: "description", content: "Tus respuestas y frases favoritas de MAGNETO, siempre a un toque." },
+      {
+        name: "description",
+        content: "Tus respuestas y frases favoritas de MAGNETO, siempre a un toque.",
+      },
     ],
   }),
   component: Guardados,

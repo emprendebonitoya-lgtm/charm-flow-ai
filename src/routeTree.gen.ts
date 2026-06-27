@@ -10,10 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TudiaRouteImport } from './routes/tudia'
+import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as SosRouteImport } from './routes/sos'
 import { Route as SimRouteImport } from './routes/sim'
+import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as PremiumSuccessRouteImport } from './routes/premium-success'
 import { Route as PremiumProgresoRouteImport } from './routes/premium-progreso'
+import { Route as PremiumDebugRouteImport } from './routes/premium-debug'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
@@ -34,6 +37,11 @@ const TudiaRoute = TudiaRouteImport.update({
   path: '/tudia',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TerminosRoute = TerminosRouteImport.update({
+  id: '/terminos',
+  path: '/terminos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SosRoute = SosRouteImport.update({
   id: '/sos',
   path: '/sos',
@@ -44,6 +52,11 @@ const SimRoute = SimRouteImport.update({
   path: '/sim',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacidadRoute = PrivacidadRouteImport.update({
+  id: '/privacidad',
+  path: '/privacidad',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PremiumSuccessRoute = PremiumSuccessRouteImport.update({
   id: '/premium-success',
   path: '/premium-success',
@@ -52,6 +65,11 @@ const PremiumSuccessRoute = PremiumSuccessRouteImport.update({
 const PremiumProgresoRoute = PremiumProgresoRouteImport.update({
   id: '/premium-progreso',
   path: '/premium-progreso',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumDebugRoute = PremiumDebugRouteImport.update({
+  id: '/premium-debug',
+  path: '/premium-debug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PremiumRoute = PremiumRouteImport.update({
@@ -140,10 +158,13 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/premium': typeof PremiumRoute
+  '/premium-debug': typeof PremiumDebugRoute
   '/premium-progreso': typeof PremiumProgresoRoute
   '/premium-success': typeof PremiumSuccessRoute
+  '/privacidad': typeof PrivacidadRoute
   '/sim': typeof SimRoute
   '/sos': typeof SosRoute
+  '/terminos': typeof TerminosRoute
   '/tudia': typeof TudiaRoute
 }
 export interface FileRoutesByTo {
@@ -161,10 +182,13 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/premium': typeof PremiumRoute
+  '/premium-debug': typeof PremiumDebugRoute
   '/premium-progreso': typeof PremiumProgresoRoute
   '/premium-success': typeof PremiumSuccessRoute
+  '/privacidad': typeof PrivacidadRoute
   '/sim': typeof SimRoute
   '/sos': typeof SosRoute
+  '/terminos': typeof TerminosRoute
   '/tudia': typeof TudiaRoute
 }
 export interface FileRoutesById {
@@ -183,10 +207,13 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/premium': typeof PremiumRoute
+  '/premium-debug': typeof PremiumDebugRoute
   '/premium-progreso': typeof PremiumProgresoRoute
   '/premium-success': typeof PremiumSuccessRoute
+  '/privacidad': typeof PrivacidadRoute
   '/sim': typeof SimRoute
   '/sos': typeof SosRoute
+  '/terminos': typeof TerminosRoute
   '/tudia': typeof TudiaRoute
 }
 export interface FileRouteTypes {
@@ -206,10 +233,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/onboarding'
     | '/premium'
+    | '/premium-debug'
     | '/premium-progreso'
     | '/premium-success'
+    | '/privacidad'
     | '/sim'
     | '/sos'
+    | '/terminos'
     | '/tudia'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -227,10 +257,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/onboarding'
     | '/premium'
+    | '/premium-debug'
     | '/premium-progreso'
     | '/premium-success'
+    | '/privacidad'
     | '/sim'
     | '/sos'
+    | '/terminos'
     | '/tudia'
   id:
     | '__root__'
@@ -248,10 +281,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/onboarding'
     | '/premium'
+    | '/premium-debug'
     | '/premium-progreso'
     | '/premium-success'
+    | '/privacidad'
     | '/sim'
     | '/sos'
+    | '/terminos'
     | '/tudia'
   fileRoutesById: FileRoutesById
 }
@@ -270,10 +306,13 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
   PremiumRoute: typeof PremiumRoute
+  PremiumDebugRoute: typeof PremiumDebugRoute
   PremiumProgresoRoute: typeof PremiumProgresoRoute
   PremiumSuccessRoute: typeof PremiumSuccessRoute
+  PrivacidadRoute: typeof PrivacidadRoute
   SimRoute: typeof SimRoute
   SosRoute: typeof SosRoute
+  TerminosRoute: typeof TerminosRoute
   TudiaRoute: typeof TudiaRoute
 }
 
@@ -284,6 +323,13 @@ declare module '@tanstack/react-router' {
       path: '/tudia'
       fullPath: '/tudia'
       preLoaderRoute: typeof TudiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terminos': {
+      id: '/terminos'
+      path: '/terminos'
+      fullPath: '/terminos'
+      preLoaderRoute: typeof TerminosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sos': {
@@ -300,6 +346,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SimRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacidad': {
+      id: '/privacidad'
+      path: '/privacidad'
+      fullPath: '/privacidad'
+      preLoaderRoute: typeof PrivacidadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/premium-success': {
       id: '/premium-success'
       path: '/premium-success'
@@ -312,6 +365,13 @@ declare module '@tanstack/react-router' {
       path: '/premium-progreso'
       fullPath: '/premium-progreso'
       preLoaderRoute: typeof PremiumProgresoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium-debug': {
+      id: '/premium-debug'
+      path: '/premium-debug'
+      fullPath: '/premium-debug'
+      preLoaderRoute: typeof PremiumDebugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/premium': {
@@ -430,10 +490,13 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
   PremiumRoute: PremiumRoute,
+  PremiumDebugRoute: PremiumDebugRoute,
   PremiumProgresoRoute: PremiumProgresoRoute,
   PremiumSuccessRoute: PremiumSuccessRoute,
+  PrivacidadRoute: PrivacidadRoute,
   SimRoute: SimRoute,
   SosRoute: SosRoute,
+  TerminosRoute: TerminosRoute,
   TudiaRoute: TudiaRoute,
 }
 export const routeTree = rootRouteImport

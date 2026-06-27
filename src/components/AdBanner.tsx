@@ -24,7 +24,10 @@ export function AdBanner({ slot = "inline", className = "" }: AdBannerProps) {
 
   if (isAdSenseConfigured() && adSlot) {
     return (
-      <div ref={containerRef} className={`rounded-2xl overflow-hidden border border-white/10 bg-black/20 ${className}`}>
+      <div
+        ref={containerRef}
+        className={`rounded-2xl overflow-hidden border border-white/10 bg-black/20 ${className}`}
+      >
         <ins
           className="adsbygoogle block"
           style={{ display: "block" }}
@@ -52,7 +55,8 @@ export function AdBanner({ slot = "inline", className = "" }: AdBannerProps) {
             MAGNETO Gratis · {slot === "header" ? "Patrocinado" : "Publicidad"}
           </div>
           <p className="text-xs text-[#E0E7FF]/60 mt-0.5 leading-relaxed">
-            Plan gratis con anuncios discretos. Premium elimina publicidad y desbloquea todo el contenido.
+            Plan gratis con anuncios discretos. Premium elimina publicidad y desbloquea todo el
+            contenido.
           </p>
         </div>
       </div>
@@ -66,7 +70,11 @@ type WatchAdButtonProps = {
   label?: string;
 };
 
-export function WatchAdButton({ onComplete, loading, label = "Ver anuncio (+1 escaneo)" }: WatchAdButtonProps) {
+export function WatchAdButton({
+  onComplete,
+  loading,
+  label = "Ver anuncio (+1 escaneo)",
+}: WatchAdButtonProps) {
   return (
     <button
       type="button"

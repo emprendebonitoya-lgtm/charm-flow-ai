@@ -9,7 +9,10 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Entrar · MAGNETO" },
-      { name: "description", content: "Creá tu cuenta MAGNETO o entrá con Google para guardar tu progreso." },
+      {
+        name: "description",
+        content: "Creá tu cuenta MAGNETO o entrá con Google para guardar tu progreso.",
+      },
     ],
   }),
   component: LoginPage,
@@ -82,10 +85,13 @@ function LoginPage() {
             Conectado como <span className="text-white font-medium">{authUser.email}</span>
           </p>
           <p className="text-xs text-muted-foreground">
-            Tu progreso se guarda en este dispositivo. Con cuenta podés recuperar datos cuando activemos sync en la nube.
+            Tu progreso se guarda en este dispositivo. Con cuenta podés recuperar datos cuando
+            activemos sync en la nube.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link to="/" className="btn-cyber">Ir al inicio</Link>
+            <Link to="/" className="btn-cyber">
+              Ir al inicio
+            </Link>
             <button
               onClick={async () => {
                 await signOut();
@@ -109,9 +115,10 @@ function LoginPage() {
       <div className="max-w-md mx-auto space-y-6">
         {!authConfigured && (
           <div className="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100/90">
-            Cuentas aún no configuradas en el servidor. Podés usar MAGNETO en modo invitado.
-            Agregá <code className="text-xs">VITE_SUPABASE_URL</code> y{" "}
-            <code className="text-xs">VITE_SUPABASE_ANON_KEY</code> en tu archivo <code className="text-xs">.env</code>.
+            Cuentas aún no configuradas en el servidor. Podés usar MAGNETO en modo invitado. Agregá{" "}
+            <code className="text-xs">VITE_SUPABASE_URL</code> y{" "}
+            <code className="text-xs">VITE_SUPABASE_ANON_KEY</code> en tu archivo{" "}
+            <code className="text-xs">.env</code>.
           </div>
         )}
 
@@ -146,7 +153,9 @@ function LoginPage() {
               />
             </label>
             <label className="block space-y-2">
-              <span className="text-xs uppercase tracking-[0.24em] text-[#D8B4FE]/70">Contraseña</span>
+              <span className="text-xs uppercase tracking-[0.24em] text-[#D8B4FE]/70">
+                Contraseña
+              </span>
               <input
                 type="password"
                 value={password}
@@ -161,7 +170,11 @@ function LoginPage() {
               disabled={!authConfigured || loading}
               className="btn-cyber w-full inline-flex items-center justify-center gap-2"
             >
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Mail className="h-4 w-4" />
+              )}
               {mode === "login" ? "Entrar con email" : "Crear cuenta"}
             </button>
           </form>

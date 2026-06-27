@@ -5,9 +5,8 @@ import { routeTree } from "./routeTree.gen";
 let clientQueryClient: QueryClient | undefined;
 
 export const getRouter = () => {
-  const queryClient = typeof window !== "undefined"
-    ? (clientQueryClient ??= new QueryClient())
-    : new QueryClient();
+  const queryClient =
+    typeof window !== "undefined" ? (clientQueryClient ??= new QueryClient()) : new QueryClient();
 
   const router = createRouter({
     routeTree,

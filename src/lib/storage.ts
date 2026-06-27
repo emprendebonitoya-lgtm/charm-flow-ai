@@ -47,7 +47,8 @@ function write<T>(key: string, value: T) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-export const getHistory = () => readWithMigration<HistoryItem[]>(HISTORY_KEY, LEGACY_HISTORY_KEY, []);
+export const getHistory = () =>
+  readWithMigration<HistoryItem[]>(HISTORY_KEY, LEGACY_HISTORY_KEY, []);
 export const pushHistory = (item: Omit<HistoryItem, "id" | "createdAt">) => {
   const list = getHistory();
   const next: HistoryItem = { ...item, id: crypto.randomUUID(), createdAt: Date.now() };
@@ -76,7 +77,8 @@ export const removeSaved = (id: string) => {
 };
 export const isSaved = (id: string) => getSaved().some((x) => x.id === id);
 
-export const getProfile = () => readWithMigration<Profile>(PROFILE_KEY, LEGACY_PROFILE_KEY, { tone: "coqueto", lang: "es" });
+export const getProfile = () =>
+  readWithMigration<Profile>(PROFILE_KEY, LEGACY_PROFILE_KEY, { tone: "coqueto", lang: "es" });
 export const setProfile = (p: Profile) => write(PROFILE_KEY, p);
 
 const PREMIUM_ONBOARDING_KEY = "magneto_premium_onboarding_v1";
@@ -95,12 +97,16 @@ function defaultPremiumOnboardingProgress(): PremiumOnboardingProgress {
 }
 
 export const loadPremiumOnboardingProgress = () => {
-  const progress = read<PremiumOnboardingProgress>(PREMIUM_ONBOARDING_KEY, defaultPremiumOnboardingProgress());
+  const progress = read<PremiumOnboardingProgress>(
+    PREMIUM_ONBOARDING_KEY,
+    defaultPremiumOnboardingProgress(),
+  );
   if (progress.date !== getTodayKey()) return defaultPremiumOnboardingProgress();
   return progress;
 };
 
-export const savePremiumOnboardingProgress = (progress: PremiumOnboardingProgress) => write(PREMIUM_ONBOARDING_KEY, progress);
+export const savePremiumOnboardingProgress = (progress: PremiumOnboardingProgress) =>
+  write(PREMIUM_ONBOARDING_KEY, progress);
 
 export const togglePremiumOnboardingTask = (id: string) => {
   const current = loadPremiumOnboardingProgress();
@@ -124,16 +130,17 @@ type PremiumProgressDay = {
   tasks: string[];
 };
 
-export const loadPremiumProgressHistory = () => read<PremiumProgressDay[]>(PREMIUM_PROGRESS_HISTORY_KEY, []);
+export const loadPremiumProgressHistory = () =>
+  read<PremiumProgressDay[]>(PREMIUM_PROGRESS_HISTORY_KEY, []);
 
 export const recordPremiumProgressDay = (completed: number, total: number, tasks: string[]) => {
   const today = getTodayKey();
   const history = loadPremiumProgressHistory();
   if (history[0]?.date === today) return history;
-  const next: PremiumProgressDay[] = [
-    { date: today, completed, total, tasks },
-    ...history,
-  ].slice(0, 30);
+  const next: PremiumProgressDay[] = [{ date: today, completed, total, tasks }, ...history].slice(
+    0,
+    30,
+  );
   write(PREMIUM_PROGRESS_HISTORY_KEY, next);
   return next;
 };

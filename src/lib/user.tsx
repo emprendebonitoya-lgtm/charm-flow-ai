@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
+import { useServerFn } from "@tanstack/react-start";
 import { getSupabase } from "@/lib/supabase";
+import { getStripeSubscriptionStatus } from "@/lib/stripe.functions";
 import { isSupabaseConfigured } from "@/lib/plans";
 
 type Plan = "monthly" | "annual";
@@ -42,13 +44,22 @@ function loadSavedState(): UserState {
   try {
     const raw = window.localStorage.getItem(USER_STORAGE_KEY);
     if (!raw) return defaultState;
-    return JSON.parse(raw) as UserState;
+    const parsed = JSON.parse(raw) as UserState;
+    // Never trust local premium status for commercial access.
+    return {
+      ...parsed,
+      isPremium: false,
+      plan: null,
+    };
   } catch {
     return defaultState;
   }
 }
 
-function applySessionMetadata(session: Session | null, setState: React.Dispatch<React.SetStateAction<UserState>>) {
+function applySessionMetadata(
+  session: Session | null,
+  setState: React.Dispatch<React.SetStateAction<UserState>>,
+) {
   if (!session?.user) return;
   const meta = session.user.user_metadata ?? {};
   setState((current) => ({
@@ -57,7 +68,9 @@ function applySessionMetadata(session: Session | null, setState: React.Dispatch<
     goal: current.goal ?? meta.goal,
     style: current.style ?? meta.style,
     isPremium: current.isPremium || !!meta.is_premium,
-    plan: current.plan ?? (meta.plan === "annual" ? "annual" : meta.plan === "monthly" ? "monthly" : null),
+    plan:
+      current.plan ??
+      (meta.plan === "annual" ? "annual" : meta.plan === "monthly" ? "monthly" : null),
   }));
 }
 
@@ -65,6 +78,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<UserState>(loadSavedState);
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(isSupabaseConfigured());
+  const fetchStripeStatus = useServerFn(getStripeSubscriptionStatus);
 
   useEffect(() => {
     try {
@@ -95,12 +109,46 @@ export function UserProvider({ children }: { children: ReactNode }) {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    if (!authUser?.email && !authUser?.id) {
+      setState((current) => ({ ...current, isPremium: false, plan: null }));
+      return;
+    }
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const status = await fetchStripeStatus({
+          data: {
+            userId: authUser.id,
+            email: authUser.email ?? undefined,
+          },
+        });
+        if (cancelled) return;
+        setState((current) => ({
+          ...current,
+          isPremium: status.active,
+          plan: status.active ? status.plan : null,
+        }));
+      } catch {
+        if (!cancelled) {
+          setState((current) => ({ ...current, isPremium: false, plan: null }));
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authUser?.id, authUser?.email, fetchStripeStatus]);
+
   const subscribe = (plan: Plan) => {
     setState((current) => ({
       ...current,
       isPremium: true,
       plan,
     }));
+    void getSupabase()?.auth.updateUser({ data: { is_premium: true, plan } });
   };
 
   const completeOnboarding = (goal: string, style: string) => {

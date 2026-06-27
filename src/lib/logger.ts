@@ -119,7 +119,7 @@ export const logger = new Logger();
 export async function withErrorHandling<T>(
   fn: () => Promise<T>,
   errorMessage: string,
-  context?: Record<string, unknown>
+  context?: Record<string, unknown>,
 ): Promise<T | null> {
   try {
     return await fn();
@@ -135,7 +135,7 @@ export async function withErrorHandling<T>(
 export function withSyncErrorHandling<T>(
   fn: () => T,
   errorMessage: string,
-  context?: Record<string, unknown>
+  context?: Record<string, unknown>,
 ): T | null {
   try {
     return fn();

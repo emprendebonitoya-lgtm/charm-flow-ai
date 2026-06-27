@@ -91,8 +91,25 @@ export const PLAN_FEATURES: PlanFeature[] = [
   },
 ];
 
-export const FREE_MODULE_IDS = ["escaner", "sos", "sim", "ayuda", "date", "frases", "feed", "tudia", "guardados", "historial"] as const;
-export const PREMIUM_MODULE_IDS = ["academia-full", "biblioteca-full", "scanner-unlimited", "no-ads", "progress"] as const;
+export const FREE_MODULE_IDS = [
+  "escaner",
+  "sos",
+  "sim",
+  "ayuda",
+  "date",
+  "frases",
+  "feed",
+  "tudia",
+  "guardados",
+  "historial",
+] as const;
+export const PREMIUM_MODULE_IDS = [
+  "academia-full",
+  "biblioteca-full",
+  "scanner-unlimited",
+  "no-ads",
+  "progress",
+] as const;
 
 export function isSupabaseConfigured() {
   return !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);

@@ -25,7 +25,7 @@ const InputSchema = z.object({
 
 type Input = z.infer<typeof InputSchema>;
 
-function stringifyMessageContent(content: z.infer<typeof MessageSchema>['content']) {
+function stringifyMessageContent(content: z.infer<typeof MessageSchema>["content"]) {
   if (typeof content === "string") return content;
   return content
     .map((item) => {
@@ -48,18 +48,23 @@ function extractPromptText(messages: Input["messages"]) {
 }
 
 function parseCount(text: string, fallback = 5) {
-  const match = text.match(/array JSON (?:with|con) (\d+)/i)
-    || text.match(/(\d+) aperturas/i)
-    || text.match(/(\d+) respuestas/i);
+  const match =
+    text.match(/array JSON (?:with|con) (\d+)/i) ||
+    text.match(/(\d+) aperturas/i) ||
+    text.match(/(\d+) respuestas/i);
   return match ? Number(match[1]) : fallback;
 }
 
 function createMockResponse(data: Input) {
-  const systemText = stringifyMessageContent(data.messages.find((m) => m.role === "system")?.content ?? "");
+  const systemText = stringifyMessageContent(
+    data.messages.find((m) => m.role === "system")?.content ?? "",
+  );
   const userText = extractPromptText(data.messages.filter((m) => m.role === "user"));
   const count = parseCount(systemText + " " + userText, 5);
   const isRescue = /rescate|rescat[eé]|2 respuestas|respuestas/i.test(systemText + " " + userText);
-  const isScan = /coach de carisma|abridores|aperturas|escáner|perfil/i.test(systemText + " " + userText);
+  const isScan = /coach de carisma|abridores|aperturas|escáner|perfil/i.test(
+    systemText + " " + userText,
+  );
 
   const rescueOptions = [
     "Ok, no le des más vueltas al silencio. Mandale: ‘Te dejé esto en caso de que quieras seguir con buena onda 😎’.",
@@ -103,15 +108,15 @@ function createMockResponse(data: Input) {
 }
 
 export const chatCompletion = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => InputSchema.parse(data))
+  .validator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }: { data: Input }) => {
     const apiKey = process.env.LOVABLE_API_KEY;
-    const p1 = "Z3NrX0JadDhTbldGM1NzY1ZaZGFuYWdwV0d";
-    const p2 = "keWIzRllDMFczRDV4RnpQMjF3OHd0NEZaREdIR0w=";
-    const groqApiKey = process.env.GROQ_API_KEY || Buffer.from(p1 + p2, "base64").toString("utf-8");
+    const groqApiKey = process.env.GROQ_API_KEY;
 
     if (!apiKey && !groqApiKey) {
-      console.warn("[MAGNETO] Ni LOVABLE_API_KEY ni GROQ_API_KEY configuradas — usando respuestas de respaldo.");
+      console.warn(
+        "[MAGNETO] Ni LOVABLE_API_KEY ni GROQ_API_KEY configuradas — usando respuestas de respaldo.",
+      );
       return { content: createMockResponse(data), mock: true as const };
     }
 

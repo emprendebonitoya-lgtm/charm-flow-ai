@@ -3,16 +3,18 @@ import { AppShell } from "@/components/AppShell";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { chatCompletion } from "@/lib/ai.functions";
-import {
-  Send, Loader2, RotateCcw, Sparkles, Flame, BookOpen, Crown, Heart,
-} from "lucide-react";
+import { Send, Loader2, RotateCcw, Sparkles, Flame, BookOpen, Crown, Heart } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/sim")({
   head: () => ({
     meta: [
       { title: "Simulador · MAGNETO" },
-      { name: "description", content: "Entrená chats con 4 personalidades. La IA reacciona con interés, vibras y testeo real." },
+      {
+        name: "description",
+        content:
+          "Entrená chats con 4 personalidades. La IA reacciona con interés, vibras y testeo real.",
+      },
     ],
   }),
   component: Sim,
@@ -20,24 +22,44 @@ export const Route = createFileRoute("/sim")({
 
 const PERSONAS = [
   {
-    id: "timida", label: "Valentina", age: 24, vibe: "Tímida",
-    icon: Sparkles, color: "#C084FC",
-    prompt: "Sos Valentina, 24 años, tímida e introvertida pero curiosa y con humor seco cuando agarrás confianza. Te encanta el café de especialidad, los libros de no-ficción y los planes tranquilos. Respondés corto al principio (1-2 frases, emojis raros) y empezás a soltarte cuando el chico te pregunta cosas reales y no clichés. Si te tira un opener flojo, respondés con un 'jaja' seco. Si te interesa, dejás caer indirectas sutiles."
+    id: "timida",
+    label: "Valentina",
+    age: 24,
+    vibe: "Tímida",
+    icon: Sparkles,
+    color: "#C084FC",
+    prompt:
+      "Sos Valentina, 24 años, tímida e introvertida pero curiosa y con humor seco cuando agarrás confianza. Te encanta el café de especialidad, los libros de no-ficción y los planes tranquilos. Respondés corto al principio (1-2 frases, emojis raros) y empezás a soltarte cuando el chico te pregunta cosas reales y no clichés. Si te tira un opener flojo, respondés con un 'jaja' seco. Si te interesa, dejás caer indirectas sutiles.",
   },
   {
-    id: "fiestera", label: "Mía", age: 23, vibe: "Fiestera",
-    icon: Flame, color: "#F472B6",
-    prompt: "Sos Mía, 23, súper extrovertida y fiestera. Vivís de noche, vas a fiestas electrónicas, te encantan los road trips. Hablás con MUCHA energía, emojis, exageraciones, retás bromas, sos juguetona. Te enganchás con tipos con frame, humor rápido y que te sigan el ritmo. Si el chico es aburrido o nice guy, le tirás onda y te vas. Si te gusta, sos directa: '¿qué hacés esta noche?'."
+    id: "fiestera",
+    label: "Mía",
+    age: 23,
+    vibe: "Fiestera",
+    icon: Flame,
+    color: "#F472B6",
+    prompt:
+      "Sos Mía, 23, súper extrovertida y fiestera. Vivís de noche, vas a fiestas electrónicas, te encantan los road trips. Hablás con MUCHA energía, emojis, exageraciones, retás bromas, sos juguetona. Te enganchás con tipos con frame, humor rápido y que te sigan el ritmo. Si el chico es aburrido o nice guy, le tirás onda y te vas. Si te gusta, sos directa: '¿qué hacés esta noche?'.",
   },
   {
-    id: "intelectual", label: "Lucía", age: 27, vibe: "Intelectual",
-    icon: BookOpen, color: "#A78BFA",
-    prompt: "Sos Lucía, 27, arquitecta. Lectora compulsiva, te interesa filosofía, cine de autor, viajes a lugares raros. Respondés con preguntas profundas y un toque irónico. Te aburren los clichés y los 'hola, ¿cómo estás?'. Si el chico engancha con una idea o referencia interesante, te encendés y profundizás. Sos selectiva pero cálida con quien te estimula la cabeza."
+    id: "intelectual",
+    label: "Lucía",
+    age: 27,
+    vibe: "Intelectual",
+    icon: BookOpen,
+    color: "#A78BFA",
+    prompt:
+      "Sos Lucía, 27, arquitecta. Lectora compulsiva, te interesa filosofía, cine de autor, viajes a lugares raros. Respondés con preguntas profundas y un toque irónico. Te aburren los clichés y los 'hola, ¿cómo estás?'. Si el chico engancha con una idea o referencia interesante, te encendés y profundizás. Sos selectiva pero cálida con quien te estimula la cabeza.",
   },
   {
-    id: "dificil", label: "Camila", age: 26, vibe: "Difícil",
-    icon: Crown, color: "#FBBF24",
-    prompt: "Sos Camila, 26, modelo freelance. Tenés MUCHAS opciones y lo sabés. Testeás constantemente: respondés frío, tardás, tirás shit tests ('¿y vos qué tenés de especial?'). Te ablandás SOLO si el chico mantiene el frame, no se cae, responde con humor o ignora el test. Si demuestra valor, sos súper cálida y picante. Si tiembla, lo descartás."
+    id: "dificil",
+    label: "Camila",
+    age: 26,
+    vibe: "Difícil",
+    icon: Crown,
+    color: "#FBBF24",
+    prompt:
+      "Sos Camila, 26, modelo freelance. Tenés MUCHAS opciones y lo sabés. Testeás constantemente: respondés frío, tardás, tirás shit tests ('¿y vos qué tenés de especial?'). Te ablandás SOLO si el chico mantiene el frame, no se cae, responde con humor o ignora el test. Si demuestra valor, sos súper cálida y picante. Si tiembla, lo descartás.",
   },
 ] as const;
 type PersonaId = (typeof PERSONAS)[number]["id"];
@@ -50,23 +72,36 @@ function Sim() {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [feedback, setFeedback] = useState<{ score: number; tips: string[]; interest: number } | null>(null);
+  const [feedback, setFeedback] = useState<{
+    score: number;
+    tips: string[];
+    interest: number;
+  } | null>(null);
 
   const userTurns = msgs.filter((m) => m.role === "user").length;
   const locked = userTurns >= 5;
 
-  const start = (id: PersonaId) => { setPersona(id); setMsgs([]); setFeedback(null); };
+  const start = (id: PersonaId) => {
+    setPersona(id);
+    setMsgs([]);
+    setFeedback(null);
+  };
 
   const send = async () => {
     if (!text.trim() || !persona || locked) return;
     const p = PERSONAS.find((x) => x.id === persona)!;
     const next: Msg[] = [...msgs, { role: "user", content: text.trim() }];
-    setMsgs(next); setText(""); setLoading(true);
+    setMsgs(next);
+    setText("");
+    setLoading(true);
     try {
       const res = await chat({
         data: {
           messages: [
-            { role: "system", content: `${p.prompt} Estás chateando por DM con un chico que te escribió. Respondé en 1-2 frases (a veces 3 si te enganchás), español neutro, manteniéndote 100% en personaje, con vibras coherentes a tu personalidad. Mostrás interés gradual: empezás neutra, te encendés si te sorprende, te enfriás si es flojo. Podés usar emojis ocasionales propios de tu vibra.` },
+            {
+              role: "system",
+              content: `${p.prompt} Estás chateando por DM con un chico que te escribió. Respondé en 1-2 frases (a veces 3 si te enganchás), español neutro, manteniéndote 100% en personaje, con vibras coherentes a tu personalidad. Mostrás interés gradual: empezás neutra, te encendés si te sorprende, te enfriás si es flojo. Podés usar emojis ocasionales propios de tu vibra.`,
+            },
             ...next.map((m) => ({ role: m.role, content: m.content })),
           ],
           temperature: 0.95,
@@ -80,7 +115,11 @@ function Sim() {
         const fb = await chat({
           data: {
             messages: [
-              { role: "system", content: "Sos un coach de carisma. Analizá el chat del usuario (rol 'user') vs la chica (rol 'assistant'). Devolvé EXACTAMENTE un JSON: {\"score\": número 1-10 (calidad del chico), \"interest\": número 1-10 (cuánto interés mostró ella), \"tips\": [3 consejos cortos en español para mejorar]}. Nada fuera del JSON." },
+              {
+                role: "system",
+                content:
+                  'Sos un coach de carisma. Analizá el chat del usuario (rol \'user\') vs la chica (rol \'assistant\'). Devolvé EXACTAMENTE un JSON: {"score": número 1-10 (calidad del chico), "interest": número 1-10 (cuánto interés mostró ella), "tips": [3 consejos cortos en español para mejorar]}. Nada fuera del JSON.',
+              },
               { role: "user", content: JSON.stringify(after) },
             ],
             temperature: 0.4,
@@ -89,10 +128,15 @@ function Sim() {
         try {
           const m = fb.content.match(/\{[\s\S]*\}/);
           if (m) setFeedback(JSON.parse(m[0]));
-        } catch { /* ignore */ }
+        } catch {
+          // Ignore malformed feedback payload and keep chat usable.
+        }
       }
-    } catch (e: any) { toast.error(e?.message ?? "Algo falló"); }
-    finally { setLoading(false); }
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Algo falló");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!persona) {
@@ -102,8 +146,11 @@ function Sim() {
           {PERSONAS.map((p) => {
             const Icon = p.icon;
             return (
-              <button key={p.id} onClick={() => start(p.id)}
-                className="neon-card neon-card-strong rounded-2xl p-5 text-left transition-all hover:-translate-y-0.5 hover:neon-glow group">
+              <button
+                key={p.id}
+                onClick={() => start(p.id)}
+                className="neon-card neon-card-strong rounded-2xl p-5 text-left transition-all hover:-translate-y-0.5 hover:neon-glow group"
+              >
                 <div
                   className="h-12 w-12 rounded-2xl flex items-center justify-center mb-3"
                   style={{
@@ -149,7 +196,9 @@ function Sim() {
             <Icon className="h-5 w-5 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-medium text-sm">{current.label}, {current.age}</div>
+            <div className="font-medium text-sm">
+              {current.label}, {current.age}
+            </div>
             <div className="text-[11px] text-[#BFDBFE]/70">{current.vibe} · online ahora</div>
           </div>
           <button onClick={() => setPersona(null)} className="btn-ghost !py-2 !px-3">
@@ -172,9 +221,14 @@ function Sim() {
                     ? "bg-[rgba(168,85,247,0.25)] border border-[rgba(168,85,247,0.35)] text-white"
                     : "text-white"
                 }`}
-                style={m.role === "assistant"
-                  ? { background: `linear-gradient(135deg, ${current.color}33, rgba(29,78,216,0.4))`, border: `1px solid ${current.color}55` }
-                  : undefined}
+                style={
+                  m.role === "assistant"
+                    ? {
+                        background: `linear-gradient(135deg, ${current.color}33, rgba(29,78,216,0.4))`,
+                        border: `1px solid ${current.color}55`,
+                      }
+                    : undefined
+                }
               >
                 {m.content}
               </div>
@@ -192,7 +246,8 @@ function Sim() {
         {!locked && (
           <div className="flex gap-2">
             <input
-              value={text} onChange={(e) => setText(e.target.value)}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
               placeholder={`Escribile a ${current.label}…`}
               className="flex-1 bg-[rgba(15,25,55,0.6)] border border-[rgba(168,85,247,0.2)] rounded-2xl px-4 py-3 text-sm outline-none focus:border-[rgba(236,72,153,0.5)]"
@@ -215,20 +270,41 @@ function Sim() {
 }
 
 function FeedbackCard({
-  fb, onReset,
-}: { fb: { score: number; tips: string[]; interest: number }; onReset: () => void }) {
+  fb,
+  onReset,
+}: {
+  fb: { score: number; tips: string[]; interest: number };
+  onReset: () => void;
+}) {
   const pct = Math.max(0, Math.min(100, fb.score * 10));
   const ipct = Math.max(0, Math.min(100, (fb.interest ?? 5) * 10));
-  const R = 38; const C = 2 * Math.PI * R;
+  const R = 38;
+  const C = 2 * Math.PI * R;
   return (
     <div className="neon-card neon-card-strong rounded-3xl p-5 animate-fade-in">
       <div className="flex items-center gap-5">
         <div className="relative h-24 w-24 shrink-0">
           <svg viewBox="0 0 100 100" className="h-24 w-24 -rotate-90">
-            <circle cx="50" cy="50" r={R} stroke="rgba(255,255,255,0.08)" strokeWidth="6" fill="none" />
-            <circle cx="50" cy="50" r={R} stroke="url(#g)" strokeWidth="6" fill="none"
-              strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C - (pct / 100) * C}
-              style={{ filter: "drop-shadow(0 0 8px #A855F7)" }} />
+            <circle
+              cx="50"
+              cy="50"
+              r={R}
+              stroke="rgba(255,255,255,0.08)"
+              strokeWidth="6"
+              fill="none"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r={R}
+              stroke="url(#g)"
+              strokeWidth="6"
+              fill="none"
+              strokeLinecap="round"
+              strokeDasharray={C}
+              strokeDashoffset={C - (pct / 100) * C}
+              style={{ filter: "drop-shadow(0 0 8px #A855F7)" }}
+            />
             <defs>
               <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%" stopColor="#C084FC" />
@@ -264,7 +340,10 @@ function FeedbackCard({
           </li>
         ))}
       </ul>
-      <button onClick={onReset} className="mt-4 inline-flex items-center gap-2 text-sm text-[#93C5FD] hover:underline">
+      <button
+        onClick={onReset}
+        className="mt-4 inline-flex items-center gap-2 text-sm text-[#93C5FD] hover:underline"
+      >
         <RotateCcw className="h-4 w-4" /> Reintentar
       </button>
     </div>
