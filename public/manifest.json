@@ -1,0 +1,49 @@
+{
+  "name": "MAGNETO - Carisma y Seducción con IA",
+  "short_name": "MAGNETO",
+  "description": "Software de carisma masculino con inteligencia artificial. Escáner de perfiles, salvavidas de chat y más.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c1224",
+  "theme_color": "#a855f7",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "education"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Escáner",
+      "short_name": "Escáner",
+      "description": "Analiza perfiles con IA",
+      "url": "/escaner",
+      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "SOS",
+      "short_name": "SOS",
+      "description": "Rescata tus chats",
+      "url": "/sos",
+      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Simulador",
+      "short_name": "Sim",
+      "description": "Entrena tus habilidades",
+      "url": "/sim",
+      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+    }
+  ]
+}

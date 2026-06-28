@@ -10,6 +10,9 @@ import {
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "sonner";
 import { UserProvider } from "@/lib/user";
+import "@/lib/sentry";
+import { initGA, trackPageView } from "@/lib/analytics";
+import { getStructuredData, getOrganizationData, getWebsiteData } from "@/lib/structured-data";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -114,6 +117,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600&display=swap",
       },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        innerHTML: JSON.stringify(getStructuredData()),
+      },
+      {
+        type: "application/ld+json",
+        innerHTML: JSON.stringify(getOrganizationData()),
+      },
+      {
+        type: "application/ld+json",
+        innerHTML: JSON.stringify(getWebsiteData()),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -124,10 +141,29 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: ReactNode }) {
   const adClient = import.meta.env.VITE_ADSENSE_CLIENT as string | undefined;
 
+  useEffect(() => {
+    initGA();
+    
+    // Register Service Worker para PWA
+    if ('serviceWorker' in navigator && import.meta.env.PROD) {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('Service Worker registrado:', registration);
+        })
+        .catch((error) => {
+          console.error('Error registrando Service Worker:', error);
+        });
+    }
+  }, []);
+
   return (
     <html lang="es">
       <head>
         <HeadContent />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#a855f7" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         {adClient && (
           <script
             async
@@ -146,6 +182,12 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  const location = router.state.location;
+
+  useEffect(() => {
+    trackPageView(location.pathname);
+  }, [location.pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>

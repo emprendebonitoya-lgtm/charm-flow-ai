@@ -1,0 +1,16 @@
+# robots.txt para MAGNETO
+# Permite a todos los crawlers acceder al sitio
+
+User-agent: *
+Allow: /
+
+# Bloquear acceso a archivos de configuración y temporales
+Disallow: /api/
+Disallow: /admin/
+Disallow: /.env
+Disallow: /node_modules/
+Disallow: /dist/
+Disallow: /.git/
+
+# Sitemap location
+Sitemap: https://tu-dominio.com/sitemap.xml

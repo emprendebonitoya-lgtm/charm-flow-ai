@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 
 const nav = [
-  { to: "/", label: "Home", icon: Home },
+  { to: "/app", label: "Home", icon: Home },
   { to: "/escaner", label: "Escáner", icon: Scan },
   { to: "/sos", label: "SOS", icon: LifeBuoy },
   { to: "/sim", label: "Sim", icon: MessagesSquare },
@@ -76,12 +76,12 @@ export function AppShell({
 
   return (
     <div
-      className={`relative min-h-dvh ${path === "/" ? "pb-6" : "pb-28"} bg-background overflow-hidden`}
+      className={`relative min-h-dvh ${path === "/app" ? "pb-6" : "pb-28"} bg-background overflow-hidden`}
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.18),transparent_26%),radial-gradient(circle_at_80%_20%,rgba(236,72,153,0.14),transparent_30%)]" />
       <header className="sticky top-0 z-30 px-4 pt-2 pb-2 sm:pt-4 sm:pb-4 backdrop-blur-3xl bg-[rgba(6,10,24,0.74)] border-b border-white/10 shadow-[0_18px_60px_-30px_rgba(0,0,0,0.7)]">
         <div className="mx-auto max-w-2xl flex flex-wrap items-center justify-between gap-3">
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/app" className="flex items-center gap-3">
             <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-[1rem] sm:rounded-[1.5rem] overflow-hidden flex items-center justify-center neon-glow shadow-lg shadow-[rgba(168,85,247,0.16)]">
               <Logo className="h-full w-full" />
             </div>
@@ -94,7 +94,7 @@ export function AppShell({
               </div>
             </div>
           </Link>
-          {path !== "/" && (
+          {path !== "/app" && (
             <div className="hidden sm:flex flex-wrap items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 shadow-[0_16px_40px_-28px_rgba(0,0,0,0.7)]">
               <div className="hidden sm:flex flex-col gap-1 rounded-full bg-purple-500/10 px-3 py-2 text-[11px] uppercase tracking-[0.24em] text-fuchsia-100">
                 <span>{planLabel}</span>
@@ -112,6 +112,7 @@ export function AppShell({
               {!state.isPremium ? (
                 <Link
                   to="/premium"
+                  search={{ canceled: false }}
                   className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15"
                 >
                   Suscribite
@@ -166,8 +167,8 @@ export function AppShell({
                 <p className="mt-2 text-sm text-muted-foreground max-w-xl">{subtitle}</p>
               )}
             </div>
-            {path !== "/" && (
-              <Link to="/" className="btn-ghost !py-2 !px-4 shrink-0">
+            {path !== "/app" && (
+              <Link to="/app" className="btn-ghost !py-2 !px-4 shrink-0">
                 <Home className="h-4 w-4" /> Inicio
               </Link>
             )}
@@ -175,7 +176,7 @@ export function AppShell({
         )}
       </header>
 
-      {path !== "/" && (
+      {path !== "/app" && (
         <Link
           to="/ayuda"
           className="pointer-events-auto fixed bottom-[calc(max(env(safe-area-inset-bottom),10px)+92px)] left-4 z-50 inline-flex items-center gap-3 rounded-full bg-violet-500 px-5 py-3 text-sm font-semibold text-white shadow-[0_24px_80px_-38px_rgba(124,58,237,0.7)] transition duration-300 hover:bg-violet-400 active:scale-[0.99]"
@@ -189,15 +190,15 @@ export function AppShell({
       )}
 
       <main className="mx-auto max-w-4xl px-4 sm:px-6 py-3 sm:py-6">
-        {!state.isPremium && path !== "/" && path !== "/premium" && path !== "/login" && (
-          <AdBanner slot="header" className="mb-5" />
-        )}
-        {children}
-      </main>
+      {!state.isPremium && path !== "/app" && path !== "/premium" && path !== "/login" && (
+        <AdBanner slot="header" className="mb-5" />
+      )}
+      {children}
+    </main>
 
-      {/* Bottom navbar */}
-      {path !== "/" && (
-        <nav
+    {/* Bottom navbar */}
+    {path !== "/app" && (
+      <nav
           className="fixed bottom-0 inset-x-0 z-40 pointer-events-none"
           style={{ paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
         >
@@ -219,9 +220,9 @@ export function AppShell({
                 boxShadow: "0 12px 40px rgba(0,0,0,0.35)",
               }}
             >
-              {nav.map(({ to, label, icon: Icon }) => {
-                const active = to === "/" ? path === "/" : path === to || path.startsWith(to + "/");
-                return (
+            {nav.map(({ to, label, icon: Icon }) => {
+              const active = to === "/app" ? path === "/app" : path === to || path.startsWith(to + "/");
+              return (
                   <Link
                     key={to}
                     to={to}

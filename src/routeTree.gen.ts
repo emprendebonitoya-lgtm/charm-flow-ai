@@ -20,15 +20,16 @@ import { Route as PremiumDebugRouteImport } from './routes/premium-debug'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as LandingRouteImport } from './routes/landing'
 import { Route as HistorialRouteImport } from './routes/historial'
 import { Route as GuardadosRouteImport } from './routes/guardados'
 import { Route as FrasesRouteImport } from './routes/frases'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as EscanerRouteImport } from './routes/escaner'
 import { Route as DateRouteImport } from './routes/date'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as AyudaRouteImport } from './routes/ayuda'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as AcademiaRouteImport } from './routes/academia'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -87,11 +88,6 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LandingRoute = LandingRouteImport.update({
-  id: '/landing',
-  path: '/landing',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const HistorialRoute = HistorialRouteImport.update({
   id: '/historial',
   path: '/historial',
@@ -122,6 +118,11 @@ const DateRoute = DateRouteImport.update({
   path: '/date',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BibliotecaRoute = BibliotecaRouteImport.update({
   id: '/biblioteca',
   path: '/biblioteca',
@@ -130,6 +131,11 @@ const BibliotecaRoute = BibliotecaRouteImport.update({
 const AyudaRoute = AyudaRouteImport.update({
   id: '/ayuda',
   path: '/ayuda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AcademiaRoute = AcademiaRouteImport.update({
@@ -146,15 +152,16 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRoute
+  '/app': typeof AppRoute
   '/ayuda': typeof AyudaRoute
   '/biblioteca': typeof BibliotecaRoute
+  '/dashboard': typeof DashboardRoute
   '/date': typeof DateRoute
   '/escaner': typeof EscanerRoute
   '/feed': typeof FeedRoute
   '/frases': typeof FrasesRoute
   '/guardados': typeof GuardadosRoute
   '/historial': typeof HistorialRoute
-  '/landing': typeof LandingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/premium': typeof PremiumRoute
@@ -170,15 +177,16 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRoute
+  '/app': typeof AppRoute
   '/ayuda': typeof AyudaRoute
   '/biblioteca': typeof BibliotecaRoute
+  '/dashboard': typeof DashboardRoute
   '/date': typeof DateRoute
   '/escaner': typeof EscanerRoute
   '/feed': typeof FeedRoute
   '/frases': typeof FrasesRoute
   '/guardados': typeof GuardadosRoute
   '/historial': typeof HistorialRoute
-  '/landing': typeof LandingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/premium': typeof PremiumRoute
@@ -195,15 +203,16 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRoute
+  '/app': typeof AppRoute
   '/ayuda': typeof AyudaRoute
   '/biblioteca': typeof BibliotecaRoute
+  '/dashboard': typeof DashboardRoute
   '/date': typeof DateRoute
   '/escaner': typeof EscanerRoute
   '/feed': typeof FeedRoute
   '/frases': typeof FrasesRoute
   '/guardados': typeof GuardadosRoute
   '/historial': typeof HistorialRoute
-  '/landing': typeof LandingRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/premium': typeof PremiumRoute
@@ -221,15 +230,16 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/academia'
+    | '/app'
     | '/ayuda'
     | '/biblioteca'
+    | '/dashboard'
     | '/date'
     | '/escaner'
     | '/feed'
     | '/frases'
     | '/guardados'
     | '/historial'
-    | '/landing'
     | '/login'
     | '/onboarding'
     | '/premium'
@@ -245,15 +255,16 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/academia'
+    | '/app'
     | '/ayuda'
     | '/biblioteca'
+    | '/dashboard'
     | '/date'
     | '/escaner'
     | '/feed'
     | '/frases'
     | '/guardados'
     | '/historial'
-    | '/landing'
     | '/login'
     | '/onboarding'
     | '/premium'
@@ -269,15 +280,16 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/academia'
+    | '/app'
     | '/ayuda'
     | '/biblioteca'
+    | '/dashboard'
     | '/date'
     | '/escaner'
     | '/feed'
     | '/frases'
     | '/guardados'
     | '/historial'
-    | '/landing'
     | '/login'
     | '/onboarding'
     | '/premium'
@@ -294,15 +306,16 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AcademiaRoute: typeof AcademiaRoute
+  AppRoute: typeof AppRoute
   AyudaRoute: typeof AyudaRoute
   BibliotecaRoute: typeof BibliotecaRoute
+  DashboardRoute: typeof DashboardRoute
   DateRoute: typeof DateRoute
   EscanerRoute: typeof EscanerRoute
   FeedRoute: typeof FeedRoute
   FrasesRoute: typeof FrasesRoute
   GuardadosRoute: typeof GuardadosRoute
   HistorialRoute: typeof HistorialRoute
-  LandingRoute: typeof LandingRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
   PremiumRoute: typeof PremiumRoute
@@ -395,13 +408,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/landing': {
-      id: '/landing'
-      path: '/landing'
-      fullPath: '/landing'
-      preLoaderRoute: typeof LandingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/historial': {
       id: '/historial'
       path: '/historial'
@@ -444,6 +450,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/biblioteca': {
       id: '/biblioteca'
       path: '/biblioteca'
@@ -456,6 +469,13 @@ declare module '@tanstack/react-router' {
       path: '/ayuda'
       fullPath: '/ayuda'
       preLoaderRoute: typeof AyudaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/academia': {
@@ -478,15 +498,16 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AcademiaRoute: AcademiaRoute,
+  AppRoute: AppRoute,
   AyudaRoute: AyudaRoute,
   BibliotecaRoute: BibliotecaRoute,
+  DashboardRoute: DashboardRoute,
   DateRoute: DateRoute,
   EscanerRoute: EscanerRoute,
   FeedRoute: FeedRoute,
   FrasesRoute: FrasesRoute,
   GuardadosRoute: GuardadosRoute,
   HistorialRoute: HistorialRoute,
-  LandingRoute: LandingRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
   PremiumRoute: PremiumRoute,

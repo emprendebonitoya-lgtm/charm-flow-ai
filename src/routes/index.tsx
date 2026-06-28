@@ -1,378 +1,242 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AppShell } from "@/components/AppShell";
-import { useMemo, useState } from "react";
-import { useUser } from "@/lib/user";
-import { FREE_LIMITS } from "@/lib/plans";
-import { loadPremiumProgressHistory } from "@/lib/storage";
-
+import { motion } from "framer-motion";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
-  Scan,
-  LifeBuoy,
-  MessagesSquare,
-  MessageSquare,
-  CalendarHeart,
-  Flame,
-  Library,
-  ArrowRight,
-  Zap,
-  GraduationCap,
-  Quote,
-  Sun,
-  Bookmark,
+  Film, Image, Lightbulb, Play, Zap, ShieldCheck, Sparkles, Scan, LifeBuoy, MessagesSquare, CalendarHeart, GraduationCap, ArrowUpRight
 } from "lucide-react";
+import { Logo } from "@/components/Logo";
+
+const LOCAL_VIDEO = "/hero-bg.mp4";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MAGNETO — Carisma y seducción con IA" },
+      { title: "Charm Flow AI — Carisma operativo para el hombre moderno (MAGNETO)" },
       {
         name: "description",
-        content:
-          "Software de carisma para hombres tímidos. Subí una foto y la IA te entrega aperturas, rescates, planes de cita y lecciones.",
+        content: "Charm Flow AI (MAGNETO): Software de carisma con IA para hombres. Aperturas, salvavidas de chat, simulador de citas, planes de cita y academia diaria. Diseñado para resultados.",
       },
+      { property: "og:title", content: "Charm Flow AI (MAGNETO) — Carisma con IA" },
+      {
+        property: "og:description",
+        content: "Charm Flow AI: Aperturas, rescates de chat y planes de cita con IA. Una experiencia de estudio para hombres que exigen resultados.",
+      },
+      { property: "og:type", content: "website" },
     ],
   }),
-  component: Home,
+  component: Landing,
 });
 
-const primary = [
-  {
-    to: "/escaner",
-    label: "Escáner",
-    desc: "Foto de su perfil → 5 aperturas de impacto.",
-    icon: Scan,
-  },
-  {
-    to: "/sos",
-    label: "Salvavidas",
-    desc: "Rescatá un chat enfriado en segundos.",
-    icon: LifeBuoy,
-  },
-  {
-    to: "/sim",
-    label: "Simulador",
-    desc: "Entrená con 4 personalidades distintas.",
-    icon: MessagesSquare,
-  },
-  {
-    to: "/date",
-    label: "Date Planner",
-    desc: "Citas en 3 fases: Apertura · Conexión · Cierre",
-    icon: CalendarHeart,
-  },
-] as const;
+function FadingVideo({ src, className, style }: { src: string; className?: string; style?: CSSProperties }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [opacity, setOpacity] = useState(0);
+  const [failed, setFailed] = useState(false);
 
-const secondary = [
-  {
-    to: "/academia",
-    label: "Academia",
-    desc: "Lecciones cortas accionables.",
-    icon: GraduationCap,
-  },
-  { to: "/frases", label: "Frases", desc: "Banco listo para copiar y pegar.", icon: Quote },
-  { to: "/biblioteca", label: "Mindset", desc: "Píldoras de psicología y voz.", icon: Library },
-  { to: "/tudia", label: "Tu Día", desc: "Una misión diaria de 5 minutos.", icon: Sun },
-  { to: "/feed", label: "Feed", desc: "Casos reales de la comunidad.", icon: Flame },
-  { to: "/guardados", label: "Guardados", desc: "Tus mejores líneas rescatables.", icon: Bookmark },
-] as const;
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    let raf = 0;
+    let isMounted = true;
+    const fadeTo = (target: number, duration: number) => {
+      cancelAnimationFrame(raf);
+      const start = performance.now();
+      const from = Number(v.dataset.opacity ?? "0");
+      const tick = (t: number) => {
+        const p = Math.min(1, (t - start) / duration);
+        const next = from + (target - from) * p;
+        v.dataset.opacity = String(next);
+        if (isMounted) setOpacity(next);
+        if (p < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    };
+    const onLoaded = () => fadeTo(1, 500);
+    const onTime = () => { if (v.duration && v.duration - v.currentTime <= 0.55) fadeTo(0, 550); };
+    const onEnded = () => { v.currentTime = 0; v.play().catch(() => {}); fadeTo(1, 500); };
+    const onError = () => setFailed(true);
+    v.addEventListener("loadeddata", onLoaded);
+    v.addEventListener("timeupdate", onTime);
+    v.addEventListener("ended", onEnded);
+    v.addEventListener("error", onError);
+    return () => {
+      isMounted = false;
+      cancelAnimationFrame(raf);
+      v.removeEventListener("loadeddata", onLoaded);
+      v.removeEventListener("timeupdate", onTime);
+      v.removeEventListener("ended", onEnded);
+      v.removeEventListener("error", onError);
+    };
+  }, []);
 
-function parseDate(value: string) {
-  return new Date(value + "T00:00:00");
+  if (failed) return <div className={className} style={{ ...style, background: "linear-gradient(135deg, #0a0f1e 0%, #1a1f3e 50%, #0a0f1e 100%)" }} />;
+  return <video ref={ref} autoPlay muted loop playsInline className={className} style={style} />;
 }
 
-function computePremiumStreak(history: { date: string }[]) {
-  if (!history.length) return 0;
-  const sorted = [...history].sort(
-    (a, b) => parseDate(b.date).getTime() - parseDate(a.date).getTime(),
-  );
-  let streak = 1;
-  let previous = parseDate(sorted[0].date);
+function Landing() {
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  for (let i = 1; i < sorted.length; i += 1) {
-    const current = parseDate(sorted[i].date);
-    const diff = Math.round((previous.getTime() - current.getTime()) / 86400000);
-    if (diff === 1) {
-      streak += 1;
-      previous = current;
-    } else {
-      break;
-    }
-  }
-
-  return streak;
-}
-
-const heroMedia = {
-  poster:
-    "radial-gradient(circle at 20% 30%, rgba(168,85,247,0.35), transparent 40%), radial-gradient(circle at 80% 70%, rgba(236,72,153,0.25), transparent 35%), linear-gradient(135deg, #0c1224 0%, #1a0a2e 50%, #0f172a 100%)",
-};
-
-function Home() {
-  const { state, skipOnboarding } = useUser();
-  const [videoFailed, setVideoFailed] = useState(false);
-  const premiumHistory = useMemo(
-    () => (state.isPremium ? loadPremiumProgressHistory() : []),
-    [state.isPremium],
-  );
-  const premiumStreak = useMemo(() => computePremiumStreak(premiumHistory), [premiumHistory]);
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <AppShell>
-      {/* Hero */}
-      <section
-        className="relative overflow-x-hidden rounded-[2rem] glass-panel p-5 sm:p-8 mb-8 shadow-[0_30px_90px_-50px_rgba(34,211,238,0.26)]"
-        style={{ backgroundImage: heroMedia.poster }}
-      >
-        {/* Background: video + overlays clipped to rounded corners */}
-        <div className="absolute inset-0 z-0 overflow-hidden rounded-[2rem]">
-          {!videoFailed ? (
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="absolute inset-0 h-full w-full object-cover object-center"
-              onError={() => setVideoFailed(true)}
-            >
-              <source src="/hero-bg.mp4" type="video/mp4" />
-            </video>
-          ) : (
-            <div
-              className="absolute inset-0 h-full w-full"
-              style={{
-                background: "linear-gradient(135deg, #0c1224 0%, #1a0a2e 50%, #0f172a 100%)",
-              }}
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-br from-[rgba(4,6,15,0.6)] via-[rgba(8,12,30,0.45)] to-[rgba(15,23,42,0.7)]" />
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-fuchsia-500/20 blur-3xl animate-pulse" />
-            <div className="absolute bottom-1/4 right-1/4 h-48 w-48 rounded-full bg-violet-500/20 blur-3xl animate-pulse [animation-delay:1s]" />
+    <div className="min-h-screen bg-[#0c1224] text-white selection:bg-fuchsia-500/30">
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 py-4 ${isScrolled ? "bg-[#0c1224]/80 backdrop-blur-xl border-b border-white/10 py-3" : "bg-transparent"}`}>
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Logo />
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+            <a href="#metodo" className="hover:text-fuchsia-300 transition-colors">Método</a>
+            <a href="#herramientas" className="hover:text-fuchsia-300 transition-colors">Herramientas</a>
+            <a href="#academia" className="hover:text-fuchsia-300 transition-colors">Academia</a>
+            <Link to="/dashboard" className="px-5 py-2 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition-all text-white">Entrar</Link>
           </div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.12),transparent_22%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.1),transparent_22%)]" />
-          <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-fuchsia-500/12 via-violet-500/12 to-transparent pointer-events-none" />
-          <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full blur-3xl opacity-55 bg-fuchsia-500/18" />
-          <div className="absolute -bottom-16 -left-16 h-56 w-56 rounded-full blur-3xl opacity-55 bg-violet-500/18" />
         </div>
-        <div className="relative z-30 max-w-3xl">
-          <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-4">
-            <span className="pill inline-flex items-center gap-2 bg-white/10 border-white/10 text-white/80">
-              <Zap className="h-3.5 w-3.5" />
-              MAGNETO v1
-            </span>
-            <span className="hidden sm:inline text-[11px] uppercase tracking-[0.32em] text-[#cbd5e1]/70">
-              Premium AI para carisma
-            </span>
-          </div>
-          <h1 className="font-display text-[1.75rem] leading-[1.05] sm:text-5xl md:text-6xl font-black tracking-tight text-white">
-            <span className="sm:hidden">Carisma que convierte.</span>
-            <span className="hidden sm:inline">
-              Carisma operativo para el hombre moderno.
-              <span className="block mt-1 sm:mt-3 text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-300 via-purple-300 to-violet-300">
-                Magnetismo en código.
-              </span>
-            </span>
-          </h1>
-          <div className="hidden sm:flex mt-4 sm:mt-8 flex-col sm:flex-row gap-3 sm:items-center">
-            <Link
-              to="/escaner"
-              className="btn-cyber inline-flex items-center gap-2 px-5 sm:px-6 py-3 text-sm sm:text-base"
-            >
-              Iniciar escaneo <ArrowRight className="h-4 w-4" />
+      </nav>
+
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+        <FadingVideo src={LOCAL_VIDEO} className="absolute inset-0 w-full h-full object-cover opacity-40 z-0" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0c1224]/60 to-[#0c1224] z-10" />
+        <div className="relative z-20 max-w-7xl mx-auto px-6 text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fuchsia-500/10 border border-fuchsia-500/20 text-fuchsia-300 text-xs font-bold uppercase tracking-widest mb-8">
+            <Sparkles className="h-3 w-3" /> El estándar de carisma operativo
+          </motion.div>
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="text-5xl md:text-7xl lg:text-8xl font-heading italic font-bold tracking-tighter leading-[0.9] mb-8">
+            Domina el juego <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 via-violet-400 to-cyan-400">del carisma.</span>
+          </motion.h1>
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }} className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto font-body font-light leading-relaxed mb-12">
+            No es magia, es ingeniería social aplicada. Accedé a la IA que diseña tus aperturas, rescata tus chats y entrena tu mentalidad para resultados reales.
+          </motion.p>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.6 }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link to="/dashboard" className="w-full sm:w-auto rounded-full bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-500 px-10 py-4 text-lg font-semibold text-white shadow-[0_20px_50px_-20px_rgba(168,85,247,0.6)] hover:scale-105 transition-all duration-300">
+              Empezar ahora gratis
             </Link>
-            <Link
-              to="/ayuda"
-              className="btn-ghost inline-flex items-center gap-2 px-5 sm:px-6 py-3 text-white/90 border border-white/10 hover:bg-white/5 text-sm sm:text-base"
-            >
-              <MessageSquare className="h-4 w-4" /> Asistente
-            </Link>
-          </div>
-          <p className="mt-3 sm:mt-6 max-w-2xl text-sm sm:text-base md:text-lg leading-6 sm:leading-8 text-slate-300">
-            <span className="sm:hidden">Escaneá, rescatá chats y llegá preparado a cada cita.</span>
-            <span className="hidden sm:inline">
-              Subí su perfil, rescatá un chat o planificá una cita con IA elegante y efectiva.
-            </span>
-          </p>
-          <div className="hidden sm:grid mt-6 gap-3 sm:grid-cols-3">
-            <span className="chip chip-active text-[11px]">Aperturas instantáneas</span>
-            <span className="chip text-[11px]">Rescates en segundos</span>
-            <span className="chip text-[11px]">Plan diario claro</span>
-          </div>
-          {/* spacer so content doesn’t sit flush at section bottom on mobile */}
-          <div className="h-4 sm:hidden" />
+            <a href="#metodo" className="w-full sm:w-auto px-10 py-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-white font-medium">Ver Método</a>
+          </motion.div>
         </div>
       </section>
 
-      <div className="sm:hidden mb-6 grid grid-cols-1 gap-3">
-        <Link
-          to="/escaner"
-          className="btn-cyber inline-flex items-center justify-center gap-2 px-5 py-3 text-sm"
-        >
-          Iniciar escaneo <ArrowRight className="h-4 w-4" />
-        </Link>
-        <Link
-          to="/ayuda"
-          className="btn-ghost inline-flex items-center justify-center gap-2 px-5 py-3 text-white/90 border border-white/10 hover:bg-white/5 text-sm"
-        >
-          <MessageSquare className="h-4 w-4" /> Asistente
-        </Link>
-      </div>
-
-      {!state.onboarded && (
-        <section className="mb-6 rounded-[2rem] glass-panel glass-panel-interactive border border-fuchsia-400/20 p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-slate-300">
-              MAGNETO funciona sin cuenta. Opcionalmente podés personalizar tu experiencia con el
-              onboarding.
-            </p>
-            <div className="flex flex-wrap gap-2 shrink-0">
-              <Link to="/onboarding" className="btn-cyber !py-2 !px-4 text-sm">
-                Personalizar
-              </Link>
-              <button onClick={skipOnboarding} className="btn-ghost !py-2 !px-4 text-sm">
-                Explorar gratis
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
-
-      <section className="mb-6 rounded-[2rem] glass-panel glass-panel-interactive border border-white/10 p-6 shadow-[0_24px_90px_-50px_rgba(168,85,247,0.22)]">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.32em] text-[#cbd5e1]/70">
-              Plan Gratis
-            </div>
-            <h2 className="mt-2 text-2xl font-semibold text-white">Probá MAGNETO sin pagar.</h2>
-            <p className="mt-2 max-w-2xl text-sm text-slate-300">
-              Escáner ({FREE_LIMITS.scannerDaily}/día), SOS, Sim, Asistente, Date Planner, Frases y
-              Feed incluidos. Academia ({FREE_LIMITS.academiaModules} módulos) y Biblioteca (
-              {FREE_LIMITS.bibliotecaPills} píldoras) con preview. Anuncios discretos en plan
-              gratis.
+      <section id="metodo" className="py-24 relative z-10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-6xl font-heading italic font-bold mb-6">El Sistema Operativo</h2>
+            <p className="text-slate-400 max-w-2xl mx-auto font-body font-light text-lg">
+              Hemos descompuesto la seducción y el carisma en patrones ejecutables. Sin frases hechas, solo psicología aplicada.
             </p>
           </div>
-          <Link to="/login" className="btn-ghost shrink-0">
-            Crear cuenta
-          </Link>
-        </div>
-      </section>
-
-      <section className="mb-6 rounded-[2rem] glass-panel glass-panel-interactive border border-white/10 p-6 shadow-[0_24px_90px_-50px_rgba(168,85,247,0.22)]">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.32em] text-[#cbd5e1]/70">
-              MAGNETO Premium
-            </div>
-            <h2 className="mt-2 text-2xl font-semibold text-white">
-              Sin anuncios · todo desbloqueado.
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm text-slate-300">
-              Academia completa, Biblioteca VIP, escaneos ilimitados y progreso premium.
-            </p>
-          </div>
-          <Link to="/premium" className="btn-cyber shrink-0">
-            Ver comparación
-          </Link>
-        </div>
-      </section>
-
-      {state.isPremium && (
-        <section className="mb-6 rounded-[2rem] glass-panel border border-white/10 p-6 shadow-[0_24px_90px_-50px_rgba(168,85,247,0.22)]">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <div className="text-[10px] uppercase tracking-[0.32em] text-[#cbd5e1]/70">
-                Progreso Premium
-              </div>
-              <h2 className="mt-2 text-2xl font-semibold text-white">Tu racha y avances diarios</h2>
-              <p className="mt-2 max-w-2xl text-sm text-slate-300">
-                Un resumen rápido de tu constancia premium y el historial de días completos.
-              </p>
-            </div>
-            <Link to="/premium-progreso" className="btn-ghost shrink-0">
-              Ver detalles
-            </Link>
-          </div>
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-4">
-              <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">
-                Racha actual
-              </div>
-              <div className="mt-3 text-3xl font-semibold text-white">{premiumStreak} días</div>
-            </div>
-            <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-4">
-              <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">
-                Días registrados
-              </div>
-              <div className="mt-3 text-3xl font-semibold text-white">{premiumHistory.length}</div>
-            </div>
-            <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-4">
-              <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">
-                Siguiente logro
-              </div>
-              <div className="mt-3 text-3xl font-semibold text-white">
-                {premiumStreak >= 7 ? "Constancia" : "Sigue así"}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Módulos principales */}
-      <div className="mb-3">
-        <div className="section-heading">Núcleo</div>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        {primary.map(({ to, label, desc, icon: Icon }) => (
-          <Link
-            key={to}
-            to={to}
-            className="feature-card group overflow-hidden block w-full p-6 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:border-fuchsia-300/30 hover:shadow-[0_28px_60px_-28px_rgba(168,85,247,0.35)] active:scale-[0.99] active:shadow-[0_20px_48px_-24px_rgba(168,85,247,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-300/45"
-          >
-            <div className="flex items-center justify-between gap-3 mb-4 min-w-0">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="h-12 w-12 rounded-3xl grad-cyber flex items-center justify-center text-white shadow-lg shadow-fuchsia-500/20 flex-shrink-0 transition-all duration-300 group-hover:scale-105">
-                  <Icon className="h-5 w-5" strokeWidth={1.8} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { title: "Análisis de Contexto", desc: " la IA analiza el perfil y el entorno para encontrar el ángulo de entrada perfecto.", icon: Scan, color: "from-fuchsia-500/20 to-transparent" },
+              { title: "Generación de Impacto", desc: "Crea aperturas que rompen el patrón y generan curiosidad inmediata.", icon: Zap, color: "from-violet-500/20 to-transparent" },
+              { title: "Cierre y Conversión", desc: "Lleva la conversación hacia la cita sin parecer desesperado ni forzado.", icon: CalendarHeart, color: "from-cyan-500/20 to-transparent" },
+            ].map((item, idx) => (
+              <div key={idx} className="group p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-fuchsia-500/30 transition-all duration-500 relative overflow-hidden">
+                <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-100 transition-opacity`} />
+                <div className="relative z-10">
+                  <div className="h-14 w-14 rounded-2xl bg-white/10 flex items-center justify-center text-fuchsia-300 mb-6 group-hover:scale-110 transition-transform"><item.icon className="h-7 w-7" /></div>
+                  <h3 className="text-2xl font-bold mb-4">{item.title}</h3>
+                  <p className="text-slate-400 font-body font-light leading-relaxed">{item.desc}</p>
                 </div>
-                <div className="min-w-0">
-                  <div className="text-base sm:text-sm font-semibold text-white truncate group-hover:text-fuchsia-100">
-                    {label}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="herramientas" className="py-24 bg-white/5">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-6xl font-heading italic font-bold mb-6">Arsenal Operativo</h2>
+            <p className="text-slate-400 max-w-2xl mx-auto font-body font-light text-lg">
+              Herramientas diseñadas para eliminar la fricción y maximizar la conversión en cada interacción.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { title: "Escáner de Perfiles", body: "Sube una captura y la IA analiza el arquetipo, intereses y puntos débiles para generar aperturas precisas.", icon: Scan, tags: ["Análisis", "Aperturas"], glow: "shadow-fuchsia-500/20" },
+              { title: "Salvavidas de Chat", body: "Cuando la conversación muere o se vuelve monótona, la IA rescata el hilo con un giro inesperado.", icon: LifeBuoy, tags: ["Rescate", "Dinámica"], glow: "shadow-violet-500/20" },
+              { title: "Simulador de Citas", body: "Entrena contra 4 personalidades distintas para pulir tu entrega y manejo de objeciones.", icon: MessagesSquare, tags: ["Entrenamiento", "Psicología"], glow: "shadow-cyan-500/20" },
+              { title: "Date Planner", body: "Citas diseñadas en 3 fases para maximizar la tensión sexual y la conexión emocional.", icon: CalendarHeart, tags: ["Logística", "Conversión"], glow: "shadow-fuchsia-500/20" },
+              { title: "Academia de Carisma", body: "Lecciones cortas y accionables sobre lenguaje corporal, voz y psicología oscura.", icon: GraduationCap, tags: ["Estudio", "Crecimiento"], glow: "shadow-violet-500/20" },
+              { title: "Banco de Frases", body: "Acceso rápido a líneas validadas para situaciones comunes, listas para copiar y pegar.", icon: Quote, tags: ["Recursos", "Acceso Rápido"], glow: "shadow-cyan-500/20" },
+            ].map((c, idx) => (
+              <div key={idx} className={`group liquid-glass rounded-[1.75rem] p-8 min-h-[380px] flex flex-col transition-all duration-300 hover:scale-[1.03] hover:bg-white/10 ${c.glow}`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="liquid-glass h-12 w-12 rounded-[1rem] flex items-center justify-center bg-white/5">{c.icon}</div>
+                  <div className="flex flex-wrap gap-1.5 justify-end max-w-[70%]">
+                    {c.tags.map((t) => (<span key={t} className="liquid-glass rounded-full px-3 py-1 text-[11px] text-white/90 font-medium whitespace-nowrap bg-white/5">{t}</span>))}
                   </div>
-                  <div className="text-sm sm:text-xs text-slate-300 break-words">{desc}</div>
+                </div>
+                <div className="flex-1" />
+                <div className="mt-8">
+                  <h3 className="font-heading italic text-3xl md:text-4xl tracking-[-1px] leading-none text-white group-hover:text-fuchsia-300 transition-colors">{c.title}</h3>
+                  <p className="mt-4 text-sm text-slate-300 font-body font-light leading-relaxed">{c.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="academia" className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-fuchsia-500/5 blur-[100px] rounded-full scale-50" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-4xl md:text-6xl font-heading italic font-bold mb-8 leading-tight">Formación <br />Continua.</h2>
+              <p className="text-slate-400 text-lg font-body font-light leading-relaxed mb-10">
+                El carisma es un músculo. Nuestra academia te proporciona la rutina diaria para fortalecerlo, con misiones accionables y teoría basada en la realidad, no en fantasías de internet.
+              </p>
+              <div className="space-y-6">
+                {[
+                  { title: "Psicología del Valor", desc: "Entiende cómo se percibe el valor social y cómo elevar el tuyo." },
+                  { title: "Dinámicas de Poder", desc: "Aprende a liderar la interacción sin ser agresivo." },
+                  { title: "Comunicación No Verbal", desc: "Domina tu cuerpo para proyectar confianza antes de hablar." },
+                ].map((item, idx) => (
+                  <div key={idx} className="flex gap-4">
+                    <div className="h-6 w-6 rounded-full bg-fuchsia-500/20 flex items-center justify-center text-fuchsia-400 shrink-0 mt-1">
+                      <Zap className="h-3 w-3" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white">{item.title}</h4>
+                      <p className="text-sm text-slate-400 font-body font-light">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="relative">
+              <div className="aspect-square rounded-[3rem] bg-gradient-to-br from-fuchsia-500/20 to-violet-500/20 border border-white/10 backdrop-blur-sm p-8 flex items-center justify-center">
+                <div className="text-center">
+                  <GraduationCap className="h-24 w-24 text-fuchsia-400 mx-auto mb-6 animate-bounce" />
+                  <h3 className="text-2xl font-bold text-white italic">Misión Diaria</h3>
+                  <p className="text-slate-400 text-sm mt-2">5 minutos de acción real.</p>
                 </div>
               </div>
             </div>
-            <div className="text-sm sm:text-xs text-[#cbd5e1]/80 break-words">
-              Accedé a las funciones clave para generar mensajes listos para enviar.
-            </div>
-          </Link>
-        ))}
-      </div>
+          </div>
+        </div>
+      </section>
 
-      {/* Secundarios */}
-      <div className="mb-3">
-        <div className="section-heading">Extra</div>
+      <div className="mt-24 flex flex-col items-center text-center gap-6 relative pb-24">
+        <div className="absolute inset-0 pointer-events-none bg-fuchsia-500/10 blur-[80px] rounded-full scale-75 z-0" />
+        <h3 className="font-heading italic text-4xl md:text-5xl lg:text-6xl tracking-[-2px] leading-none max-w-2xl text-white z-10">
+          Dejá de bloquearte. MAGNETO hace el trabajo pesado por vos.
+        </h3>
+        <p className="text-slate-400 text-xs md:text-sm max-w-md font-body font-light z-10 leading-relaxed">
+          Aperturas, rescates, simulaciones y planes de cita — todo generado por IA, listo para usar, sin necesidad de experiencia previa.
+        </p>
+        <Link to="/dashboard" className="rounded-full bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-500 px-8 py-4 inline-flex items-center gap-3 text-base font-semibold text-white tracking-wide shadow-[0_15px_50px_-20px_rgba(168,85,247,0.7)] z-10 scale-100 hover:-translate-y-0.5 transition-transform duration-300">
+          Abrir MAGNETO ahora <ArrowUpRight className="h-5 w-5" />
+        </Link>
+        <div className="z-10 flex flex-wrap items-center justify-center gap-4 text-xs text-white/65">
+          <Link to="/terminos" className="underline decoration-white/30 underline-offset-4 hover:text-white">Términos</Link>
+          <Link to="/privacidad" className="underline decoration-white/30 underline-offset-4 hover:text-white">Privacidad</Link>
+          <Link to="/premium" search={{ canceled: false }} className="underline decoration-white/30 underline-offset-4 hover:text-white">Planes y facturación</Link>
+        </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {secondary.map(({ to, label, desc, icon: Icon }) => (
-          <Link
-            key={to}
-            to={to}
-            className="feature-card group overflow-hidden flex items-start gap-4 min-w-0 w-full p-5 sm:p-4 transition-all duration-300 hover:-translate-y-1 hover:border-fuchsia-300/25 hover:shadow-[0_24px_54px_-30px_rgba(168,85,247,0.28)] active:scale-[0.99] active:shadow-[0_18px_44px_-24px_rgba(168,85,247,0.42)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-300/45"
-          >
-            <div className="h-12 w-12 rounded-3xl flex items-center justify-center bg-white/10 border border-white/10 text-fuchsia-200 shrink-0 transition-all duration-300 group-hover:bg-white/15 group-hover:text-fuchsia-100">
-              <Icon className="h-5 w-5" strokeWidth={1.8} />
-            </div>
-            <div className="min-w-0">
-              <div className="text-base sm:text-sm font-semibold text-white truncate group-hover:text-fuchsia-100">
-                {label}
-              </div>
-              <div className="text-sm sm:text-xs text-slate-300 mt-1 leading-snug break-words">
-                {desc}
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </AppShell>
+    </div>
   );
 }

@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { checkRateLimit, getClientIdentifier } from "@/lib/rate-limit";
 
 const MessageSchema = z.object({
   role: z.enum(["system", "user", "assistant"]),
@@ -109,7 +110,15 @@ function createMockResponse(data: Input) {
 
 export const chatCompletion = createServerFn({ method: "POST" })
   .validator((data: unknown) => InputSchema.parse(data))
-  .handler(async ({ data }: { data: Input }) => {
+  .handler(async ({ data, request }: { data: Input; request: Request }) => {
+    // Rate limiting
+    const identifier = getClientIdentifier(request);
+    const rateLimit = checkRateLimit(identifier, 50, 60 * 1000); // 50 requests por minuto
+    
+    if (!rateLimit.allowed) {
+      throw new Error("Demasiadas solicitudes. Esperá un momento e intentá de nuevo.");
+    }
+
     const apiKey = process.env.LOVABLE_API_KEY;
     const groqApiKey = process.env.GROQ_API_KEY;
 
