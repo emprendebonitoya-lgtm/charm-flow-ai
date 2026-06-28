@@ -155,24 +155,16 @@ function Escaner() {
   }, [scanning]);
 
   const handleFile = async (f: File | null) => {
-    console.log("handleFile called with:", f);
-    if (!f) {
-      console.log("No file provided");
-      return;
-    }
+    if (!f) return;
     if (f.size > 6 * 1024 * 1024) {
       toast.error("Imagen muy grande (máx 6MB)");
       return;
     }
     try {
-      console.log("Starting file conversion...");
       const dataUrl = await fileToDataUrl(f);
-      console.log("File converted successfully:", dataUrl.substring(0, 50));
       setImgUrl(dataUrl);
       setObjectFit("cover");
-      console.log("State updated");
     } catch (e) {
-      console.error("Error processing image:", e);
       toast.error("Error al procesar la imagen");
     }
   };
