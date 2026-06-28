@@ -1,14 +1,17 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
-  Film, Image, Lightbulb, Play, Zap, ShieldCheck, Sparkles, Scan, LifeBuoy, MessagesSquare, CalendarHeart, GraduationCap, ArrowUpRight
+  Film, Image, Lightbulb, Play, Zap, ShieldCheck, Sparkles, Scan, LifeBuoy, MessagesSquare, CalendarHeart, GraduationCap, ArrowUpRight, Quote
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
 const LOCAL_VIDEO = "/hero-bg.mp4";
 
 export const Route = createFileRoute("/")({
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard" });
+  },
   head: () => ({
     meta: [
       { title: "Charm Flow AI — Carisma operativo para el hombre moderno (MAGNETO)" },
@@ -164,7 +167,7 @@ function Landing() {
             ].map((c, idx) => (
               <div key={idx} className={`group liquid-glass rounded-[1.75rem] p-8 min-h-[380px] flex flex-col transition-all duration-300 hover:scale-[1.03] hover:bg-white/10 ${c.glow}`}>
                 <div className="flex items-start justify-between gap-3">
-                  <div className="liquid-glass h-12 w-12 rounded-[1rem] flex items-center justify-center bg-white/5">{c.icon}</div>
+                  <div className="liquid-glass h-12 w-12 rounded-[1rem] flex items-center justify-center bg-white/5"><c.icon className="h-6 w-6" /></div>
                   <div className="flex flex-wrap gap-1.5 justify-end max-w-[70%]">
                     {c.tags.map((t) => (<span key={t} className="liquid-glass rounded-full px-3 py-1 text-[11px] text-white/90 font-medium whitespace-nowrap bg-white/5">{t}</span>))}
                   </div>
