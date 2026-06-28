@@ -155,19 +155,25 @@ function Escaner() {
   }, [scanning]);
 
   const handleFile = async (f: File | null) => {
-    if (!f) return;
+    console.log("handleFile called with:", f);
+    if (!f) {
+      console.log("No file provided");
+      return;
+    }
     if (f.size > 6 * 1024 * 1024) {
       toast.error("Imagen muy grande (máx 6MB)");
-      if (fileRef.current) fileRef.current.value = "";
       return;
     }
     try {
+      console.log("Starting file conversion...");
       const dataUrl = await fileToDataUrl(f);
+      console.log("File converted successfully:", dataUrl.substring(0, 50));
       setImgUrl(dataUrl);
       setObjectFit("cover");
+      console.log("State updated");
     } catch (e) {
+      console.error("Error processing image:", e);
       toast.error("Error al procesar la imagen");
-      if (fileRef.current) fileRef.current.value = "";
     }
   };
 
@@ -356,10 +362,7 @@ function Escaner() {
         {/* Subida + scanner */}
         <div className="neon-card rounded-2xl p-4">
           <div className="scan-frame border border-[rgba(168,85,247,0.22)] bg-[rgba(15,25,55,0.6)]">
-            <label
-              onClick={() => !scanning && fileRef.current?.click()}
-              className={`relative block cursor-pointer ${scanning ? "pointer-events-none" : ""}`}
-            >
+            <div className={`relative block ${scanning ? "pointer-events-none" : ""}`}>
               {imgUrl ? (
                 <img
                   src={imgUrl}
@@ -368,7 +371,7 @@ function Escaner() {
                   style={{ objectFit, background: "#0a1428" }}
                 />
               ) : (
-                <div className="flex flex-col items-center justify-center gap-3 py-14 bg-[rgba(168,85,247,0.05)]">
+                <label className="flex flex-col items-center justify-center gap-3 py-14 bg-[rgba(168,85,247,0.05)] cursor-pointer">
                   <div className="h-12 w-12 rounded-2xl grad-cyber flex items-center justify-center neon-glow">
                     <Upload className="h-5 w-5 text-white" />
                   </div>
@@ -376,17 +379,20 @@ function Escaner() {
                     <div className="text-sm font-medium">Subí la foto o screenshot</div>
                     <div className="text-[11px] text-[#BFDBFE]/60 mt-0.5">PNG · JPG · 6MB máx</div>
                   </div>
-                </div>
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] ?? null;
+                      handleFile(file);
+                    }}
+                  />
+                </label>
               )}
               {scanning && <div className={`scan-beam ${!loading ? "scan-fade" : ""}`} />}
-              <input
-                ref={fileRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
-              />
-            </label>
+            </div>
           </div>
 
           {imgUrl && !scanning && (
