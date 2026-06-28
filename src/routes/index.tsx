@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
@@ -9,9 +9,6 @@ import { Logo } from "@/components/Logo";
 const LOCAL_VIDEO = "/hero-bg.mp4";
 
 export const Route = createFileRoute("/")({
-  beforeLoad: () => {
-    throw redirect({ to: "/dashboard" });
-  },
   head: () => ({
     meta: [
       { title: "Charm Flow AI — Carisma operativo para el hombre moderno (MAGNETO)" },
