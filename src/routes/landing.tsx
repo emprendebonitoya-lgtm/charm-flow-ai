@@ -7,13 +7,13 @@ import { Logo } from "@/components/Logo";
 export const Route = createFileRoute("/landing")({
   head: () => ({
     meta: [
-      { title: "Charm Flow AI ‚Äî Carisma operativo para el hombre moderno (MAGNETO)" },
+      { title: "Charm Flow AI ó Carisma operativo para el hombre moderno (MAGNETO)" },
       {
         name: "description",
         content:
-          "Charm Flow AI (MAGNETO): Software de carisma con IA para hombres. Aperturas, salvavidas de chat, simulador de citas, planes de cita y academia diaria. Dise√±ado para resultados.",
+          "Charm Flow AI (MAGNETO): Software de carisma con IA para hombres. Aperturas, salvavidas de chat, simulador de citas, planes de cita y academia diaria. DiseÒado para resultados.",
       },
-      { property: "og:title", content: "Charm Flow AI (MAGNETO) ‚Äî Carisma con IA" },
+      { property: "og:title", content: "Charm Flow AI (MAGNETO) ó Carisma con IA" },
       {
         property: "og:description",
         content:
@@ -132,7 +132,7 @@ function BlurText({ text, className }: { text: string; className?: string }) {
     >
       {words.map((w, i) => (
         <motion.span
-          key={`${w}-${i}`}
+          key={${w}-}
           initial={{ filter: "blur(10px)", opacity: 0, y: 50 }}
           animate={show ? { filter: "blur(0px)", opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: i * 0.1, ease: "easeOut" }}
@@ -177,7 +177,7 @@ const fadeUp = {
 };
 
 function Landing() {
-  const navLinks = ["Esc√°ner", "Simulador", "Citas", "Academia", "Comunidad"];
+  const navLinks = ["Esc·ner", "Simulador", "Citas", "Academia", "Comunidad"];
 
   return (
     <div className="bg-black text-white font-body min-h-screen">
@@ -226,11 +226,11 @@ function Landing() {
                 Nuevo
               </span>
               <span className="text-xs md:text-sm text-white/90 font-body">
-                Beta privada Q3 2026 ‚Äî cupos limitados
+                Beta privada Q3 2026 ó cupos limitados
               </span>
             </motion.div>
 
-            {/* Fondo de luces de colores para resaltar el vidrio transl√∫cido */}
+            {/* Fondo de luces de colores para resaltar el vidrio transl˙cido */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
               <div className="absolute top-[10%] left-[15%] w-[400px] h-[400px] rounded-full bg-fuchsia-600/25 blur-[120px] animate-pulse" style={{ animationDuration: "8s" }} />
               <div className="absolute top-[40%] right-[10%] w-[500px] h-[500px] rounded-full bg-violet-600/20 blur-[150px] animate-pulse" style={{ animationDuration: "12s" }} />
@@ -250,7 +250,7 @@ function Landing() {
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.8 }}
               className="mt-5 text-sm md:text-base text-white max-w-2xl font-body font-light leading-tight z-10"
             >
-              <strong className="font-semibold text-fuchsia-300">Charm Flow AI (MAGNETO)</strong> es el estudio definitivo de carisma con inteligencia artificial. Sub√≠ una captura, rescata chats enfriados, entrena roleplay interactivo y planifica citas con herramientas dise√±adas exclusivamente para obtener resultados reales.
+              <strong className="font-semibold text-fuchsia-300">Charm Flow AI (MAGNETO)</strong> es el estudio definitivo de carisma con inteligencia artificial. SubÌ una captura, rescata chats enfriados, entrena roleplay interactivo y planifica citas con herramientas diseÒadas exclusivamente para obtener resultados reales.
             </motion.p>
 
             <motion.div
@@ -320,7 +320,7 @@ function Landing() {
         />
         <div className="absolute inset-0 z-[2] bg-gradient-to-b from-black/35 via-black/20 to-black/65" />
 
-        {/* Luces de fondo din√°micas para potenciar el efecto vidrio en Capacidades */}
+        {/* Luces de fondo din·micas para potenciar el efecto vidrio en Capacidades */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden z-[2]">
           <div className="absolute top-[20%] right-[15%] w-[450px] h-[450px] rounded-full bg-violet-600/20 blur-[130px] animate-pulse" style={{ animationDuration: "14s" }} />
           <div className="absolute bottom-[20%] left-[10%] w-[400px] h-[400px] rounded-full bg-fuchsia-600/20 blur-[120px] animate-pulse" style={{ animationDuration: "9s" }} />
@@ -337,11 +337,11 @@ function Landing() {
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                title: "Esc√°ner & Aperturas",
+                title: "Esc·ner & Aperturas",
                 icon: <ImageIcon className="text-fuchsia-400" />,
-                tags: ["Foto ‚Üí IA", "Tinder", "Bumble", "Instagram"],
+                tags: ["Foto ? IA", "Tinder", "Bumble", "Instagram"],
                 body:
-                  "Sub√≠ la captura de cualquier perfil de chat y obten√© de inmediato 5 abridores con tono ingenioso, calibrado y atrevido. Olvidate de quedarte en blanco.",
+                  "SubÌ la captura de cualquier perfil de chat y obtenÈ de inmediato 5 abridores con tono ingenioso, calibrado y atrevido. Olvidate de quedarte en blanco.",
                 glow: "group-hover:shadow-[0_0_30px_rgba(217,70,239,0.15)]",
               },
               {
@@ -349,21 +349,21 @@ function Landing() {
                 icon: <Movie className="text-violet-400" />,
                 tags: ["4 Personalidades", "Roleplay", "Date Planner"],
                 body:
-                  "Practic√° en chats de entrenamiento interactivo con 4 arquetipos femeninos. Planific√° citas memorables en 3 fases: apertura, conexi√≥n y cierre.",
+                  "Practic· en chats de entrenamiento interactivo con 4 arquetipos femeninos. Planific· citas memorables en 3 fases: apertura, conexiÛn y cierre.",
                 glow: "group-hover:shadow-[0_0_30px_rgba(139,92,246,0.15)]",
               },
               {
-                title: "Academia & Tu D√≠a",
+                title: "Academia & Tu DÌa",
                 icon: <Bulb className="text-cyan-400" />,
                 tags: ["Lecciones", "Mindset", "Rituales", "Frases"],
                 body:
-                  "Lecciones ultra-cortas accionables, plantillas listas para copiar, biblioteca de psicolog√≠a masculina y una misi√≥n diaria de 5 minutos para entrenar racha.",
+                  "Lecciones ultra-cortas accionables, plantillas listas para copiar, biblioteca de psicologÌa masculina y una misiÛn diaria de 5 minutos para entrenar racha.",
                 glow: "group-hover:shadow-[0_0_30px_rgba(6,182,212,0.15)]",
               },
             ].map((c) => (
               <div
                 key={c.title}
-                className={`group liquid-glass rounded-[1.75rem] p-8 min-h-[380px] flex flex-col transition-all duration-300 hover:scale-[1.03] hover:bg-white/10 ${c.glow}`}
+                className={group liquid-glass rounded-[1.75rem] p-8 min-h-[380px] flex flex-col transition-all duration-300 hover:scale-[1.03] hover:bg-white/10 }
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="liquid-glass h-12 w-12 rounded-[1rem] flex items-center justify-center bg-white/5">
@@ -395,13 +395,13 @@ function Landing() {
 
           {/* Final CTA */}
           <div className="mt-24 flex flex-col items-center text-center gap-6 relative">
-            {/* Brillo detr√°s del CTA */}
+            {/* Brillo detr·s del CTA */}
             <div className="absolute inset-0 pointer-events-none bg-fuchsia-500/10 blur-[80px] rounded-full scale-75 z-0" />
             <h3 className="font-heading italic text-4xl md:text-5xl lg:text-6xl tracking-[-2px] leading-none max-w-2xl text-white z-10">
-              Dej√° de improvisar. Empez√° a operar.
+              Dej· de improvisar. Empez· a operar.
             </h3>
             <p className="text-slate-400 text-xs md:text-sm max-w-md font-body font-light z-10 leading-relaxed">
-              √önete a miles de hombres que utilizan el motor de <strong className="text-white">Charm Flow AI</strong> para transformar sus habilidades de conversaci√≥n y citas.
+              ⁄nete a miles de hombres que utilizan el motor de <strong className="text-white">Charm Flow AI</strong> para transformar sus habilidades de conversaciÛn y citas.
             </p>
             <Link
               to="/login"
