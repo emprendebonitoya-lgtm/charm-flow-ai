@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import heroVideo from "@/assets/hero-bg.mp4.asset.json";
+import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/landing")({
   head: () => ({
@@ -193,8 +194,8 @@ function Landing() {
           {/* Navbar */}
           <nav className="fixed top-4 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-16">
             <div className="liquid-glass h-12 px-4 rounded-full flex items-center justify-center gap-2">
-              <span className="font-heading italic text-2xl bg-gradient-to-r from-fuchsia-400 to-violet-400 bg-clip-text text-transparent">cf</span>
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/60">Charm Flow</span>
+              <Logo className="h-8 w-8" />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/60">MAGNETO</span>
             </div>
             <div className="hidden md:flex liquid-glass rounded-full px-1.5 py-1.5 items-center gap-1">
               {navLinks.map((l) => (
