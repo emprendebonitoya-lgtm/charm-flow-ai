@@ -203,13 +203,13 @@ function Landing() {
                 </span>
               ))}
               <Link
-                to="/"
+                to="/login"
                 className="ml-1 inline-flex items-center gap-1.5 rounded-full bg-white text-black px-4 py-2 text-sm font-medium"
               >
                 Entrar a la app <ArrowUpRight />
               </Link>
             </div>
-            <Link to="/" className="md:hidden liquid-glass-strong rounded-full px-4 py-2 text-xs inline-flex items-center gap-1.5">
+            <Link to="/login" className="md:hidden liquid-glass-strong rounded-full px-4 py-2 text-xs inline-flex items-center gap-1.5">
               Entrar <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </nav>
@@ -258,7 +258,7 @@ function Landing() {
               className="mt-6 flex flex-wrap items-center justify-center gap-4 z-10"
             >
               <Link
-                to="/"
+                to="/login"
                 className="liquid-glass-strong hover:bg-white/10 transition-colors rounded-full px-6 py-3 inline-flex items-center gap-2 text-sm font-semibold text-white tracking-wide shadow-[0_0_30px_rgba(168,85,247,0.2)]"
               >
                 Probar gratis <ArrowUpRight />
@@ -403,7 +403,7 @@ function Landing() {
               Únete a miles de hombres que utilizan el motor de <strong className="text-white">Charm Flow AI</strong> para transformar sus habilidades de conversación y citas.
             </p>
             <Link
-              to="/"
+              to="/login"
               className="liquid-glass-strong hover:bg-white/10 transition-all rounded-full px-8 py-4 inline-flex items-center gap-3 text-base font-semibold text-white tracking-wide shadow-[0_10px_40px_-10px_rgba(168,85,247,0.4)] z-10 scale-100 hover:scale-[1.02] duration-300"
             >
               Entrar a MAGNETO <ArrowUpRight className="h-5 w-5" />
