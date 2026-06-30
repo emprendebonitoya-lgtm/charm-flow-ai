@@ -111,10 +111,19 @@ export const PREMIUM_MODULE_IDS = [
   "progress",
 ] as const;
 
+function getPublicEnv(name: "VITE_SUPABASE_URL" | "VITE_SUPABASE_ANON_KEY" | "VITE_ADSENSE_CLIENT") {
+  const viteValue = import.meta.env?.[name] as string | undefined;
+  if (viteValue) return viteValue;
+  if (typeof process !== "undefined" && process.env) {
+    return process.env[name];
+  }
+  return undefined;
+}
+
 export function isSupabaseConfigured() {
-  return !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
+  return !!(getPublicEnv("VITE_SUPABASE_URL") && getPublicEnv("VITE_SUPABASE_ANON_KEY"));
 }
 
 export function isAdSenseConfigured() {
-  return !!import.meta.env.VITE_ADSENSE_CLIENT;
+  return !!getPublicEnv("VITE_ADSENSE_CLIENT");
 }
