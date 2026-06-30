@@ -1,0 +1,4 @@
+{
+  "installCommand": "npm ci",
+  "buildCommand": "NODE_ENV=production NITRO_PRESET=vercel npm run build"
+}
