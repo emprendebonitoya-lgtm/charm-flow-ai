@@ -40,6 +40,11 @@ export const pushHistory = (item: Omit<HistoryItem, "id" | "createdAt">) => {
   return next;
 };
 export const clearHistory = () => write(HISTORY_KEY, []);
+export const removeHistoryItem = (id: string) => {
+  const next = getHistory().filter((x) => x.id !== id);
+  write(HISTORY_KEY, next);
+  return next;
+};
 
 export const getSaved = () => read<HistoryItem[]>(SAVED_KEY, []);
 export const toggleSaved = (item: HistoryItem) => {
@@ -50,6 +55,11 @@ export const toggleSaved = (item: HistoryItem) => {
   return next;
 };
 export const isSaved = (id: string) => getSaved().some((x) => x.id === id);
+export const removeSaved = (id: string) => {
+  const next = getSaved().filter((x) => x.id !== id);
+  write(SAVED_KEY, next);
+  return next;
+};
 
 export const getProfile = () => read<Profile>(PROFILE_KEY, { tone: "coqueto", lang: "es" });
 export const setProfile = (p: Profile) => write(PROFILE_KEY, p);
