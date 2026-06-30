@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
@@ -22,13 +22,13 @@ const LOCAL_VIDEO = "/hero-bg.mp4";
 export const Route = createFileRoute("/landing")({
   head: () => ({
     meta: [
-      { title: "Charm Flow AI ÔÇö Carisma operativo para el hombre moderno (MAGNETO)" },
+      { title: "Charm Flow AI — Carisma operativo para el hombre moderno (MAGNETO)" },
       {
         name: "description",
         content:
-          "Charm Flow AI (MAGNETO): Software de carisma con IA para hombres. Aperturas, salvavidas de chat, simulador de citas, planes de cita y academia diaria. Dise├▒ado para resultados.",
+          "Charm Flow AI (MAGNETO): Software de carisma con IA para hombres. Aperturas, salvavidas de chat, simulador de citas, planes de cita y academia diaria. Diseñado para resultados.",
       },
-      { property: "og:title", content: "Charm Flow AI (MAGNETO) ÔÇö Carisma con IA" },
+      { property: "og:title", content: "Charm Flow AI (MAGNETO) — Carisma con IA" },
       {
         property: "og:description",
         content:
@@ -182,18 +182,18 @@ const fadeUp = {
 };
 
 function Landing() {
-  const navLinks = ["Esc├íner", "Simulador", "Citas", "Academia", "Comunidad"];
+  const navLinks = ["Escáner", "Simulador", "Citas", "Academia", "Comunidad"];
   const featureTabs = [
     {
-      title: "Esc├íner instant├íneo",
-      label: "Gener├í aperturas reales",
+      title: "Escáner instantáneo",
+      label: "Generá aperturas reales",
       description:
-        "Sub├¡ una foto o un chat y obten├® mensajes de apertura calibrados para cada tipo de conversaci├│n.",
+        "Subí una foto o un chat y obtené mensajes de apertura calibrados para cada tipo de conversación.",
       icon: <Image className="h-5 w-5 text-fuchsia-400" />,
     },
     {
-      title: "Simulaci├│n real",
-      label: "Entren├í sin miedo",
+      title: "Simulación real",
+      label: "Entrená sin miedo",
       description:
         "Practica con 4 personalidades de IA y aprende a responder con seguridad frente a bloqueos y desconexiones.",
       icon: <Film className="h-5 w-5 text-violet-400" />,
@@ -202,7 +202,7 @@ function Landing() {
       title: "Planificador de citas",
       label: "Citas que funcionan",
       description:
-        "Prepara cada encuentro con una gu├¡a clara de apertura, conexi├│n y cierre dise├▒ada para avanzar a la siguiente etapa.",
+        "Prepara cada encuentro con una guía clara de apertura, conexión y cierre diseñada para avanzar a la siguiente etapa.",
       icon: <Lightbulb className="h-5 w-5 text-cyan-400" />,
     },
   ];
@@ -296,11 +296,11 @@ function Landing() {
                 Nuevo
               </span>
               <span className="text-xs md:text-sm text-white/90 font-body">
-                Beta privada Q3 2026 ÔÇö cupos limitados
+                Beta privada Q3 2026 — cupos limitados
               </span>
             </motion.div>
 
-            {/* Fondo de luces de colores para resaltar el vidrio transl├║cido */}
+            {/* Fondo de luces de colores para resaltar el vidrio translúcido */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
               <div
                 className="absolute top-[10%] left-[15%] w-[400px] h-[400px] rounded-full bg-fuchsia-600/25 blur-[120px] animate-pulse"
@@ -319,7 +319,7 @@ function Landing() {
 
             <div className="mt-6 max-w-3xl z-10">
               <BlurText
-                text="Conversa sin improvisar. Rescata chats fr├¡os. Llega a la cita con confianza."
+                text="Conversa sin improvisar. Rescata chats fríos. Llega a la cita con confianza."
                 className="text-3xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-heading italic text-white leading-[0.95] sm:leading-[0.9] tracking-[-1px] sm:tracking-[-2px]"
               />
             </div>
@@ -346,8 +346,8 @@ function Landing() {
               className="mt-5 text-sm md:text-base text-white/90 max-w-2xl font-body font-light leading-relaxed z-10"
             >
               <strong className="font-semibold text-fuchsia-300">MAGNETO</strong> es la app de IA
-              dise├▒ada para que cualquier hombre pueda iniciar conversaciones, rescatar chats
-              enfriados y llegar preparado a cada cita ÔÇö sin improvisar y sin bloquearse.
+              diseñada para que cualquier hombre pueda iniciar conversaciones, rescatar chats
+              enfriados y llegar preparado a cada cita — sin improvisar y sin bloquearse.
             </motion.p>
 
             <motion.div
@@ -356,7 +356,7 @@ function Landing() {
               className="hidden sm:flex mt-6 flex-col sm:flex-row flex-wrap items-center justify-center gap-3 z-10"
             >
               {[
-                "Rescates de chat instant├íneos",
+                "Rescates de chat instantáneos",
                 "Simulaciones con IA real",
                 "Planes de citas listos para usar",
               ].map((item) => (
@@ -417,8 +417,8 @@ function Landing() {
                   +1k
                 </div>
                 <div className="mt-2 text-xs text-white/80 font-body font-light leading-relaxed">
-                  M├ís de 1.000 respuestas y frases optimizadas para mantener la conversaci├│n y
-                  conseguir el pr├│ximo paso.
+                  Más de 1.000 respuestas y frases optimizadas para mantener la conversación y
+                  conseguir el próximo paso.
                 </div>
               </div>
             </motion.div>
@@ -435,7 +435,7 @@ function Landing() {
                       Interactivo
                     </p>
                     <h3 className="mt-3 text-3xl md:text-4xl font-heading italic text-white">
-                      Toc├í cada modo y sent├¡ la ventaja
+                      Tocá cada modo y sentí la ventaja
                     </h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -476,7 +476,7 @@ function Landing() {
                         "Respuestas listas en segundos",
                         "Entrenamiento sin riesgo",
                         "Planes que avanzan paso a paso",
-                        "Mensajes calibrados para cada situaci├│n",
+                        "Mensajes calibrados para cada situación",
                       ].map((item) => (
                         <div
                           key={item}
@@ -490,14 +490,14 @@ function Landing() {
                   <div className="relative overflow-hidden rounded-[1.75rem] bg-black/40 border border-white/10 p-6">
                     <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-500/10 via-violet-500/5 to-cyan-500/5 opacity-80" />
                     <div className="relative z-10">
-                      <div className="text-xl font-semibold text-white">Ejemplo r├ípido</div>
+                      <div className="text-xl font-semibold text-white">Ejemplo rápido</div>
                       <div className="mt-4 rounded-[1.5rem] bg-[#02070f]/95 p-5 text-sm text-slate-300 border border-white/10">
                         <p className="font-medium text-white">
-                          "┬┐Te gustar├¡a que te pase algo divertido para romper el hielo?"
+                          "¿Te gustaría que te pase algo divertido para romper el hielo?"
                         </p>
                         <p className="mt-3 leading-relaxed">
                           Este mensaje es el tipo de apertura que el modo activo genera: directo,
-                          seguro y adaptado para reactivar la conversaci├│n.
+                          seguro y adaptado para reactivar la conversación.
                         </p>
                       </div>
                     </div>
@@ -507,26 +507,26 @@ function Landing() {
             </motion.div>
           </div>
 
-          {/* M├│dulos strip */}
+          {/* Módulos strip */}
           <motion.div
             {...fadeUp}
             transition={{ duration: 0.8, ease: "easeOut", delay: 1.4 }}
             className="flex flex-col items-center gap-5 pb-12 px-4 z-10"
           >
             <p className="text-xs text-white/50 uppercase tracking-[0.35em]">
-              Lo que inclu├¡e MAGNETO
+              Lo que incluíe MAGNETO
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 w-full max-w-3xl">
               {[
                 {
                   icon: <Scan className="h-5 w-5" />,
-                  label: "Esc├íner IA",
-                  desc: "Foto ÔåÆ 5 aperturas",
+                  label: "Escáner IA",
+                  desc: "Foto → 5 aperturas",
                 },
                 {
                   icon: <LifeBuoy className="h-5 w-5" />,
                   label: "Salvavidas",
-                  desc: "Rescate instant├íneo",
+                  desc: "Rescate instantáneo",
                 },
                 {
                   icon: <MessagesSquare className="h-5 w-5" />,
@@ -569,7 +569,7 @@ function Landing() {
         <div className="magneto-cinematic-bg absolute inset-0 z-0" />
         <div className="absolute inset-0 z-[2] bg-gradient-to-b from-black/35 via-black/20 to-black/65" />
 
-        {/* Luces de fondo din├ímicas para potenciar el efecto vidrio en Capacidades */}
+        {/* Luces de fondo dinámicas para potenciar el efecto vidrio en Capacidades */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden z-[2]">
           <div
             className="absolute top-[20%] right-[15%] w-[450px] h-[450px] rounded-full bg-violet-600/20 blur-[130px] animate-pulse"
@@ -584,7 +584,7 @@ function Landing() {
         <div className="relative z-10 px-6 md:px-16 lg:px-20 pt-16 pb-12 flex flex-col min-h-screen">
           <div className="mb-auto">
             <div className="text-sm font-body text-fuchsia-400 mb-4 tracking-[0.2em] uppercase">
-              // Todo lo que necesit├ís en un solo lugar
+              // Todo lo que necesitás en un solo lugar
             </div>
             <h2 className="font-heading italic text-5xl md:text-7xl lg:text-[6.5rem] leading-[0.9] tracking-[-3px] whitespace-pre-line text-white">
               {"Herramientas reales\npara conversaciones reales"}
@@ -597,17 +597,17 @@ function Landing() {
                 label: "Recupera chats",
                 value: "+78%",
                 detail:
-                  "m├ís conversaciones reactivadas con mensajes de rescate dise├▒ados para reactivar inter├®s.",
+                  "más conversaciones reactivadas con mensajes de rescate diseñados para reactivar interés.",
               },
               {
                 label: "Citas mejor planificadas",
                 value: "3 pasos",
-                detail: "apertura, conexi├│n y cierre con gu├¡as listas para ejecutar.",
+                detail: "apertura, conexión y cierre con guías listas para ejecutar.",
               },
               {
                 label: "Aperturas listas",
                 value: "5 en 1",
-                detail: "cinco mensajes de impacto instant├íneos subidos desde tu perfil.",
+                detail: "cinco mensajes de impacto instantáneos subidos desde tu perfil.",
               },
             ].map((metric) => (
               <div
@@ -630,24 +630,24 @@ function Landing() {
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                title: "Esc├íner & Aperturas",
+                title: "Escáner & Aperturas",
                 icon: <Image className="text-fuchsia-400" />,
-                tags: ["Foto ÔåÆ IA", "Tinder", "Bumble", "Instagram"],
-                body: "Sub├¡ la captura de cualquier perfil de chat y obten├® de inmediato 5 abridores con tono ingenioso, calibrado y atrevido. Olvidate de quedarte en blanco.",
+                tags: ["Foto → IA", "Tinder", "Bumble", "Instagram"],
+                body: "Subí la captura de cualquier perfil de chat y obtené de inmediato 5 abridores con tono ingenioso, calibrado y atrevido. Olvidate de quedarte en blanco.",
                 glow: "group-hover:shadow-[0_0_30px_rgba(217,70,239,0.15)]",
               },
               {
                 title: "Simulador & Citas",
                 icon: <Film className="text-violet-400" />,
                 tags: ["4 Personalidades", "Roleplay", "Date Planner"],
-                body: "Practic├í en chats de entrenamiento interactivo con 4 arquetipos femeninos. Planific├í citas memorables en 3 fases: apertura, conexi├│n y cierre.",
+                body: "Practicá en chats de entrenamiento interactivo con 4 arquetipos femeninos. Planificá citas memorables en 3 fases: apertura, conexión y cierre.",
                 glow: "group-hover:shadow-[0_0_30px_rgba(139,92,246,0.15)]",
               },
               {
-                title: "Academia & Tu D├¡a",
+                title: "Academia & Tu Día",
                 icon: <Lightbulb className="text-cyan-400" />,
                 tags: ["Lecciones", "Mindset", "Rituales", "Frases"],
-                body: "Lecciones ultra-cortas accionables, plantillas listas para copiar, biblioteca de psicolog├¡a masculina y una misi├│n diaria de 5 minutos para entrenar racha.",
+                body: "Lecciones ultra-cortas accionables, plantillas listas para copiar, biblioteca de psicología masculina y una misión diaria de 5 minutos para entrenar racha.",
                 glow: "group-hover:shadow-[0_0_30px_rgba(6,182,212,0.15)]",
               },
             ].map((c) => (
@@ -685,13 +685,13 @@ function Landing() {
 
           {/* Final CTA */}
           <div className="mt-24 flex flex-col items-center text-center gap-6 relative">
-            {/* Brillo detr├ís del CTA */}
+            {/* Brillo detrás del CTA */}
             <div className="absolute inset-0 pointer-events-none bg-fuchsia-500/10 blur-[80px] rounded-full scale-75 z-0" />
             <h3 className="font-heading italic text-4xl md:text-5xl lg:text-6xl tracking-[-2px] leading-none max-w-2xl text-white z-10">
-              Dej├í de bloquearte. MAGNETO hace el trabajo pesado por vos.
+              Dejá de bloquearte. MAGNETO hace el trabajo pesado por vos.
             </h3>
             <p className="text-slate-400 text-xs md:text-sm max-w-md font-body font-light z-10 leading-relaxed">
-              Aperturas, rescates, simulaciones y planes de cita ÔÇö todo generado por IA, listo para
+              Aperturas, rescates, simulaciones y planes de cita — todo generado por IA, listo para
               usar, sin necesidad de experiencia previa.
             </p>
             <Link
@@ -705,7 +705,7 @@ function Landing() {
                 to="/terminos"
                 className="underline decoration-white/30 underline-offset-4 hover:text-white"
               >
-                T├®rminos
+                Términos
               </Link>
               <Link
                 to="/privacidad"
@@ -718,7 +718,7 @@ function Landing() {
                 search={{ canceled: false }}
                 className="underline decoration-white/30 underline-offset-4 hover:text-white"
               >
-                Planes y facturaci├│n
+                Planes y facturación
               </Link>
             </div>
           </div>

@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { useMemo, useState } from "react";
 import { useUser } from "@/lib/user";
@@ -24,11 +24,11 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MAGNETO ÔÇö Carisma y seducci├│n con IA" },
+      { title: "MAGNETO — Carisma y seducción con IA" },
       {
         name: "description",
         content:
-          "Software de carisma para hombres t├¡midos. Sub├¡ una foto y la IA te entrega aperturas, rescates, planes de cita y lecciones.",
+          "Software de carisma para hombres tímidos. Subí una foto y la IA te entrega aperturas, rescates, planes de cita y lecciones.",
       },
     ],
   }),
@@ -38,26 +38,26 @@ export const Route = createFileRoute("/")({
 const primary = [
   {
     to: "/escaner",
-    label: "Esc├íner",
-    desc: "Foto de su perfil ÔåÆ 5 aperturas de impacto.",
+    label: "Escáner",
+    desc: "Foto de su perfil → 5 aperturas de impacto.",
     icon: Scan,
   },
   {
     to: "/sos",
     label: "Salvavidas",
-    desc: "Rescat├í un chat enfriado en segundos.",
+    desc: "Rescatá un chat enfriado en segundos.",
     icon: LifeBuoy,
   },
   {
     to: "/sim",
     label: "Simulador",
-    desc: "Entren├í con 4 personalidades distintas.",
+    desc: "Entrená con 4 personalidades distintas.",
     icon: MessagesSquare,
   },
   {
     to: "/date",
     label: "Date Planner",
-    desc: "Citas en 3 fases: Apertura ┬À Conexi├│n ┬À Cierre",
+    desc: "Citas en 3 fases: Apertura · Conexión · Cierre",
     icon: CalendarHeart,
   },
 ] as const;
@@ -70,10 +70,10 @@ const secondary = [
     icon: GraduationCap,
   },
   { to: "/frases", label: "Frases", desc: "Banco listo para copiar y pegar.", icon: Quote },
-  { to: "/biblioteca", label: "Mindset", desc: "P├¡ldoras de psicolog├¡a y voz.", icon: Library },
-  { to: "/tudia", label: "Tu D├¡a", desc: "Una misi├│n diaria de 5 minutos.", icon: Sun },
+  { to: "/biblioteca", label: "Mindset", desc: "Píldoras de psicología y voz.", icon: Library },
+  { to: "/tudia", label: "Tu Día", desc: "Una misión diaria de 5 minutos.", icon: Sun },
   { to: "/feed", label: "Feed", desc: "Casos reales de la comunidad.", icon: Flame },
-  { to: "/guardados", label: "Guardados", desc: "Tus mejores l├¡neas rescatables.", icon: Bookmark },
+  { to: "/guardados", label: "Guardados", desc: "Tus mejores líneas rescatables.", icon: Bookmark },
 ] as const;
 
 function parseDate(value: string) {
@@ -169,7 +169,7 @@ function Home() {
             <span className="hidden sm:inline">
               Carisma operativo para el hombre moderno.
               <span className="block mt-1 sm:mt-3 text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-300 via-purple-300 to-violet-300">
-                Magnetismo en c├│digo.
+                Magnetismo en código.
               </span>
             </span>
           </h1>
@@ -188,17 +188,17 @@ function Home() {
             </Link>
           </div>
           <p className="mt-3 sm:mt-6 max-w-2xl text-sm sm:text-base md:text-lg leading-6 sm:leading-8 text-slate-300">
-            <span className="sm:hidden">Escane├í, rescat├í chats y lleg├í preparado a cada cita.</span>
+            <span className="sm:hidden">Escaneá, rescatá chats y llegá preparado a cada cita.</span>
             <span className="hidden sm:inline">
-              Sub├¡ su perfil, rescat├í un chat o planific├í una cita con IA elegante y efectiva.
+              Subí su perfil, rescatá un chat o planificá una cita con IA elegante y efectiva.
             </span>
           </p>
           <div className="hidden sm:grid mt-6 gap-3 sm:grid-cols-3">
-            <span className="chip chip-active text-[11px]">Aperturas instant├íneas</span>
+            <span className="chip chip-active text-[11px]">Aperturas instantáneas</span>
             <span className="chip text-[11px]">Rescates en segundos</span>
             <span className="chip text-[11px]">Plan diario claro</span>
           </div>
-          {/* spacer so content doesnÔÇÖt sit flush at section bottom on mobile */}
+          {/* spacer so content doesn’t sit flush at section bottom on mobile */}
           <div className="h-4 sm:hidden" />
         </div>
       </section>
@@ -222,7 +222,7 @@ function Home() {
         <section className="mb-6 rounded-[2rem] glass-panel glass-panel-interactive border border-fuchsia-400/20 p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-slate-300">
-              MAGNETO funciona sin cuenta. Opcionalmente pod├®s personalizar tu experiencia con el
+              MAGNETO funciona sin cuenta. Opcionalmente podés personalizar tu experiencia con el
               onboarding.
             </p>
             <div className="flex flex-wrap gap-2 shrink-0">
@@ -243,11 +243,11 @@ function Home() {
             <div className="text-[10px] uppercase tracking-[0.32em] text-[#cbd5e1]/70">
               Plan Gratis
             </div>
-            <h2 className="mt-2 text-2xl font-semibold text-white">Prob├í MAGNETO sin pagar.</h2>
+            <h2 className="mt-2 text-2xl font-semibold text-white">Probá MAGNETO sin pagar.</h2>
             <p className="mt-2 max-w-2xl text-sm text-slate-300">
-              Esc├íner ({FREE_LIMITS.scannerDaily}/d├¡a), SOS, Sim, Asistente, Date Planner, Frases y
-              Feed incluidos. Academia ({FREE_LIMITS.academiaModules} m├│dulos) y Biblioteca (
-              {FREE_LIMITS.bibliotecaPills} p├¡ldoras) con preview. Anuncios discretos en plan
+              Escáner ({FREE_LIMITS.scannerDaily}/día), SOS, Sim, Asistente, Date Planner, Frases y
+              Feed incluidos. Academia ({FREE_LIMITS.academiaModules} módulos) y Biblioteca (
+              {FREE_LIMITS.bibliotecaPills} píldoras) con preview. Anuncios discretos en plan
               gratis.
             </p>
           </div>
@@ -264,14 +264,14 @@ function Home() {
               MAGNETO Premium
             </div>
             <h2 className="mt-2 text-2xl font-semibold text-white">
-              Sin anuncios ┬À todo desbloqueado.
+              Sin anuncios · todo desbloqueado.
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-slate-300">
               Academia completa, Biblioteca VIP, escaneos ilimitados y progreso premium.
             </p>
           </div>
           <Link to="/premium" className="btn-cyber shrink-0">
-            Ver comparaci├│n
+            Ver comparación
           </Link>
         </div>
       </section>
@@ -285,7 +285,7 @@ function Home() {
               </div>
               <h2 className="mt-2 text-2xl font-semibold text-white">Tu racha y avances diarios</h2>
               <p className="mt-2 max-w-2xl text-sm text-slate-300">
-                Un resumen r├ípido de tu constancia premium y el historial de d├¡as completos.
+                Un resumen rápido de tu constancia premium y el historial de días completos.
               </p>
             </div>
             <Link to="/premium-progreso" className="btn-ghost shrink-0">
@@ -297,11 +297,11 @@ function Home() {
               <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">
                 Racha actual
               </div>
-              <div className="mt-3 text-3xl font-semibold text-white">{premiumStreak} d├¡as</div>
+              <div className="mt-3 text-3xl font-semibold text-white">{premiumStreak} días</div>
             </div>
             <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-4">
               <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">
-                D├¡as registrados
+                Días registrados
               </div>
               <div className="mt-3 text-3xl font-semibold text-white">{premiumHistory.length}</div>
             </div>
@@ -310,16 +310,16 @@ function Home() {
                 Siguiente logro
               </div>
               <div className="mt-3 text-3xl font-semibold text-white">
-                {premiumStreak >= 7 ? "Constancia" : "Sigue as├¡"}
+                {premiumStreak >= 7 ? "Constancia" : "Sigue así"}
               </div>
             </div>
           </div>
         </section>
       )}
 
-      {/* M├│dulos principales */}
+      {/* Módulos principales */}
       <div className="mb-3">
-        <div className="section-heading">N├║cleo</div>
+        <div className="section-heading">Núcleo</div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         {primary.map(({ to, label, desc, icon: Icon }) => (
@@ -342,7 +342,7 @@ function Home() {
               </div>
             </div>
             <div className="text-sm sm:text-xs text-[#cbd5e1]/80 break-words">
-              Acced├® a las funciones clave para generar mensajes listos para enviar.
+              Accedé a las funciones clave para generar mensajes listos para enviar.
             </div>
           </Link>
         ))}
