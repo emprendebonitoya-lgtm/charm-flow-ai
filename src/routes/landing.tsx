@@ -226,7 +226,7 @@ function Landing() {
           {/* Navbar */}
           <nav className="fixed top-2 sm:top-4 left-0 right-0 z-50 flex items-center justify-between px-3 sm:px-6 lg:px-16">
             <Link
-              to="/"
+              to="/landing"
               className="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 shadow-[0_0_30px_rgba(168,85,247,0.12)] backdrop-blur-lg"
             >
               <div
@@ -263,7 +263,7 @@ function Landing() {
                 Crear cuenta
               </Link>
               <Link
-                to="/"
+                to="/login"
                 className="inline-flex items-center gap-1.5 rounded-full bg-white text-black px-4 py-2 text-sm font-medium"
               >
                 Entrar a la app <ArrowUpRight />
@@ -277,7 +277,7 @@ function Landing() {
                 Crear cuenta
               </Link>
               <Link
-                to="/"
+                to="/login"
                 className="liquid-glass-strong rounded-full px-3.5 py-2 text-xs inline-flex items-center gap-1"
               >
                 Entrar <ArrowUpRight className="h-3.5 w-3.5" />
@@ -330,7 +330,7 @@ function Landing() {
               className="mt-5 flex sm:hidden flex-col items-center justify-center gap-3 z-10 w-full max-w-xs"
             >
               <Link
-                to="/"
+                to="/login"
                 className="w-full rounded-full bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-500 px-6 py-3 inline-flex items-center justify-center gap-2 text-sm font-semibold text-white tracking-wide shadow-[0_15px_50px_-20px_rgba(168,85,247,0.7)]"
               >
                 Probar gratis <ArrowUpRight />
@@ -375,7 +375,7 @@ function Landing() {
               className="hidden sm:flex mt-8 flex-wrap items-center justify-center gap-4 z-10"
             >
               <Link
-                to="/"
+                to="/login"
                 className="rounded-full bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-500 px-7 py-3 inline-flex items-center gap-2 text-sm font-semibold text-white tracking-wide shadow-[0_15px_50px_-20px_rgba(168,85,247,0.7)] transition-transform duration-300 hover:-translate-y-0.5"
               >
                 Probar gratis <ArrowUpRight />
@@ -695,7 +695,7 @@ function Landing() {
               usar, sin necesidad de experiencia previa.
             </p>
             <Link
-              to="/"
+              to="/login"
               className="rounded-full bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-500 px-8 py-4 inline-flex items-center gap-3 text-base font-semibold text-white tracking-wide shadow-[0_15px_50px_-20px_rgba(168,85,247,0.7)] z-10 scale-100 hover:-translate-y-0.5 transition-transform duration-300"
             >
               Abrir MAGNETO ahora <ArrowUpRight className="h-5 w-5" />

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { useMemo, useState } from "react";
 import { useUser } from "@/lib/user";
@@ -22,6 +22,9 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  beforeLoad: () => {
+    throw redirect({ to: "/landing" });
+  },
   head: () => ({
     meta: [
       { title: "MAGNETO — Carisma y seducción con IA" },
