@@ -156,7 +156,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     if (!supabase) throw new Error("Supabase no configurado.");
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/login` },
+      options: { redirectTo: `${window.location.origin}/dashboard` },
     });
     if (error) throw error;
   };

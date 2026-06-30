@@ -103,7 +103,7 @@ function createMockResponse(data: Input) {
 }
 
 export const chatCompletion = createServerFn({ method: "POST" })
-  .inputValidator((data) => InputSchema.parse(data))
+  .validator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }) => {
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) {
