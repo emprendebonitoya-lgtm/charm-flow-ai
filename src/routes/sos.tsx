@@ -10,11 +10,7 @@ export const Route = createFileRoute("/sos")({
   head: () => ({
     meta: [
       { title: "Salvavidas · MAGNETO" },
-      {
-        name: "description",
-        content:
-          "Rescatá un chat enfriado. Subí el screenshot y obtené 2 respuestas de alto impacto.",
-      },
+      { name: "description", content: "Rescatá un chat enfriado. Subí el screenshot y obtené 2 respuestas de alto impacto." },
     ],
   }),
   component: Salvavidas,
@@ -36,19 +32,9 @@ function parseTwo(raw: string): string[] {
       const arr = JSON.parse(m[0]);
       if (Array.isArray(arr)) return arr.map(String).slice(0, 2);
     }
-  } catch {
-    // Ignore parse failures and fallback to line-based extraction.
-  }
-  return raw
-    .split("\n")
-    .map((l) => l.replace(/^[\s\-\d.)]+/, "").trim())
-    .filter(Boolean)
-    .slice(0, 2);
+  } catch {}
+  return raw.split("\n").map((l) => l.replace(/^[\s\-\d\.\)]+/, "").trim()).filter(Boolean).slice(0, 2);
 }
-
-type ChatInputPart =
-  | { type: "text"; text: string }
-  | { type: "image_url"; image_url: { url: string } };
 
 function Salvavidas() {
   const chat = useServerFn(chatCompletion);
@@ -70,23 +56,16 @@ function Salvavidas() {
     setOut([]);
     try {
       const system = `Sos un coach de carisma masculino. El usuario tiene un chat enfriado o una objeción. Devolvé EXACTAMENTE un array JSON con 2 respuestas de rescate, breves (≤140 chars), con frame fuerte, curiosidad o humor. NO expliques nada fuera del JSON.`;
-      let userText = ctx ? `Contexto: ${ctx}` : "Sugerí 2 rescates.";
-      if (imgUrl) userText = `[Imagen adjunta] ${userText}`;
+      const userContent: any[] = [];
+      if (imgUrl) userContent.push({ type: "image_url", image_url: { url: imgUrl } });
+      userContent.push({ type: "text", text: ctx ? `Contexto: ${ctx}` : "Sugerí 2 rescates." });
       const res = await chat({
-        data: {
-          messages: [
-            { role: "system", content: system },
-            { role: "user", content: userText },
-          ],
-          temperature: 1,
-        },
+        data: { messages: [{ role: "system", content: system }, { role: "user", content: userContent }], temperature: 1 },
       });
       setOut(parseTwo(res.content));
-    } catch (e: unknown) {
-      toast.error(e instanceof Error ? e.message : "Algo falló");
-    } finally {
-      setLoading(false);
-    }
+    } catch (e: any) {
+      toast.error(e?.message ?? "Algo falló");
+    } finally { setLoading(false); }
   };
 
   return (
@@ -105,18 +84,11 @@ function Salvavidas() {
                   <Upload className="h-5 w-5 text-[#04060a]" />
                 </div>
                 <div className="text-sm font-medium">Subir screenshot del chat</div>
-                <div className="text-[11px] text-muted-foreground">
-                  Cristal esmerilado · seguro y local
-                </div>
+                <div className="text-[11px] text-muted-foreground">Cristal esmerilado · seguro y local</div>
               </div>
             )}
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
-            />
+            <input ref={fileRef} type="file" accept="image/*" className="hidden"
+              onChange={(e) => handleFile(e.target.files?.[0] ?? null)} />
           </label>
 
           <textarea
@@ -126,20 +98,14 @@ function Salvavidas() {
             className="mt-3 w-full bg-[rgba(236,72,153,0.04)] border border-[rgba(236,72,153,0.15)] rounded-2xl p-3 text-sm outline-none focus:border-[rgba(236,72,153,0.5)] min-h-[80px]"
           />
           <button onClick={run} disabled={loading} className="btn-cyber mt-3 w-full">
-            {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <LifeBuoy className="h-4 w-4" />
-            )}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LifeBuoy className="h-4 w-4" />}
             {loading ? "Rescatando…" : "Generar rescate"}
           </button>
         </div>
 
         {out.length > 0 && (
           <div className="space-y-3 animate-fade-in">
-            {out.map((t, i) => (
-              <ChatBubble key={i} idx={i} text={t} />
-            ))}
+            {out.map((t, i) => <ChatBubble key={i} idx={i} text={t} />)}
           </div>
         )}
       </div>
@@ -159,8 +125,7 @@ function ChatBubble({ idx, text }: { idx: number; text: string }) {
         <button
           onClick={() => {
             navigator.clipboard.writeText(text);
-            setGlow(true);
-            setTimeout(() => setGlow(false), 600);
+            setGlow(true); setTimeout(() => setGlow(false), 600);
             toast.success("Copiado");
           }}
           className={`shrink-0 p-2 rounded-xl transition-all ${glow ? "neon-glow bg-[rgba(236,72,153,0.18)]" : "hover:bg-[rgba(236,72,153,0.08)]"}`}

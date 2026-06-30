@@ -38,7 +38,7 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription, userI
     stripeCustomerId:
       typeof subscription.customer === "string" ? subscription.customer : subscription.customer?.id,
     stripeSubscriptionId: subscription.id,
-    periodEnd: subscription.current_period_end,
+    periodEnd: (subscription as any).current_period_end ?? null,
   });
 }
 

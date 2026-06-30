@@ -4,28 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { chatCompletion } from "@/lib/ai.functions";
 import { getProfile, pushHistory, toggleSaved } from "@/lib/storage";
-import {
-  loadScanUsage,
-  recordScan,
-  claimAdBonus,
-  getAvailableScans,
-  getFreeScansText,
-} from "@/lib/scan-usage";
+import { loadScanUsage, recordScan, claimAdBonus, getAvailableScans, getFreeScansText } from "@/lib/scan-usage";
 import { useUser } from "@/lib/user";
 import {
-  Upload,
-  Sparkles,
-  Bookmark,
-  Copy,
-  Loader2,
-  RotateCcw,
-  Crop,
-  X,
-  Instagram,
-  MessageCircle,
-  Heart,
-  Camera,
-  Lock,
+  Upload, Sparkles, Bookmark, Copy, Loader2, RotateCcw, Crop, X,
+  Instagram, MessageCircle, Heart, Camera, Lock,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -33,10 +16,7 @@ export const Route = createFileRoute("/escaner")({
   head: () => ({
     meta: [
       { title: "Escáner · MAGNETO" },
-      {
-        name: "description",
-        content: "Subí una foto del perfil y obtené 5 aperturas de alto impacto.",
-      },
+      { name: "description", content: "Subí una foto del perfil y obtené 5 aperturas de alto impacto." },
     ],
   }),
   component: Escaner,
@@ -47,11 +27,11 @@ type Tone = (typeof TONES)[number];
 
 const PLATFORMS = [
   { id: "instagram", label: "Instagram", icon: Instagram },
-  { id: "tinder", label: "Tinder", icon: Heart },
-  { id: "bumble", label: "Bumble", icon: Heart },
-  { id: "whatsapp", label: "WhatsApp", icon: MessageCircle },
-  { id: "tiktok", label: "TikTok", icon: Camera },
-  { id: "otra", label: "Otra", icon: Camera },
+  { id: "tinder",    label: "Tinder",    icon: Heart },
+  { id: "bumble",    label: "Bumble",    icon: Heart },
+  { id: "whatsapp",  label: "WhatsApp",  icon: MessageCircle },
+  { id: "tiktok",    label: "TikTok",    icon: Camera },
+  { id: "otra",      label: "Otra",      icon: Camera },
 ] as const;
 type PlatformId = (typeof PLATFORMS)[number]["id"];
 
@@ -71,26 +51,15 @@ function parseSuggestions(raw: string, max = 5): string[] {
       const arr = JSON.parse(m[0]);
       if (Array.isArray(arr)) return arr.map(String).slice(0, max);
     }
-  } catch {
-    // Ignore parse failures and fallback to line-based extraction.
-  }
+  } catch {}
   return raw
     .split("\n")
-    .map((l) => l.replace(/^[\s\-\d.)]+/, "").trim())
+    .map((l) => l.replace(/^[\s\-\d\.\)]+/, "").trim())
     .filter((l) => l.length > 2)
     .slice(0, max);
 }
 
-type ChatInputPart =
-  | { type: "text"; text: string }
-  | { type: "image_url"; image_url: { url: string } };
-
-function buildOfflineScanResults(
-  count: number,
-  tone: Tone,
-  platform: PlatformId,
-  hasImage: boolean,
-): string[] {
+function buildOfflineScanResults(count: number, tone: Tone, platform: PlatformId, hasImage: boolean): string[] {
   const base = [
     "Hola, me gustó tu estilo. ¿Cuál fue el mejor plan que hiciste este mes?",
     "Tu perfil transmite buena onda. Abrí con: ‘¿Sos más de noche tranquila o plan con energía?’",
@@ -104,18 +73,7 @@ function buildOfflineScanResults(
         "La imagen tiene mucha presencia. Podés seguir con: ‘Se nota que te cuidas. ¿Cómo te divertís en serio?’",
       ]
     : [];
-  const platformTag =
-    platform === "instagram"
-      ? " (Instagram)"
-      : platform === "tinder"
-        ? " (Tinder)"
-        : platform === "whatsapp"
-          ? " (WhatsApp)"
-          : platform === "tiktok"
-            ? " (TikTok)"
-            : platform === "bumble"
-              ? " (Bumble)"
-              : "";
+  const platformTag = platform === "instagram" ? " (Instagram)" : platform === "tinder" ? " (Tinder)" : platform === "whatsapp" ? " (WhatsApp)" : platform === "tiktok" ? " (TikTok)" : platform === "bumble" ? " (Bumble)" : "";
 
   return Array.from({ length: count }, (_, i) => {
     const option = base[i % base.length];
@@ -125,7 +83,7 @@ function buildOfflineScanResults(
 }
 
 const SCAN_STEPS = [
-  { at: 400, text: "🔍 Extrayendo metadatos del perfil..." },
+  { at: 400,  text: "🔍 Extrayendo metadatos del perfil..." },
   { at: 1400, text: "🧠 Analizando lenguaje corporal y entorno..." },
   { at: 2400, text: "💬 Detectando intereses y vibra..." },
   { at: 3200, text: "🔥 Calculando 5 abridores de alto impacto..." },
@@ -150,30 +108,21 @@ function Escaner() {
   useEffect(() => {
     if (!scanning) return;
     setStepText(SCAN_STEPS[0].text);
-    const timers = SCAN_STEPS.map((s) => setTimeout(() => setStepText(s.text), s.at));
+    const timers = SCAN_STEPS.map((s) =>
+      setTimeout(() => setStepText(s.text), s.at),
+    );
     return () => timers.forEach(clearTimeout);
   }, [scanning]);
 
   const handleFile = async (f: File | null) => {
     if (!f) return;
-    if (f.size > 6 * 1024 * 1024) {
-      toast.error("Imagen muy grande (máx 6MB)");
-      return;
-    }
-    try {
-      const dataUrl = await fileToDataUrl(f);
-      setImgUrl(dataUrl);
-      setObjectFit("cover");
-    } catch (e) {
-      toast.error("Error al procesar la imagen");
-    }
+    if (f.size > 6 * 1024 * 1024) return toast.error("Imagen muy grande (máx 6MB)");
+    setImgUrl(await fileToDataUrl(f));
+    setObjectFit("cover");
   };
 
   const reset = () => {
-    setImgUrl(null);
-    setText("");
-    setResults([]);
-    setObjectFit("cover");
+    setImgUrl(null); setText(""); setResults([]); setObjectFit("cover");
     if (fileRef.current) fileRef.current.value = "";
   };
 
@@ -195,38 +144,40 @@ function Escaner() {
     if (!imgUrl && !text.trim()) return toast.error("Subí una imagen o escribí el mensaje");
     const remaining = getAvailableScans(usage, state.isPremium);
     if (remaining <= 0) {
-      toast.error(
-        "Agotaste tus escaneos gratis. Suscribite o mirá un anuncio para obtener uno extra.",
-      );
+      toast.error("Agotaste tus escaneos gratis. Suscribite o mirá un anuncio para obtener uno extra.");
       return;
     }
 
-    setLoading(true);
-    setScanning(true);
-    setResults([]);
+    setLoading(true); setScanning(true); setResults([]);
 
     const scanPromise = new Promise<void>((r) => setTimeout(r, 3500));
 
     try {
       const system = `Sos un coach de carisma y seducción para hombres tímidos. Hablás español neutro masculino, directo, con frame fuerte pero sin ser cringe. Devolvés EXACTAMENTE un array JSON con ${resultCount} aperturas listas para enviar al match. Tono solicitado: ${tone}. Plataforma de origen: ${platform} (adaptá el código a esa red). Cada apertura: ≤140 caracteres, natural, con gancho conversacional. NO expliques nada fuera del JSON.`;
-      let userText = "";
+      const userContent: any[] = [];
       if (imgUrl) {
-        userText += "[Imagen de perfil adjunta] Analizá su estilo, vibra y posibles intereses para generar aperturas de alto impacto. ";
+        userContent.push({ type: "image_url", image_url: { url: imgUrl } });
+        userContent.push({
+          type: "text",
+          text: "Hay una imagen de perfil adjunta. Analizá su estilo, vibra y posibles intereses para generar aperturas de alto impacto.",
+        });
       }
       if (text.trim()) {
-        userText += `Contexto / último mensaje: ${text.trim()} `;
+        userContent.push({ type: "text", text: `Contexto / último mensaje: ${text.trim()}` });
       }
-      userText += `Plataforma: ${platform}. Tono: ${tone}. Devolvé un JSON array con ${resultCount} opciones distintas entre sí.`;
-      if (state.isPremium) {
-        userText += " Incluí un breve análisis extra del perfil y la mejor apertura estratégica.";
-      }
+      userContent.push({
+        type: "text",
+        text:
+          `Plataforma: ${platform}. Tono: ${tone}. Devolvé un JSON array con ${resultCount} opciones distintas entre sí.` +
+          (state.isPremium ? " Incluí un breve análisis extra del perfil y la mejor apertura estratégica." : ""),
+      });
 
       const [out] = await Promise.all([
         chat({
           data: {
             messages: [
               { role: "system", content: system },
-              { role: "user", content: userText },
+              { role: "user", content: userContent },
             ],
             temperature: 1,
           },
@@ -236,7 +187,6 @@ function Escaner() {
 
       const sugs = parseSuggestions(out.content, resultCount);
       setResults(sugs);
-      if (out.mock) toast.info("Modo demo: configurá LOVABLE_API_KEY para respuestas con IA real.");
       if (sugs.length) {
         pushHistory({
           kind: "escaner",
@@ -247,49 +197,30 @@ function Escaner() {
       if (!state.isPremium) {
         setUsage((current) => recordScan(current));
       }
-    } catch (e: unknown) {
-      const errorMessage = e instanceof Error ? e.message : String(e ?? "");
+    } catch (e: any) {
+      const errorMessage = String(e?.message ?? "");
       if (errorMessage.includes("LOVABLE_API_KEY") || errorMessage.includes("AI Gateway")) {
-        const fallbackResults = buildOfflineScanResults(
-          resultCount,
-          tone,
-          platform,
-          Boolean(imgUrl),
-        );
+        const fallbackResults = buildOfflineScanResults(resultCount, tone, platform, Boolean(imgUrl));
         setResults(fallbackResults);
         toast.success("Escaneo offline generado sin conexión a Lovable.");
       } else {
         toast.error(errorMessage || "Algo falló");
       }
     } finally {
-      setScanning(false);
-      setLoading(false);
+      setScanning(false); setLoading(false);
     }
   };
 
   return (
-    <AppShell
-      title="Escáner"
-      subtitle={
-        state.isPremium
-          ? "10 aperturas premium de alto impacto a partir de su foto."
-          : "5 aperturas de alto impacto a partir de su foto."
-      }
-    >
+    <AppShell title="Escáner" subtitle={state.isPremium ? "10 aperturas premium de alto impacto a partir de su foto." : "5 aperturas de alto impacto a partir de su foto."}>
       <div className="space-y-4">
         <div className="neon-card rounded-3xl p-4 border border-[rgba(168,85,247,0.16)]">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="text-[10px] uppercase tracking-[0.28em] text-[#BFDBFE]/70">
-                Escaneos gratis
-              </div>
-              <div className="text-white font-semibold">
-                {getFreeScansText(usage, state.isPremium)}
-              </div>
+              <div className="text-[10px] uppercase tracking-[0.28em] text-[#BFDBFE]/70">Escaneos gratis</div>
+              <div className="text-white font-semibold">{getFreeScansText(usage, state.isPremium)}</div>
               {state.isPremium && (
-                <div className="mt-1 text-[11px] text-[#A5B4FC]/80">
-                  Escáner Premium: {resultCount} aperturas por uso
-                </div>
+                <div className="mt-1 text-[11px] text-[#A5B4FC]/80">Escáner Premium: {resultCount} aperturas por uso</div>
               )}
             </div>
             {!state.isPremium ? (
@@ -297,23 +228,23 @@ function Escaner() {
                 <Link to="/premium" className="btn-cyber">
                   Hacerme premium
                 </Link>
-                <button onClick={watchAdForExtraScan} disabled={adLoading} className="btn-ghost">
+                <button
+                  onClick={watchAdForExtraScan}
+                  disabled={adLoading}
+                  className="btn-ghost"
+                >
                   {adLoading ? "Anuncio..." : "Ver anuncio +1 escaneo"}
                 </button>
               </div>
             ) : (
-              <div className="rounded-full bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-[#D8B4FE]/80">
-                Usos ilimitados
-              </div>
+              <div className="rounded-full bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-[#D8B4FE]/80">Usos ilimitados</div>
             )}
           </div>
         </div>
 
         {/* Plataforma */}
         <div className="neon-card rounded-2xl p-4">
-          <div className="text-[10px] uppercase tracking-[0.28em] text-[#BFDBFE]/70 mb-3">
-            Plataforma de origen
-          </div>
+          <div className="text-[10px] uppercase tracking-[0.28em] text-[#BFDBFE]/70 mb-3">Plataforma de origen</div>
           <div className="grid grid-cols-3 gap-2">
             {PLATFORMS.map(({ id, label, icon: Icon }) => (
               <button
@@ -354,7 +285,10 @@ function Escaner() {
         {/* Subida + scanner */}
         <div className="neon-card rounded-2xl p-4">
           <div className="scan-frame border border-[rgba(168,85,247,0.22)] bg-[rgba(15,25,55,0.6)]">
-            <div className={`relative block ${scanning ? "pointer-events-none" : ""}`}>
+            <label
+              onClick={() => !scanning && fileRef.current?.click()}
+              className={`relative block cursor-pointer ${scanning ? "pointer-events-none" : ""}`}
+            >
               {imgUrl ? (
                 <img
                   src={imgUrl}
@@ -363,7 +297,7 @@ function Escaner() {
                   style={{ objectFit, background: "#0a1428" }}
                 />
               ) : (
-                <label className="flex flex-col items-center justify-center gap-3 py-14 bg-[rgba(168,85,247,0.05)] cursor-pointer">
+                <div className="flex flex-col items-center justify-center gap-3 py-14 bg-[rgba(168,85,247,0.05)]">
                   <div className="h-12 w-12 rounded-2xl grad-cyber flex items-center justify-center neon-glow">
                     <Upload className="h-5 w-5 text-white" />
                   </div>
@@ -371,20 +305,17 @@ function Escaner() {
                     <div className="text-sm font-medium">Subí la foto o screenshot</div>
                     <div className="text-[11px] text-[#BFDBFE]/60 mt-0.5">PNG · JPG · 6MB máx</div>
                   </div>
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0] ?? null;
-                      handleFile(file);
-                    }}
-                  />
-                </label>
+                </div>
               )}
               {scanning && <div className={`scan-beam ${!loading ? "scan-fade" : ""}`} />}
-            </div>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
+              />
+            </label>
           </div>
 
           {imgUrl && !scanning && (
@@ -400,10 +331,7 @@ function Escaner() {
               <button onClick={() => fileRef.current?.click()} className="btn-ghost !py-2 !px-3">
                 <RotateCcw className="h-4 w-4" /> Cambiar foto
               </button>
-              <button
-                onClick={reset}
-                className="btn-ghost !py-2 !px-3 !text-red-300 !border-red-400/30 hover:!bg-red-500/10"
-              >
+              <button onClick={reset} className="btn-ghost !py-2 !px-3 !text-red-300 !border-red-400/30 hover:!bg-red-500/10">
                 <X className="h-4 w-4" /> Borrar
               </button>
             </div>
@@ -417,17 +345,12 @@ function Escaner() {
             className="mt-3 w-full bg-[rgba(15,25,55,0.6)] border border-[rgba(168,85,247,0.2)] rounded-2xl p-3 text-sm outline-none focus:border-[rgba(236,72,153,0.5)] focus:ring-2 focus:ring-[rgba(168,85,247,0.2)] min-h-[88px]"
           />
           <div className="text-[11px] text-[#BFDBFE]/60 mt-2">
-            Si el escáner no devuelve resultados con la imagen, probá también con la bio o el último
-            mensaje.
+            Si el escáner no devuelve resultados con la imagen, probá también con la bio o el último mensaje.
           </div>
 
           <div className="flex gap-2 mt-3">
             <button onClick={run} disabled={loading} className="btn-cyber flex-1">
-              {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Sparkles className="h-4 w-4" />
-              )}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
               {loading ? "Escaneando…" : "Escanear perfil"}
             </button>
             {(results.length > 0 || imgUrl || text) && !loading && (
@@ -454,10 +377,7 @@ function Escaner() {
               <div className="text-[10px] uppercase tracking-[0.28em] text-[#BFDBFE]/70">
                 {results.length} aperturas
               </div>
-              <button
-                onClick={reset}
-                className="text-xs text-[#93C5FD] hover:underline inline-flex items-center gap-1"
-              >
+              <button onClick={reset} className="text-xs text-[#93C5FD] hover:underline inline-flex items-center gap-1">
                 <RotateCcw className="h-3 w-3" /> Empezar de nuevo
               </button>
             </div>
@@ -481,8 +401,7 @@ function ResultCard({ idx, text, tone }: { idx: number; text: string; tone: stri
           <button
             onClick={() => {
               navigator.clipboard.writeText(text);
-              setGlow(true);
-              setTimeout(() => setGlow(false), 600);
+              setGlow(true); setTimeout(() => setGlow(false), 600);
               toast.success("Copiado");
             }}
             className={`p-2 rounded-xl transition-all ${glow ? "neon-glow bg-[rgba(168,85,247,0.25)]" : "hover:bg-[rgba(168,85,247,0.15)]"}`}

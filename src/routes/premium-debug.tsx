@@ -48,7 +48,12 @@ function PremiumDebugPage() {
             email: authUser.email ?? undefined,
           },
         });
-        if (!cancelled) setStripeStatus(result);
+        if (!cancelled) {
+          setStripeStatus({
+            active: result.active,
+            plan: result.plan === "annual" ? "annual" : result.plan === "monthly" ? "monthly" : null,
+          });
+        }
       } catch (e: unknown) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "No se pudo consultar Stripe");

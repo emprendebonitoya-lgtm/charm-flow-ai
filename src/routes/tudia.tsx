@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { Sun, Sparkles, Dumbbell, Brain, MessageCircleQuestion, Loader2, Send } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import {
+  Sun, Sparkles, Dumbbell, Brain, MessageCircleQuestion, Loader2, Send,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { chatCompletion } from "@/lib/ai.functions";
 import { toast } from "sonner";
@@ -11,11 +12,7 @@ export const Route = createFileRoute("/tudia")({
   head: () => ({
     meta: [
       { title: "Tu Día · MAGNETO" },
-      {
-        name: "description",
-        content:
-          "Empieza con la mentalidad correcta. Conquista el día. Afirmaciones, ritual y consejo personal.",
-      },
+      { name: "description", content: "Empieza con la mentalidad correcta. Conquista el día. Afirmaciones, ritual y consejo personal." },
     ],
   }),
   component: TuDia,
@@ -43,18 +40,10 @@ const MINDSET = [
 ];
 
 const RITUAL = [
-  {
-    h: "06:30",
-    t: "Despertar sin tocar el celular",
-    d: "10 min de silencio antes que el mundo te grite.",
-  },
-  { h: "06:40", t: "Agua fría · 30 segundos", d: "Resetea el sistema nervioso y mata excusas." },
-  { h: "06:50", t: "20 push-ups + 1 min plancha", d: "Cuerpo activado = mente activada." },
-  {
-    h: "07:00",
-    t: "Lee 5 minutos algo útil",
-    d: "Subí el nivel mental antes de las notificaciones.",
-  },
+  { h: "06:30", t: "Despertar sin tocar el celular", d: "10 min de silencio antes que el mundo te grite." },
+  { h: "06:40", t: "Agua fría · 30 segundos",        d: "Resetea el sistema nervioso y mata excusas." },
+  { h: "06:50", t: "20 push-ups + 1 min plancha",     d: "Cuerpo activado = mente activada." },
+  { h: "07:00", t: "Lee 5 minutos algo útil",         d: "Subí el nivel mental antes de las notificaciones." },
   { h: "07:10", t: "Visualizá tu día en 60 segundos", d: "Ensayar la versión ganadora de hoy." },
 ];
 
@@ -76,31 +65,20 @@ function TuDia() {
     <AppShell>
       <section className="relative overflow-hidden rounded-3xl neon-card neon-card-strong p-6 mb-5">
         <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
-        <div
-          className="absolute -top-20 -right-16 h-48 w-48 rounded-full blur-3xl opacity-60"
-          style={{ background: "radial-gradient(circle, #EC4899 0%, transparent 60%)" }}
-        />
-        <div
-          className="absolute -bottom-20 -left-16 h-48 w-48 rounded-full blur-3xl opacity-50"
-          style={{ background: "radial-gradient(circle, #8B5CF6 0%, transparent 60%)" }}
-        />
+        <div className="absolute -top-20 -right-16 h-48 w-48 rounded-full blur-3xl opacity-60"
+             style={{ background: "radial-gradient(circle, #EC4899 0%, transparent 60%)" }} />
+        <div className="absolute -bottom-20 -left-16 h-48 w-48 rounded-full blur-3xl opacity-50"
+             style={{ background: "radial-gradient(circle, #8B5CF6 0%, transparent 60%)" }} />
         <div className="relative">
-          <span className="pill inline-flex items-center gap-1">
-            <Sun className="h-3 w-3" /> Tu día
-          </span>
+          <span className="pill inline-flex items-center gap-1"><Sun className="h-3 w-3" /> Tu día</span>
           <h1 className="mt-3 font-display text-[26px] leading-tight font-bold">
-            Empieza con la mentalidad correcta.
-            <br />
+            Empieza con la mentalidad correcta.<br />
             <span className="grad-cyber-text">Conquista el día.</span>
           </h1>
         </div>
       </section>
 
-      <Section
-        icon={Sparkles}
-        title="Afirmación de hoy"
-        sub={`Día ${new Date().getDate()} · cambia cada 24 hs`}
-      >
+      <Section icon={Sparkles} title="Afirmación de hoy" sub={`Día ${new Date().getDate()} · cambia cada 24 hs`}>
         <div className="neon-card rounded-2xl p-5 text-center">
           <p className="font-display text-[18px] leading-snug">"{afirm}"</p>
           <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -125,11 +103,7 @@ function TuDia() {
         </div>
       </Section>
 
-      <Section
-        icon={Dumbbell}
-        title="Ritual de la mañana"
-        sub="40 minutos que te ponen por delante del 95%"
-      >
+      <Section icon={Dumbbell} title="Ritual de la mañana" sub="40 minutos que te ponen por delante del 95%">
         <div className="neon-card rounded-2xl overflow-hidden">
           <div className="divide-y divide-[rgba(168,85,247,0.12)]">
             {RITUAL.map((r, i) => (
@@ -147,28 +121,14 @@ function TuDia() {
         </div>
       </Section>
 
-      <Section
-        icon={MessageCircleQuestion}
-        title="Consejo personal"
-        sub="Contale tu situación, la IA te responde"
-      >
+      <Section icon={MessageCircleQuestion} title="Consejo personal" sub="Contale tu situación, la IA te responde">
         <AskAdvice />
       </Section>
     </AppShell>
   );
 }
 
-function Section({
-  icon: Icon,
-  title,
-  sub,
-  children,
-}: {
-  icon: LucideIcon;
-  title: string;
-  sub: string;
-  children: ReactNode;
-}) {
+function Section({ icon: Icon, title, sub, children }: any) {
   return (
     <section className="mt-6">
       <div className="flex items-center gap-2 mb-3">
@@ -193,28 +153,20 @@ function AskAdvice() {
 
   const run = async () => {
     if (!q.trim()) return toast.error("Escribí tu situación");
-    setLoading(true);
-    setAnswer(null);
+    setLoading(true); setAnswer(null);
     try {
       const res = await chat({
         data: {
           messages: [
-            {
-              role: "system",
-              content:
-                "Sos un coach de carisma y seducción para hombres tímidos. Respondé en español neutro, máximo 5 frases, directo, sin clichés, con un consejo concreto y accionable hoy mismo.",
-            },
+            { role: "system", content: "Sos un coach de carisma y seducción para hombres tímidos. Respondé en español neutro, máximo 5 frases, directo, sin clichés, con un consejo concreto y accionable hoy mismo." },
             { role: "user", content: q },
           ],
           temperature: 0.85,
         },
       });
       setAnswer(res.content);
-    } catch (e: unknown) {
-      toast.error(e instanceof Error ? e.message : "Algo falló");
-    } finally {
-      setLoading(false);
-    }
+    } catch (e: any) { toast.error(e?.message ?? "Algo falló"); }
+    finally { setLoading(false); }
   };
 
   return (
@@ -232,9 +184,7 @@ function AskAdvice() {
       </button>
       {answer && (
         <div className="mt-3 rounded-xl border border-[rgba(34,211,238,0.3)] bg-[rgba(20,38,92,0.45)] p-3.5 animate-fade-in">
-          <div className="text-[10px] uppercase tracking-[0.25em] text-[#EC4899] mb-1.5">
-            Coach MAGNETO
-          </div>
+          <div className="text-[10px] uppercase tracking-[0.25em] text-[#EC4899] mb-1.5">Coach MAGNETO</div>
           <p className="text-[13px] leading-relaxed whitespace-pre-line">{answer}</p>
         </div>
       )}

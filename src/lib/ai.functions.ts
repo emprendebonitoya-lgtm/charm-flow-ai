@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { checkRateLimit, getClientIdentifier } from "@/lib/rate-limit";
 
 const MessageSchema = z.object({
   role: z.enum(["system", "user", "assistant"]),
@@ -26,7 +25,7 @@ const InputSchema = z.object({
 
 type Input = z.infer<typeof InputSchema>;
 
-function stringifyMessageContent(content: z.infer<typeof MessageSchema>["content"]) {
+function stringifyMessageContent(content: z.infer<typeof MessageSchema>['content']) {
   if (typeof content === "string") return content;
   return content
     .map((item) => {
@@ -49,23 +48,18 @@ function extractPromptText(messages: Input["messages"]) {
 }
 
 function parseCount(text: string, fallback = 5) {
-  const match =
-    text.match(/array JSON (?:with|con) (\d+)/i) ||
-    text.match(/(\d+) aperturas/i) ||
-    text.match(/(\d+) respuestas/i);
+  const match = text.match(/array JSON (?:with|con) (\d+)/i)
+    || text.match(/(\d+) aperturas/i)
+    || text.match(/(\d+) respuestas/i);
   return match ? Number(match[1]) : fallback;
 }
 
 function createMockResponse(data: Input) {
-  const systemText = stringifyMessageContent(
-    data.messages.find((m) => m.role === "system")?.content ?? "",
-  );
+  const systemText = stringifyMessageContent(data.messages.find((m) => m.role === "system")?.content ?? "");
   const userText = extractPromptText(data.messages.filter((m) => m.role === "user"));
   const count = parseCount(systemText + " " + userText, 5);
   const isRescue = /rescate|rescat[eé]|2 respuestas|respuestas/i.test(systemText + " " + userText);
-  const isScan = /coach de carisma|abridores|aperturas|escáner|perfil/i.test(
-    systemText + " " + userText,
-  );
+  const isScan = /coach de carisma|abridores|aperturas|escáner|perfil/i.test(systemText + " " + userText);
 
   const rescueOptions = [
     "Ok, no le des más vueltas al silencio. Mandale: ‘Te dejé esto en caso de que quieras seguir con buena onda 😎’.",
@@ -109,45 +103,21 @@ function createMockResponse(data: Input) {
 }
 
 export const chatCompletion = createServerFn({ method: "POST" })
-  .validator((data: unknown) => InputSchema.parse(data))
-  .handler(async ({ data, request }: { data: Input; request: Request }) => {
-    // Rate limiting
-    const identifier = getClientIdentifier(request);
-    const rateLimit = checkRateLimit(identifier, 50, 60 * 1000); // 50 requests por minuto
-    
-    if (!rateLimit.allowed) {
-      throw new Error("Demasiadas solicitudes. Esperá un momento e intentá de nuevo.");
-    }
-
+  .inputValidator((data) => InputSchema.parse(data))
+  .handler(async ({ data }) => {
     const apiKey = process.env.LOVABLE_API_KEY;
-    const groqApiKey = process.env.GROQ_API_KEY;
-
-    if (!apiKey && !groqApiKey) {
-      console.warn(
-        "[MAGNETO] Ni LOVABLE_API_KEY ni GROQ_API_KEY configuradas — usando respuestas de respaldo.",
-      );
+    if (!apiKey) {
       return { content: createMockResponse(data), mock: true as const };
     }
 
-    let url = "https://ai.gateway.lovable.dev/v1/chat/completions";
-    let token = apiKey;
-    let model = data.model;
-
-    if (groqApiKey && !apiKey) {
-      url = "https://api.groq.com/openai/v1/chat/completions";
-      token = groqApiKey;
-      // Groq does not support Gemini. We map it to Llama-3.3-70b-versatile, which is Groq's best, smartest and fastest free-tier model.
-      model = "llama-3.3-70b-versatile";
-    }
-
-    const res = await fetch(url, {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: model,
+        model: data.model,
         messages: data.messages,
         temperature: data.temperature ?? 0.9,
       }),
@@ -155,13 +125,7 @@ export const chatCompletion = createServerFn({ method: "POST" })
 
     if (!res.ok) {
       const text = await res.text();
-      if (res.status === 429) {
-        throw new Error("Demasiadas solicitudes. Esperá un momento e intentá de nuevo.");
-      }
-      if (res.status === 402) {
-        throw new Error("Créditos de IA agotados. Contactá al administrador.");
-      }
-      throw new Error(`Error de IA (${res.status}): ${text.slice(0, 200)}`);
+      throw new Error(`AI Gateway ${res.status}: ${text.slice(0, 200)}`);
     }
     const json = (await res.json()) as {
       choices: { message: { content: string } }[];

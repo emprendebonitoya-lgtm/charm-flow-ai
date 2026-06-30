@@ -9,42 +9,44 @@ export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
       { title: "Onboarding · MAGNETO" },
-      {
-        name: "description",
-        content: "Onboarding guiado para personalizar tu experiencia premium en MAGNETO.",
-      },
+      { name: "description", content: "Onboarding guiado para personalizar tu experiencia premium en MAGNETO." },
     ],
   }),
   component: Onboarding,
 });
 
-const goals = ["Dominar la conversación", "Cerrar más citas", "Subir mi presencia online"];
+const goals = [
+  "Dominar la conversación",
+  "Cerrar más citas",
+  "Subir mi presencia online",
+];
 
-const styles = ["Seductor directo", "Charla elegante", "Confianza magnética"];
+const styles = [
+  "Seductor directo",
+  "Charla elegante",
+  "Confianza magnética",
+];
 
 const PREMIUM_CHALLENGES = [
   {
     id: "photo",
     title: "Elegí tu mejor foto de perfil",
-    description:
-      "Seleccioná una imagen que muestre seguridad, estilo y autenticidad para atraer match instantáneo.",
+    description: "Seleccioná una imagen que muestre seguridad, estilo y autenticidad para atraer match instantáneo.",
   },
   {
     id: "opener",
     title: "Creá un opener premium",
-    description:
-      "Escribí un mensaje inicial poderoso que funcione para tu app favorita y genere curiosidad.",
+    description: "Escribí un mensaje inicial poderoso que funcione para tu app favorita y genere curiosidad.",
   },
   {
     id: "invite",
     title: "Planeá una cita de impacto",
-    description:
-      "Diseñá una propuesta clara y atractiva para que el interés se transforme en un encuentro real.",
+    description: "Diseñá una propuesta clara y atractiva para que el interés se transforme en un encuentro real.",
   },
 ];
 
 function Onboarding() {
-  const { state, completeOnboarding, skipOnboarding } = useUser();
+  const { state, completeOnboarding } = useUser();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [goal, setGoal] = useState(state.goal || goals[0]);
@@ -72,12 +74,7 @@ function Onboarding() {
       return;
     }
     completeOnboarding(goal, style);
-    navigate({ to: "/" });
-  };
-
-  const handleSkip = () => {
-    skipOnboarding();
-    navigate({ to: "/" });
+    navigate({ to: state.isPremium ? "/biblioteca" : "/premium" });
   };
 
   return (
@@ -87,17 +84,13 @@ function Onboarding() {
           <div className="flex items-center gap-3 text-white mb-4">
             <Sparkles className="h-5 w-5 text-fuchsia-300" />
             <div>
-              <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">
-                Tu perfil
-              </div>
+              <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">Tu perfil</div>
               <div className="text-xl font-semibold">Construí tu ruta personalizada.</div>
             </div>
           </div>
           {step === 0 && (
             <div className="space-y-4">
-              <p className="text-sm text-[#E0E7FF]/80">
-                Elegí tu objetivo principal para que MAGNETO te sugiera los mejores contenidos.
-              </p>
+              <p className="text-sm text-[#E0E7FF]/80">Elegí tu objetivo principal para que MAGNETO te sugiera los mejores contenidos.</p>
               <div className="grid gap-3 sm:grid-cols-3">
                 {goals.map((option) => (
                   <button
@@ -114,9 +107,7 @@ function Onboarding() {
 
           {step === 1 && (
             <div className="space-y-4">
-              <p className="text-sm text-[#E0E7FF]/80">
-                Seleccioná el estilo que mejor represente tu energía en la interacción.
-              </p>
+              <p className="text-sm text-[#E0E7FF]/80">Seleccioná el estilo que mejor represente tu energía en la interacción.</p>
               <div className="grid gap-3 sm:grid-cols-3">
                 {styles.map((option) => (
                   <button
@@ -136,30 +127,20 @@ function Onboarding() {
               <p className="text-sm text-[#E0E7FF]/80">Resumen</p>
               <div className="rounded-3xl border border-white/10 bg-white/5 p-5 text-sm text-[#E0E7FF]/80">
                 <div className="mb-3">
-                  <div className="text-[11px] uppercase tracking-[0.3em] text-[#D8B4FE]/70">
-                    Meta
-                  </div>
+                  <div className="text-[11px] uppercase tracking-[0.3em] text-[#D8B4FE]/70">Meta</div>
                   <div className="mt-2 text-white font-semibold">{goal}</div>
                 </div>
                 <div>
-                  <div className="text-[11px] uppercase tracking-[0.3em] text-[#D8B4FE]/70">
-                    Estilo
-                  </div>
+                  <div className="text-[11px] uppercase tracking-[0.3em] text-[#D8B4FE]/70">Estilo</div>
                   <div className="mt-2 text-white font-semibold">{style}</div>
                 </div>
               </div>
-              <p className="text-sm text-[#E0E7FF]/80">
-                Terminá el onboarding y MAGNETO personaliza tu experiencia. Podés explorar gratis
-                sin suscripción.
-              </p>
+              <p className="text-sm text-[#E0E7FF]/80">Termina el onboarding y accedé a tu ruta recomendada. Si todavía no sos premium, te llevamos a suscribirte.</p>
             </div>
           )}
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap">
-            <button
-              onClick={handleNext}
-              className="btn-cyber inline-flex items-center justify-center gap-2"
-            >
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <button onClick={handleNext} className="btn-cyber inline-flex items-center justify-center gap-2">
               {step === 2 ? "Completar onboarding" : "Continuar"}
               <ArrowRight className="h-4 w-4" />
             </button>
@@ -168,9 +149,6 @@ function Onboarding() {
                 Volver
               </button>
             )}
-            <button onClick={handleSkip} className="btn-ghost text-muted-foreground">
-              Explorar sin registro
-            </button>
           </div>
         </div>
 
@@ -179,11 +157,7 @@ function Onboarding() {
             <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-1" />
             <div>
               <div className="text-sm font-semibold">Tu onboarding importa.</div>
-              <p className="mt-2 text-sm text-[#E0E7FF]/80 leading-relaxed">
-                Con estos datos, MAGNETO te recomienda las guías y búsquedas que más impacto tienen
-                para tu objetivo y estilo. El proceso es corto y va directo a mejorar tus
-                resultados.
-              </p>
+              <p className="mt-2 text-sm text-[#E0E7FF]/80 leading-relaxed">Con estos datos, MAGNETO te recomienda las guías y búsquedas que más impacto tienen para tu objetivo y estilo. El proceso es corto y va directo a mejorar tus resultados.</p>
             </div>
           </div>
         </div>
@@ -192,16 +166,11 @@ function Onboarding() {
           <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">
-                  Reto Premium del día
-                </div>
-                <div className="text-xl font-semibold text-white">
-                  Completa tus acciones premium
-                </div>
+                <div className="text-[10px] uppercase tracking-[0.28em] text-[#D8B4FE]/70">Reto Premium del día</div>
+                <div className="text-xl font-semibold text-white">Completa tus acciones premium</div>
               </div>
               <div className="rounded-full bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-[#D8B4FE]/80">
-                {Object.values(challengeProgress.completed).filter(Boolean).length}/
-                {PREMIUM_CHALLENGES.length} completados
+                {Object.values(challengeProgress.completed).filter(Boolean).length}/{PREMIUM_CHALLENGES.length} completados
               </div>
             </div>
             <div className="mt-5 space-y-3">
@@ -218,9 +187,7 @@ function Onboarding() {
                         <div className="text-sm font-semibold text-white">{task.title}</div>
                         <p className="mt-2 text-[13px] text-[#E0E7FF]/75">{task.description}</p>
                       </div>
-                      <div
-                        className={`rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${done ? "bg-emerald-500/15 text-emerald-200" : "bg-white/10 text-[#BFDBFE]/80"}`}
-                      >
+                      <div className={`rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${done ? "bg-emerald-500/15 text-emerald-200" : "bg-white/10 text-[#BFDBFE]/80"}`}>
                         {done ? "Completado" : "Marcar"}
                       </div>
                     </div>
@@ -228,9 +195,7 @@ function Onboarding() {
                 );
               })}
             </div>
-            <p className="mt-4 text-xs text-[#BFDBFE]/70">
-              Se reinicia cada día para que mantengas el hábito.
-            </p>
+            <p className="mt-4 text-xs text-[#BFDBFE]/70">Se reinicia cada día para que mantengas el hábito.</p>
           </div>
         )}
 

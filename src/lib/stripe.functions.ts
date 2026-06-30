@@ -3,6 +3,8 @@ import { z } from "zod";
 import Stripe from "stripe";
 import { getUserPremiumState, setUserPremiumState } from "@/lib/supabase.admin";
 
+type Plan = "monthly" | "annual";
+
 const PlanSchema = z.object({
   plan: z.enum(["monthly", "annual"]),
   userId: z.string().min(1),
@@ -61,7 +63,7 @@ async function resolveStripeSubscriptionStatus(
   if (!customerId) {
     return {
       active: false as const,
-      plan: null as const,
+      plan: null,
       customerId: null,
       subscriptionId: null,
       periodEnd: null,
@@ -82,7 +84,7 @@ async function resolveStripeSubscriptionStatus(
   if (!activeSubscription) {
     return {
       active: false as const,
-      plan: null as const,
+      plan: null,
       customerId,
       subscriptionId: null,
       periodEnd: null,
@@ -94,14 +96,14 @@ async function resolveStripeSubscriptionStatus(
   const monthlyPriceId = getPriceId("monthly");
   const hasAnnual = activeSubscription.items.data.some((item) => item.price.id === annualPriceId);
   const hasMonthly = activeSubscription.items.data.some((item) => item.price.id === monthlyPriceId);
-  const plan = hasAnnual ? "annual" : hasMonthly ? "monthly" : "monthly";
+  const plan: Plan = hasAnnual ? "annual" : hasMonthly ? "monthly" : "monthly";
 
   return {
     active: true as const,
     plan,
     customerId,
     subscriptionId: activeSubscription.id,
-    periodEnd: activeSubscription.current_period_end,
+    periodEnd: (activeSubscription as any).current_period_end ?? null,
     status: activeSubscription.status,
   };
 }
@@ -188,7 +190,7 @@ export const getStripeSubscriptionStatus = createServerFn({ method: "POST" })
 
     const stripe = getStripe();
     if (!stripe) {
-      return { active: false as const, plan: null as const, source: "none" as const };
+      return { active: false as const, plan: null, source: "none" as const };
     }
 
     const resolved = await resolveStripeSubscriptionStatus(stripe, data);

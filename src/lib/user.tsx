@@ -1,8 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import type { Session, User } from "@supabase/supabase-js";
-import { useServerFn } from "@tanstack/react-start";
+import type { User } from "@supabase/supabase-js";
 import { getSupabase } from "@/lib/supabase";
-import { getStripeSubscriptionStatus } from "@/lib/stripe.functions";
 import { isSupabaseConfigured } from "@/lib/plans";
 
 type Plan = "monthly" | "annual";
@@ -44,41 +42,17 @@ function loadSavedState(): UserState {
   try {
     const raw = window.localStorage.getItem(USER_STORAGE_KEY);
     if (!raw) return defaultState;
-    const parsed = JSON.parse(raw) as UserState;
-    // Never trust local premium status for commercial access.
-    return {
-      ...parsed,
-      isPremium: false,
-      plan: null,
-    };
+    return JSON.parse(raw) as UserState;
   } catch {
     return defaultState;
   }
 }
 
-function applySessionMetadata(
-  session: Session | null,
-  setState: React.Dispatch<React.SetStateAction<UserState>>,
-) {
-  if (!session?.user) return;
-  const meta = session.user.user_metadata ?? {};
-  setState((current) => ({
-    ...current,
-    onboarded: current.onboarded || !!meta.onboarded,
-    goal: current.goal ?? meta.goal,
-    style: current.style ?? meta.style,
-    isPremium: current.isPremium || !!meta.is_premium,
-    plan:
-      current.plan ??
-      (meta.plan === "annual" ? "annual" : meta.plan === "monthly" ? "monthly" : null),
-  }));
-}
-
 export function UserProvider({ children }: { children: ReactNode }) {
+  const authConfigured = isSupabaseConfigured();
   const [state, setState] = useState<UserState>(loadSavedState);
   const [authUser, setAuthUser] = useState<User | null>(null);
-  const [authLoading, setAuthLoading] = useState(isSupabaseConfigured());
-  const fetchStripeStatus = useServerFn(getStripeSubscriptionStatus);
+  const [authLoading, setAuthLoading] = useState(authConfigured);
 
   useEffect(() => {
     try {
@@ -88,67 +62,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
   }, [state]);
 
-  useEffect(() => {
-    const supabase = getSupabase();
-    if (!supabase) {
-      setAuthLoading(false);
-      return;
-    }
-
-    supabase.auth.getSession().then(({ data }) => {
-      setAuthUser(data.session?.user ?? null);
-      applySessionMetadata(data.session, setState);
-      setAuthLoading(false);
-    });
-
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setAuthUser(session?.user ?? null);
-      applySessionMetadata(session, setState);
-    });
-
-    return () => sub.subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!authUser?.email && !authUser?.id) {
-      setState((current) => ({ ...current, isPremium: false, plan: null }));
-      return;
-    }
-
-    let cancelled = false;
-    (async () => {
-      try {
-        const status = await fetchStripeStatus({
-          data: {
-            userId: authUser.id,
-            email: authUser.email ?? undefined,
-          },
-        });
-        if (cancelled) return;
-        setState((current) => ({
-          ...current,
-          isPremium: status.active,
-          plan: status.active ? (status.plan === "annual" || status.plan === "monthly" ? status.plan : null) : null,
-        }));
-      } catch {
-        if (!cancelled) {
-          setState((current) => ({ ...current, isPremium: false, plan: null }));
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [authUser?.id, authUser?.email, fetchStripeStatus]);
-
   const subscribe = (plan: Plan) => {
     setState((current) => ({
       ...current,
       isPremium: true,
       plan,
     }));
-    void getSupabase()?.auth.updateUser({ data: { is_premium: true, plan } });
   };
 
   const completeOnboarding = (goal: string, style: string) => {
@@ -158,7 +77,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
       goal,
       style,
     }));
-    void getSupabase()?.auth.updateUser({ data: { onboarded: true, goal, style } });
   };
 
   const skipOnboarding = () => {
@@ -166,43 +84,88 @@ export function UserProvider({ children }: { children: ReactNode }) {
       ...current,
       onboarded: true,
     }));
-    void getSupabase()?.auth.updateUser({ data: { onboarded: true } });
   };
 
   const resetPremium = () => {
     setState(defaultState);
   };
 
+  useEffect(() => {
+    const supabase = getSupabase();
+    if (!supabase) {
+      setAuthLoading(false);
+      return;
+    }
+
+    let active = true;
+
+    const syncFromUser = (user: User | null) => {
+      setAuthUser(user);
+      const metadata = (user?.user_metadata ?? {}) as {
+        is_premium?: boolean;
+        plan?: Plan | null;
+      };
+      if (typeof metadata.is_premium === "boolean") {
+        setState((current) => ({
+          ...current,
+          isPremium: metadata.is_premium ?? current.isPremium,
+          plan: metadata.plan ?? current.plan,
+        }));
+      }
+    };
+
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        if (!active) return;
+        syncFromUser(data.session?.user ?? null);
+      })
+      .finally(() => {
+        if (active) setAuthLoading(false);
+      });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!active) return;
+      syncFromUser(session?.user ?? null);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
   const signInWithEmail = async (email: string, password: string) => {
     const supabase = getSupabase();
-    if (!supabase) throw new Error("Supabase no está configurado.");
+    if (!supabase) throw new Error("Supabase no configurado.");
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
   };
 
   const signUpWithEmail = async (email: string, password: string) => {
     const supabase = getSupabase();
-    if (!supabase) throw new Error("Supabase no está configurado.");
+    if (!supabase) throw new Error("Supabase no configurado.");
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
   };
 
   const signInWithGoogle = async () => {
     const supabase = getSupabase();
-    if (!supabase) throw new Error("Supabase no está configurado.");
+    if (!supabase) throw new Error("Supabase no configurado.");
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { 
-        redirectTo: `${window.location.origin}/dashboard`,
-      },
+      options: { redirectTo: `${window.location.origin}/login` },
     });
     if (error) throw error;
   };
 
   const signOut = async () => {
     const supabase = getSupabase();
-    if (supabase) await supabase.auth.signOut();
-    setAuthUser(null);
+    if (!supabase) return;
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   };
 
   return (
@@ -211,7 +174,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         state,
         authUser,
         authLoading,
-        authConfigured: isSupabaseConfigured(),
+        authConfigured,
         subscribe,
         completeOnboarding,
         skipOnboarding,
