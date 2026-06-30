@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 const nav = [
-  { to: "/", label: "Home", icon: Home },
+  { to: "/dashboard", label: "Home", icon: Home },
   { to: "/escaner", label: "Escáner", icon: Scan },
   { to: "/sos", label: "SOS", icon: LifeBuoy },
   { to: "/sim", label: "Sim", icon: MessagesSquare },
@@ -66,7 +66,7 @@ export function AppShell({
       <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.18),transparent_26%),radial-gradient(circle_at_80%_20%,rgba(236,72,153,0.14),transparent_30%)]" />
       <header className="sticky top-0 z-30 px-4 pt-4 pb-4 backdrop-blur-3xl bg-[rgba(6,10,24,0.74)] border-b border-white/10 shadow-[0_18px_60px_-30px_rgba(0,0,0,0.7)]">
         <div className="mx-auto max-w-2xl flex flex-wrap items-center justify-between gap-3">
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/dashboard" className="flex items-center gap-3">
             <div className="h-16 w-16 rounded-[1.5rem] overflow-hidden flex items-center justify-center neon-glow shadow-lg shadow-[rgba(168,85,247,0.16)]">
               <Logo className="h-full w-full" />
             </div>
@@ -123,8 +123,8 @@ export function AppShell({
                 <p className="mt-2 text-sm text-muted-foreground max-w-xl">{subtitle}</p>
               )}
             </div>
-            {path !== "/" && (
-              <Link to="/" className="btn-ghost !py-2 !px-4 shrink-0">
+            {path !== "/dashboard" && (
+              <Link to="/dashboard" className="btn-ghost !py-2 !px-4 shrink-0">
                 <Home className="h-4 w-4" /> Inicio
               </Link>
             )}
@@ -170,7 +170,7 @@ export function AppShell({
           >
             {nav.map(({ to, label, icon: Icon }) => {
               const active =
-                to === "/" ? path === "/" : (path === to || path.startsWith(to + "/"));
+                to === "/dashboard" ? path === "/dashboard" : (path === to || path.startsWith(to + "/"));
               return (
                 <Link
                   key={to}
