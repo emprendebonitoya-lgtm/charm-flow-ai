@@ -4,12 +4,10 @@ import { isSupabaseConfigured } from "@/lib/plans";
 let client: SupabaseClient | null = null;
 
 function getSupabaseEnv(name: "VITE_SUPABASE_URL" | "VITE_SUPABASE_ANON_KEY") {
-  const viteValue = import.meta.env?.[name] as string | undefined;
-  if (viteValue) return viteValue;
-  if (typeof process !== "undefined" && process.env) {
-    return process.env[name];
+  if (name === "VITE_SUPABASE_URL") {
+    return import.meta.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   }
-  return undefined;
+  return import.meta.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 }
 
 export function getSupabase() {

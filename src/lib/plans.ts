@@ -112,12 +112,13 @@ export const PREMIUM_MODULE_IDS = [
 ] as const;
 
 function getPublicEnv(name: "VITE_SUPABASE_URL" | "VITE_SUPABASE_ANON_KEY" | "VITE_ADSENSE_CLIENT") {
-  const viteValue = import.meta.env?.[name] as string | undefined;
-  if (viteValue) return viteValue;
-  if (typeof process !== "undefined" && process.env) {
-    return process.env[name];
+  if (name === "VITE_SUPABASE_URL") {
+    return import.meta.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   }
-  return undefined;
+  if (name === "VITE_SUPABASE_ANON_KEY") {
+    return import.meta.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+  }
+  return import.meta.env.VITE_ADSENSE_CLIENT || process.env.VITE_ADSENSE_CLIENT;
 }
 
 export function isSupabaseConfigured() {
