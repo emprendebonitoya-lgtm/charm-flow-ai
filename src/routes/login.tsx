@@ -49,7 +49,7 @@ function LoginPage() {
         await signUpWithEmail(email.trim(), password);
         toast.success("Cuenta creada. Revisá tu email si pide confirmación.");
       }
-      navigate({ to: "/" });
+      navigate({ to: "/dashboard" });
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "No se pudo completar");
     } finally {
@@ -89,7 +89,7 @@ function LoginPage() {
             activemos sync en la nube.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link to="/" className="btn-cyber">
+            <Link to="/dashboard" className="btn-cyber">
               Ir al inicio
             </Link>
             <button
@@ -196,7 +196,7 @@ function LoginPage() {
         </div>
 
         <div className="text-center">
-          <Link to="/" className="text-sm text-muted-foreground hover:text-white transition">
+          <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-white transition">
             Seguir sin cuenta →
           </Link>
         </div>
