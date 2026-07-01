@@ -15,10 +15,31 @@ function defaultUsage(): ScanUsage {
   return { date: getTodayDate(), used: 0, bonus: 0 };
 }
 
+function getStorage(): Storage | null {
+  if (typeof window !== "undefined") {
+    try {
+      return window.localStorage;
+    } catch {
+      // ignore
+    }
+  }
+
+  if (typeof globalThis !== "undefined") {
+    try {
+      return (globalThis as { localStorage?: Storage }).localStorage ?? null;
+    } catch {
+      // ignore
+    }
+  }
+
+  return null;
+}
+
 export function loadScanUsage(): ScanUsage {
-  if (typeof window === "undefined") return defaultUsage();
+  const storage = getStorage();
+  if (!storage) return defaultUsage();
   try {
-    const raw = window.localStorage.getItem(SCAN_USAGE_KEY);
+    const raw = storage.getItem(SCAN_USAGE_KEY);
     if (!raw) return defaultUsage();
     const parsed = JSON.parse(raw) as ScanUsage;
     if (parsed.date !== getTodayDate()) return defaultUsage();
@@ -29,9 +50,10 @@ export function loadScanUsage(): ScanUsage {
 }
 
 export function saveScanUsage(usage: ScanUsage) {
-  if (typeof window === "undefined") return;
+  const storage = getStorage();
+  if (!storage) return;
   try {
-    window.localStorage.setItem(SCAN_USAGE_KEY, JSON.stringify(usage));
+    storage.setItem(SCAN_USAGE_KEY, JSON.stringify(usage));
   } catch {
     // ignore storage failures
   }

@@ -3,13 +3,13 @@ import { loadScanUsage, recordScan, getAvailableScans, claimAdBonus } from '@/li
 
 describe('Scan Usage Functions', () => {
   beforeEach(() => {
-    localStorage.clear();
+    window.localStorage.clear();
     vi.clearAllMocks();
   });
 
   it('should load scan usage from localStorage', () => {
     const mockData = { date: new Date().toISOString().slice(0, 10), used: 5, bonus: 0 };
-    localStorage.setItem('magneto_scan_usage', JSON.stringify(mockData));
+    window.localStorage.setItem('magneto_scan_usage', JSON.stringify(mockData));
     const usage = loadScanUsage();
     expect(usage.used).toBe(5);
   });

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { useUser } from "@/lib/user";
+import { trackEvent } from "@/lib/analytics";
 import { ArrowRight, Check, Shield, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/premium")({
@@ -14,8 +15,24 @@ export const Route = createFileRoute("/premium")({
 });
 
 function Premium() {
-  const { state, subscribe } = useUser();
+  const { state } = useUser();
   const activeLabel = state.plan === "annual" ? "Anual" : "Mensual";
+  const supportEmail = import.meta.env.VITE_SUPPORT_EMAIL ?? "soporte@magneto.app";
+
+  const waitlistHref = `mailto:${supportEmail}?subject=Lista%20de%20espera%20MAGNETO%20Premium&body=Hola%2C%20quiero%20entrar%20a%20la%20lista%20de%20espera%20de%20MAGNETO%20Premium.`;
+
+  const handleWaitlistClick = (plan: "monthly" | "annual") => {
+    trackEvent("premium_waitlist_click", {
+      plan,
+      source: "premium_page",
+    });
+  };
+
+  const handleSupportClick = () => {
+    trackEvent("premium_support_click", {
+      source: "premium_page",
+    });
+  };
 
   return (
     <AppShell title="MAGNETO Premium" subtitle="Desbloqueá lo mejor: Academia, Biblioteca y el onboarding guiado.">
@@ -45,6 +62,11 @@ function Premium() {
                 <p className="text-[13px] leading-relaxed">{item}</p>
               </div>
             ))}
+          </div>
+
+          <div className="mt-5 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100/90">
+            Pagos con Stripe en habilitación. Por ahora estamos tomando ingresos por lista de espera y
+            acceso manual.
           </div>
         </div>
 
@@ -81,7 +103,13 @@ function Premium() {
                 </div>
               </div>
               <p className="text-sm text-[#E0E7FF]/75 leading-relaxed">Acceso completo a Academia, Biblioteca y onboarding VIP. Ideal si querés escalar rápido y desbloquear el plan completo.</p>
-              <button onClick={() => subscribe("monthly")} className="btn-cyber mt-6 w-full">Suscribirme mensual</button>
+              <a
+                href={waitlistHref}
+                onClick={() => handleWaitlistClick("monthly")}
+                className="btn-cyber mt-6 w-full inline-flex items-center justify-center"
+              >
+                Lista de espera mensual
+              </a>
             </div>
             <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-6">
               <div className="flex items-center gap-3 text-white mb-4">
@@ -92,7 +120,13 @@ function Premium() {
                 </div>
               </div>
               <p className="text-sm text-[#E0E7FF]/75 leading-relaxed">Todo el contenido desbloqueado con un ahorro real. Incluye onboarding guiado y acceso a las mejoras futuras de MAGNETO.</p>
-              <button onClick={() => subscribe("annual")} className="btn-cyber mt-6 w-full">Suscribirme anual</button>
+              <a
+                href={waitlistHref}
+                onClick={() => handleWaitlistClick("annual")}
+                className="btn-cyber mt-6 w-full inline-flex items-center justify-center"
+              >
+                Lista de espera anual
+              </a>
             </div>
           </div>
         )}
@@ -103,6 +137,13 @@ function Premium() {
           <div className="mt-4 flex flex-wrap gap-3">
             <Link to="/onboarding" className="btn-ghost">Ir al onboarding</Link>
             <Link to="/biblioteca" className="btn-ghost">Ver Biblioteca</Link>
+            <a
+              href={`mailto:${supportEmail}?subject=Consulta%20Premium%20MAGNETO`}
+              onClick={handleSupportClick}
+              className="btn-ghost"
+            >
+              Hablar con soporte
+            </a>
           </div>
         </div>
       </div>

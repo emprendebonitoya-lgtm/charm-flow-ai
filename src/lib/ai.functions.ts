@@ -25,6 +25,37 @@ const InputSchema = z.object({
 
 type Input = z.infer<typeof InputSchema>;
 
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX_REQUESTS = 20;
+const rateLimitBucket = new Map<string, { count: number; resetAt: number }>();
+
+function getClientKey(context: unknown) {
+  const ctx = context as { request?: Request } | undefined;
+  const request = ctx?.request;
+  if (request) {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+    const ua = request.headers.get("user-agent")?.slice(0, 80);
+    return `${ip ?? "unknown"}:${ua ?? "na"}`;
+  }
+  return "anonymous";
+}
+
+function enforceRateLimit(key: string) {
+  const now = Date.now();
+  const previous = rateLimitBucket.get(key);
+  if (!previous || previous.resetAt <= now) {
+    rateLimitBucket.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return;
+  }
+
+  if (previous.count >= RATE_LIMIT_MAX_REQUESTS) {
+    throw new Error("Límite temporal alcanzado. Intentá nuevamente en unos segundos.");
+  }
+
+  previous.count += 1;
+  rateLimitBucket.set(key, previous);
+}
+
 function stringifyMessageContent(content: z.infer<typeof MessageSchema>['content']) {
   if (typeof content === "string") return content;
   return content
@@ -104,7 +135,10 @@ function createMockResponse(data: Input) {
 
 export const chatCompletion = createServerFn({ method: "POST" })
   .validator((data: unknown) => InputSchema.parse(data))
-  .handler(async ({ data }) => {
+  .handler(async (context) => {
+    const { data } = context as { data: Input };
+    enforceRateLimit(getClientKey(context));
+
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) {
       return { content: createMockResponse(data), mock: true as const };
