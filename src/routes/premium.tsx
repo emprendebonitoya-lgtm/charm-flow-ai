@@ -61,7 +61,7 @@ function Premium() {
     return () => {
       cancelled = true;
     };
-  }, [checkStripeConfigured]);
+  }, []);
 
   const handleCheckout = async (plan: "monthly" | "annual") => {
     if (!authUser?.id || !authUser.email) {
