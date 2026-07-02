@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { useUser } from "@/lib/user";
 import { loadPremiumProgressHistory } from "@/lib/storage";
@@ -7,6 +7,7 @@ import {
   Home, Scan, LifeBuoy, MessagesSquare, MessageSquare, CalendarHeart, Library,
   GraduationCap, Quote, Sun, Bookmark, History,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const nav = [
   { to: "/dashboard", label: "Home", icon: Home },
@@ -47,6 +48,8 @@ export function AppShell({
   subtitle?: string;
 }) {
   const { state } = useUser();
+  const { authUser, signOut } = useUser();
+  const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [premiumStats, setPremiumStats] = useState({ streak: 0, days: 0 });
   const planLabel = state.isPremium ? "Premium activo" : "Acceso Gratis";
@@ -106,6 +109,19 @@ export function AppShell({
               <Link to="/premium-progreso" className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15">
                 Progreso
               </Link>
+            )}
+            {authUser && (
+              <button
+                type="button"
+                onClick={async () => {
+                  await signOut();
+                  toast.info("Sesión cerrada.");
+                  navigate({ to: "/login" });
+                }}
+                className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15"
+              >
+                Cerrar sesión
+              </button>
             )}
             <Link to="/guardados" aria-label="Guardados" className="p-2 rounded-full hover:bg-white/10 text-[#f8fafc]">
               <Bookmark className="h-4 w-4" />
