@@ -29,8 +29,8 @@ function Premium() {
   const [stripeReady, setStripeReady] = useState(false);
   const [loadingStripe, setLoadingStripe] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState<"monthly" | "annual" | null>(null);
-  const [monthlyAmount, setMonthlyAmount] = useState<number>(19);
-  const [annualAmount, setAnnualAmount] = useState<number>(149);
+  const [monthlyAmount, setMonthlyAmount] = useState<number | null>(null);
+  const [annualAmount, setAnnualAmount] = useState<number | null>(null);
 
   const waitlistHref = `mailto:${supportEmail}?subject=Lista%20de%20espera%20MAGNETO%20Premium&body=Hola%2C%20quiero%20entrar%20a%20la%20lista%20de%20espera%20de%20MAGNETO%20Premium.`;
 
@@ -186,7 +186,7 @@ function Premium() {
                 <Shield className="h-5 w-5 text-violet-300" />
                 <div>
                   <div className="text-sm uppercase tracking-[0.3em] text-[#D8B4FE]/60">Plan mensual</div>
-                  <div className="text-3xl font-semibold">${monthlyAmount.toFixed(2)}</div>
+                  <div className="text-3xl font-semibold">{monthlyAmount != null ? `$${monthlyAmount.toFixed(2)}` : "Ver en checkout"}</div>
                 </div>
               </div>
               <p className="text-sm text-[#E0E7FF]/75 leading-relaxed">Acceso completo a Academia, Biblioteca y onboarding VIP. Ideal si querés escalar rápido y desbloquear el plan completo.</p>
@@ -219,7 +219,7 @@ function Premium() {
                 <Sparkles className="h-5 w-5 text-fuchsia-300" />
                 <div>
                   <div className="text-sm uppercase tracking-[0.3em] text-[#D8B4FE]/60">Plan anual</div>
-                  <div className="text-3xl font-semibold">${annualAmount.toFixed(2)}</div>
+                  <div className="text-3xl font-semibold">{annualAmount != null ? `$${annualAmount.toFixed(2)}` : "Ver en checkout"}</div>
                 </div>
               </div>
               <p className="text-sm text-[#E0E7FF]/75 leading-relaxed">Todo el contenido desbloqueado con un ahorro real. Incluye onboarding guiado y acceso a las mejoras futuras de MAGNETO.</p>
