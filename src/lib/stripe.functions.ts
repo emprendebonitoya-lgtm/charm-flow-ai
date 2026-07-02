@@ -142,6 +142,35 @@ export const isStripeConfigured = createServerFn({ method: "GET" }).handler(asyn
   };
 });
 
+export const getStripePlanPrices = createServerFn({ method: "GET" }).handler(async () => {
+  const stripe = getStripe();
+  if (!stripe) return { monthly: null, annual: null };
+
+  const monthlyId = await resolveRecurringPriceId(stripe, getPlanReference("monthly"));
+  const annualId = await resolveRecurringPriceId(stripe, getPlanReference("annual"));
+
+  const [monthlyPrice, annualPrice] = await Promise.all([
+    monthlyId ? stripe.prices.retrieve(monthlyId) : Promise.resolve(null),
+    annualId ? stripe.prices.retrieve(annualId) : Promise.resolve(null),
+  ]);
+
+  const toAmount = (value: number | null | undefined) => {
+    if (value == null) return null;
+    return Number((value / 100).toFixed(2));
+  };
+
+  return {
+    monthly: {
+      amount: toAmount(monthlyPrice?.unit_amount),
+      currency: monthlyPrice?.currency?.toUpperCase() ?? null,
+    },
+    annual: {
+      amount: toAmount(annualPrice?.unit_amount),
+      currency: annualPrice?.currency?.toUpperCase() ?? null,
+    },
+  };
+});
+
 export const createCheckoutSession = createServerFn({ method: "POST" })
   .validator((data: unknown) => PlanSchema.parse(data))
   .handler(async ({ data }: { data: z.infer<typeof PlanSchema> }) => {
