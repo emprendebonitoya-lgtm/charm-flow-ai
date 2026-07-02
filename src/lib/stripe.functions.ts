@@ -50,18 +50,15 @@ async function resolveRecurringPriceId(stripe: Stripe, reference?: string) {
   }
 
   if (reference.startsWith("prod_")) {
-    const product = await stripe.products.retrieve(reference, {
-      expand: ["default_price"],
-    });
+    const prices = await stripe.prices.list({ product: reference, active: true, limit: 100 });
+    const recurringPrices = prices.data.filter((price) => !!price.recurring);
 
-    const defaultPrice = product.default_price;
-    if (defaultPrice && typeof defaultPrice !== "string" && defaultPrice.recurring) {
-      return defaultPrice.id;
+    // Safety first: when a product has multiple recurring prices, do not guess.
+    if (recurringPrices.length !== 1) {
+      return null;
     }
 
-    const prices = await stripe.prices.list({ product: reference, active: true, limit: 10 });
-    const recurringPrice = prices.data.find((price) => !!price.recurring);
-    return recurringPrice?.id ?? null;
+    return recurringPrices[0]?.id ?? null;
   }
 
   return null;
