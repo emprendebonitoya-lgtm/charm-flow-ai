@@ -26,11 +26,17 @@ function PremiumSuccess() {
   const resync = useServerFn(resyncStripeSubscriptionStatus);
   const { authUser } = useUser();
   const navigate = useNavigate();
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+  const [status, setStatus] = useState<"loading" | "success" | "pending" | "error">("loading");
 
   useEffect(() => {
     if (!session_id) {
       setStatus("error");
+      return;
+    }
+
+    if (!authUser?.id) {
+      // Wait for auth hydration before trying to confirm and resync.
+      setStatus("loading");
       return;
     }
 
@@ -39,26 +45,22 @@ function PremiumSuccess() {
       try {
         const result = await verify({ data: { sessionId: session_id } });
         if (cancelled) return;
-        if (result.valid) {
-          if (!authUser?.id) {
-            setStatus("error");
-            return;
-          }
+        const synced = await resync({
+          data: {
+            userId: authUser.id,
+            email: authUser.email ?? undefined,
+          },
+        });
 
-          await resync({
-            data: {
-              userId: authUser.id,
-              email: authUser.email ?? undefined,
-            },
-          });
-
+        if (cancelled) return;
+        if (result.valid || synced.active) {
           setStatus("success");
           toast.success("¡Bienvenido a MAGNETO Premium!");
         } else {
-          setStatus("error");
+          setStatus("pending");
         }
       } catch {
-        if (!cancelled) setStatus("error");
+        if (!cancelled) setStatus("pending");
       }
     })();
 
@@ -103,6 +105,23 @@ function PremiumSuccess() {
             <Link to="/premium" className="btn-cyber mt-6 inline-flex">
               Volver a Premium
             </Link>
+          </>
+        )}
+        {status === "pending" && (
+          <>
+            <Loader2 className="h-10 w-10 mx-auto animate-spin text-fuchsia-400" />
+            <h2 className="mt-4 text-xl font-semibold text-white">Pago en proceso de confirmación</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Tu cobro puede tardar unos minutos en reflejarse. Volvé a Premium y tocá refrescar.
+            </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <Link to="/premium" className="btn-cyber inline-flex">
+                Ir a Premium
+              </Link>
+              <button onClick={() => navigate({ to: "/premium-success", search: { session_id } })} className="btn-ghost">
+                Reintentar
+              </button>
+            </div>
           </>
         )}
       </div>
