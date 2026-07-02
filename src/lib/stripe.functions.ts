@@ -37,8 +37,34 @@ function getAppUrl() {
   return process.env.APP_URL || process.env.VITE_APP_URL || "http://localhost:8080";
 }
 
-function getPriceId(plan: "monthly" | "annual") {
+function getPlanReference(plan: "monthly" | "annual") {
   return plan === "monthly" ? process.env.STRIPE_PRICE_MONTHLY : process.env.STRIPE_PRICE_ANNUAL;
+}
+
+async function resolveRecurringPriceId(stripe: Stripe, reference?: string) {
+  if (!reference) return null;
+
+  if (reference.startsWith("price_")) {
+    const price = await stripe.prices.retrieve(reference);
+    return price.recurring ? price.id : null;
+  }
+
+  if (reference.startsWith("prod_")) {
+    const product = await stripe.products.retrieve(reference, {
+      expand: ["default_price"],
+    });
+
+    const defaultPrice = product.default_price;
+    if (defaultPrice && typeof defaultPrice !== "string" && defaultPrice.recurring) {
+      return defaultPrice.id;
+    }
+
+    const prices = await stripe.prices.list({ product: reference, active: true, limit: 10 });
+    const recurringPrice = prices.data.find((price) => !!price.recurring);
+    return recurringPrice?.id ?? null;
+  }
+
+  return null;
 }
 
 async function resolveStripeSubscriptionStatus(
@@ -92,8 +118,8 @@ async function resolveStripeSubscriptionStatus(
     };
   }
 
-  const annualPriceId = getPriceId("annual");
-  const monthlyPriceId = getPriceId("monthly");
+  const annualPriceId = await resolveRecurringPriceId(stripe, getPlanReference("annual"));
+  const monthlyPriceId = await resolveRecurringPriceId(stripe, getPlanReference("monthly"));
   const hasAnnual = activeSubscription.items.data.some((item) => item.price.id === annualPriceId);
   const hasMonthly = activeSubscription.items.data.some((item) => item.price.id === monthlyPriceId);
   const plan: Plan = hasAnnual ? "annual" : hasMonthly ? "monthly" : "monthly";
@@ -110,10 +136,12 @@ async function resolveStripeSubscriptionStatus(
 
 export const isStripeConfigured = createServerFn({ method: "GET" }).handler(async () => {
   const stripe = getStripe();
-  const monthly = getPriceId("monthly");
-  const annual = getPriceId("annual");
+  if (!stripe) return { configured: false };
+
+  const monthly = await resolveRecurringPriceId(stripe, getPlanReference("monthly"));
+  const annual = await resolveRecurringPriceId(stripe, getPlanReference("annual"));
   return {
-    configured: !!(stripe && monthly && annual),
+    configured: !!(monthly && annual),
   };
 });
 
@@ -121,8 +149,12 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
   .validator((data: unknown) => PlanSchema.parse(data))
   .handler(async ({ data }: { data: z.infer<typeof PlanSchema> }) => {
     const stripe = getStripe();
-    const priceId = getPriceId(data.plan);
-    if (!stripe || !priceId) {
+    if (!stripe) {
+      throw new Error("Stripe no está configurado. Usá el modo demo o contactá al administrador.");
+    }
+
+    const priceId = await resolveRecurringPriceId(stripe, getPlanReference(data.plan));
+    if (!priceId) {
       throw new Error("Stripe no está configurado. Usá el modo demo o contactá al administrador.");
     }
 

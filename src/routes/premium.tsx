@@ -1,8 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { AppShell } from "@/components/AppShell";
 import { useUser } from "@/lib/user";
 import { trackEvent } from "@/lib/analytics";
-import { ArrowRight, Check, Shield, Sparkles } from "lucide-react";
+import { createCheckoutSession, isStripeConfigured } from "@/lib/stripe.functions";
+import { Check, Loader2, Shield, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/premium")({
   head: () => ({
@@ -15,9 +19,15 @@ export const Route = createFileRoute("/premium")({
 });
 
 function Premium() {
-  const { state } = useUser();
+  const { state, authUser } = useUser();
+  const navigate = useNavigate();
+  const checkStripeConfigured = useServerFn(isStripeConfigured);
+  const checkout = useServerFn(createCheckoutSession);
   const activeLabel = state.plan === "annual" ? "Anual" : "Mensual";
   const supportEmail = import.meta.env.VITE_SUPPORT_EMAIL ?? "soporte@magneto.app";
+  const [stripeReady, setStripeReady] = useState(false);
+  const [loadingStripe, setLoadingStripe] = useState(true);
+  const [checkoutLoading, setCheckoutLoading] = useState<"monthly" | "annual" | null>(null);
 
   const waitlistHref = `mailto:${supportEmail}?subject=Lista%20de%20espera%20MAGNETO%20Premium&body=Hola%2C%20quiero%20entrar%20a%20la%20lista%20de%20espera%20de%20MAGNETO%20Premium.`;
 
@@ -32,6 +42,58 @@ function Premium() {
     trackEvent("premium_support_click", {
       source: "premium_page",
     });
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const result = await checkStripeConfigured();
+        if (!cancelled) setStripeReady(result.configured);
+      } catch {
+        if (!cancelled) setStripeReady(false);
+      } finally {
+        if (!cancelled) setLoadingStripe(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [checkStripeConfigured]);
+
+  const handleCheckout = async (plan: "monthly" | "annual") => {
+    if (!authUser?.id || !authUser.email) {
+      toast.info("Entrá a tu cuenta para continuar con el pago.");
+      navigate({ to: "/login" });
+      return;
+    }
+
+    setCheckoutLoading(plan);
+    try {
+      trackEvent("premium_checkout_click", {
+        plan,
+        source: "premium_page",
+      });
+
+      const result = await checkout({
+        data: {
+          plan,
+          userId: authUser.id,
+          email: authUser.email,
+        },
+      });
+
+      if (!result.url) {
+        throw new Error("No se recibió URL de checkout.");
+      }
+
+      window.location.href = result.url;
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "No se pudo iniciar el checkout.");
+      setCheckoutLoading(null);
+    }
   };
 
   return (
@@ -64,10 +126,21 @@ function Premium() {
             ))}
           </div>
 
-          <div className="mt-5 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100/90">
-            Pagos con Stripe en habilitación. Por ahora estamos tomando ingresos por lista de espera y
-            acceso manual.
-          </div>
+          {loadingStripe ? (
+            <div className="mt-5 rounded-2xl border border-white/15 bg-white/5 p-4 text-sm text-[#E0E7FF]/80 inline-flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Verificando configuración de pagos...
+            </div>
+          ) : stripeReady ? (
+            <div className="mt-5 rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-4 text-sm text-emerald-100/90">
+              Stripe activo. Ya podés pagar y activar Premium automáticamente.
+            </div>
+          ) : (
+            <div className="mt-5 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100/90">
+              Pagos con Stripe en habilitación. Por ahora estamos tomando ingresos por lista de espera y
+              acceso manual.
+            </div>
+          )}
         </div>
 
         {state.isPremium ? (
@@ -103,13 +176,29 @@ function Premium() {
                 </div>
               </div>
               <p className="text-sm text-[#E0E7FF]/75 leading-relaxed">Acceso completo a Academia, Biblioteca y onboarding VIP. Ideal si querés escalar rápido y desbloquear el plan completo.</p>
-              <a
-                href={waitlistHref}
-                onClick={() => handleWaitlistClick("monthly")}
-                className="btn-cyber mt-6 w-full inline-flex items-center justify-center"
-              >
-                Lista de espera mensual
-              </a>
+              {stripeReady ? (
+                <button
+                  onClick={() => handleCheckout("monthly")}
+                  disabled={checkoutLoading !== null}
+                  className="btn-cyber mt-6 w-full inline-flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {checkoutLoading === "monthly" ? (
+                    <span className="inline-flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" /> Redirigiendo...
+                    </span>
+                  ) : (
+                    "Pagar mensual"
+                  )}
+                </button>
+              ) : (
+                <a
+                  href={waitlistHref}
+                  onClick={() => handleWaitlistClick("monthly")}
+                  className="btn-cyber mt-6 w-full inline-flex items-center justify-center"
+                >
+                  Lista de espera mensual
+                </a>
+              )}
             </div>
             <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-6">
               <div className="flex items-center gap-3 text-white mb-4">
@@ -120,13 +209,29 @@ function Premium() {
                 </div>
               </div>
               <p className="text-sm text-[#E0E7FF]/75 leading-relaxed">Todo el contenido desbloqueado con un ahorro real. Incluye onboarding guiado y acceso a las mejoras futuras de MAGNETO.</p>
-              <a
-                href={waitlistHref}
-                onClick={() => handleWaitlistClick("annual")}
-                className="btn-cyber mt-6 w-full inline-flex items-center justify-center"
-              >
-                Lista de espera anual
-              </a>
+              {stripeReady ? (
+                <button
+                  onClick={() => handleCheckout("annual")}
+                  disabled={checkoutLoading !== null}
+                  className="btn-cyber mt-6 w-full inline-flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {checkoutLoading === "annual" ? (
+                    <span className="inline-flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" /> Redirigiendo...
+                    </span>
+                  ) : (
+                    "Pagar anual"
+                  )}
+                </button>
+              ) : (
+                <a
+                  href={waitlistHref}
+                  onClick={() => handleWaitlistClick("annual")}
+                  className="btn-cyber mt-6 w-full inline-flex items-center justify-center"
+                >
+                  Lista de espera anual
+                </a>
+              )}
             </div>
           </div>
         )}
