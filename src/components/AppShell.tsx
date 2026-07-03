@@ -82,7 +82,8 @@ export function AppShell({
               </div>
             </div>
           </Link>
-          <div className="flex flex-wrap items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 shadow-[0_16px_40px_-28px_rgba(0,0,0,0.7)]">
+          <div className="w-full sm:w-auto rounded-3xl border border-white/10 bg-white/5 px-3 py-2 shadow-[0_16px_40px_-28px_rgba(0,0,0,0.7)]">
+            <div className="flex flex-wrap items-center gap-2">
             <div className="hidden sm:flex flex-col gap-1 rounded-full bg-purple-500/10 px-3 py-2 text-[11px] uppercase tracking-[0.24em] text-fuchsia-100">
               <span>{planLabel}</span>
               {state.isPremium && (
@@ -92,27 +93,27 @@ export function AppShell({
               )}
             </div>
             {planSubLabel && (
-              <div className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-[#E0E7FF]/85">
+              <div className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-[#E0E7FF]/85 shrink-0">
                 {planSubLabel}
               </div>
             )}
             {!state.isPremium ? (
-              <Link to="/premium" className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15">
+              <Link to="/premium" className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15 shrink-0">
                 Suscribite
               </Link>
             ) : (
-              <Link to="/onboarding" className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15">
+              <Link to="/onboarding" className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15 shrink-0">
                 Onboarding
               </Link>
             )}
             {state.isPremium && (
-              <Link to="/premium-progreso" className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15">
+              <Link to="/premium-progreso" className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15 shrink-0">
                 Progreso
               </Link>
             )}
             <Link
               to="/landing"
-              className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15"
+              className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15 shrink-0"
             >
               Salir
             </Link>
@@ -124,14 +125,14 @@ export function AppShell({
                   toast.info("Sesión cerrada.");
                   navigate({ to: "/login" });
                 }}
-                className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15"
+                className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15 shrink-0"
               >
                 Cerrar sesión
               </button>
             ) : (
               <Link
                 to="/login"
-                className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15"
+                className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15 shrink-0"
               >
                 Entrar
               </Link>
@@ -142,6 +143,7 @@ export function AppShell({
             <Link to="/historial" aria-label="Historial" className="p-2 rounded-full hover:bg-white/10 text-[#f8fafc]">
               <History className="h-4 w-4" />
             </Link>
+            </div>
           </div>
         </div>
         {title && (

@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { useUser } from "@/lib/user";
 import { FREE_LIMITS } from "@/lib/plans";
 import { loadPremiumProgressHistory } from "@/lib/storage";
-import { resyncStripeSubscriptionStatus } from "@/lib/stripe.functions";
+import { getStripeSubscriptionStatus } from "@/lib/stripe.functions";
 import { toast } from "sonner";
 
 import {
@@ -86,7 +86,7 @@ const heroMedia = {
 function Home() {
   const { state, skipOnboarding, authUser, signOut } = useUser();
   const navigate = useNavigate();
-  const resyncPremium = useServerFn(resyncStripeSubscriptionStatus);
+  const refreshPremium = useServerFn(getStripeSubscriptionStatus);
   const [videoFailed, setVideoFailed] = useState(false);
   const [resyncingPremium, setResyncingPremium] = useState(false);
   const premiumHistory = useMemo(
@@ -104,7 +104,7 @@ function Home() {
 
     setResyncingPremium(true);
     try {
-      const result = await resyncPremium({
+      const result = await refreshPremium({
         data: {
           userId: authUser.id,
           email: authUser.email ?? undefined,
