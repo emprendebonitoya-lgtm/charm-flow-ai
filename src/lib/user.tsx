@@ -1,7 +1,9 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { User } from "@supabase/supabase-js";
+import { useServerFn } from "@tanstack/react-start";
 import { getSupabase } from "@/lib/supabase";
 import { isSupabaseConfigured } from "@/lib/plans";
+import { getStripeSubscriptionStatus } from "@/lib/stripe.functions";
 
 type Plan = "monthly" | "annual";
 
@@ -50,6 +52,7 @@ function loadSavedState(): UserState {
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const authConfigured = isSupabaseConfigured();
+  const fetchPremiumStatus = useServerFn(getStripeSubscriptionStatus);
   const [state, setState] = useState<UserState>(loadSavedState);
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(authConfigured);
@@ -101,6 +104,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
     const syncFromUser = (user: User | null) => {
       setAuthUser(user);
+      if (!user) {
+        setState((current) => ({
+          ...current,
+          isPremium: false,
+          plan: null,
+        }));
+        return;
+      }
+
       const metadata = (user?.user_metadata ?? {}) as {
         is_premium?: boolean;
         plan?: Plan | null;
@@ -136,6 +148,43 @@ export function UserProvider({ children }: { children: ReactNode }) {
       subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (!authUser?.id) return;
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const result = await fetchPremiumStatus({
+          data: {
+            userId: authUser.id,
+            email: authUser.email ?? undefined,
+          },
+        });
+
+        if (cancelled) return;
+
+        setState((current) => ({
+          ...current,
+          isPremium: result.active,
+          plan: result.active
+            ? result.plan === "annual"
+              ? "annual"
+              : result.plan === "monthly"
+                ? "monthly"
+                : null
+            : null,
+        }));
+      } catch {
+        // Keep current local state if remote sync fails.
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authUser?.id, authUser?.email]);
 
   const signInWithEmail = async (email: string, password: string) => {
     const supabase = getSupabase();

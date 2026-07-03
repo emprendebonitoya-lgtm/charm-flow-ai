@@ -210,6 +210,29 @@ function Home() {
         </section>
       )}
 
+      <section className="mb-6 rounded-[2rem] glass-panel glass-panel-interactive border border-white/10 p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="text-[10px] uppercase tracking-[0.32em] text-[#cbd5e1]/70">
+              Estado de cuenta
+            </div>
+            <div className="mt-2 text-xl font-semibold text-white">
+              {state.isPremium
+                ? `Premium activo${state.plan === "annual" ? " · Anual" : state.plan === "monthly" ? " · Mensual" : ""}`
+                : "Plan gratis"}
+            </div>
+            <p className="mt-2 text-sm text-slate-300">
+              {state.isPremium
+                ? "Tu cuenta tiene acceso premium habilitado."
+                : "Si acabas de pagar, este estado debería cambiar automáticamente cuando la suscripción se sincronice."}
+            </p>
+          </div>
+          <Link to="/premium" className="btn-ghost !py-2 !px-4 text-sm shrink-0">
+            Ver Premium
+          </Link>
+        </div>
+      </section>
+
       <section className="mb-6 rounded-[2rem] glass-panel glass-panel-interactive border border-white/10 p-6 shadow-[0_24px_90px_-50px_rgba(168,85,247,0.22)]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
