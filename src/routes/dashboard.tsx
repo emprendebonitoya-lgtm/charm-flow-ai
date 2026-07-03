@@ -1,9 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { useUser } from "@/lib/user";
 import { FREE_LIMITS } from "@/lib/plans";
 import { loadPremiumProgressHistory } from "@/lib/storage";
+import { resyncStripeSubscriptionStatus } from "@/lib/stripe.functions";
+import { toast } from "sonner";
 
 import {
   Scan,
@@ -81,13 +84,46 @@ const heroMedia = {
 };
 
 function Home() {
-  const { state, skipOnboarding } = useUser();
+  const { state, skipOnboarding, authUser, signOut } = useUser();
+  const navigate = useNavigate();
+  const resyncPremium = useServerFn(resyncStripeSubscriptionStatus);
   const [videoFailed, setVideoFailed] = useState(false);
+  const [resyncingPremium, setResyncingPremium] = useState(false);
   const premiumHistory = useMemo(
     () => (state.isPremium ? loadPremiumProgressHistory() : []),
     [state.isPremium],
   );
   const premiumStreak = useMemo(() => computePremiumStreak(premiumHistory), [premiumHistory]);
+
+  const handlePremiumRefresh = async () => {
+    if (!authUser?.id) {
+      toast.info("Entrá con tu cuenta para sincronizar Premium.");
+      navigate({ to: "/login" });
+      return;
+    }
+
+    setResyncingPremium(true);
+    try {
+      const result = await resyncPremium({
+        data: {
+          userId: authUser.id,
+          email: authUser.email ?? undefined,
+        },
+      });
+
+      toast.success(
+        result.active
+          ? `Premium activo${result.plan === "annual" ? " · anual" : result.plan === "monthly" ? " · mensual" : ""}`
+          : "Tu cuenta sigue en plan gratis.",
+      );
+
+      navigate({ to: "/dashboard", search: { refresh: `${Date.now()}` as never } });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "No se pudo actualizar el estado premium.");
+    } finally {
+      setResyncingPremium(false);
+    }
+  };
 
   return (
     <AppShell>
@@ -191,7 +227,7 @@ function Home() {
         </Link>
       </div>
 
-      {!state.onboarded && (
+      {!state.onboarded && !authUser && (
         <section className="mb-6 rounded-[2rem] glass-panel glass-panel-interactive border border-fuchsia-400/20 p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-slate-300">
@@ -222,17 +258,50 @@ function Home() {
                 : "Plan gratis"}
             </div>
             <p className="mt-2 text-sm text-slate-300">
+              {authUser?.email
+                ? `Sesión conectada: ${authUser.email}`
+                : "Estás usando MAGNETO en modo invitado."}
+            </p>
+            <p className="mt-2 text-sm text-slate-300">
               {state.isPremium
                 ? "Tu cuenta tiene acceso premium habilitado."
-                : "Si acabas de pagar, este estado debería cambiar automáticamente cuando la suscripción se sincronice."}
+                : "Si acabas de pagar, tocá Actualizar Premium para volver a consultar Stripe y sincronizar tu cuenta."}
             </p>
           </div>
-          <Link to="/premium" className="btn-ghost !py-2 !px-4 text-sm shrink-0">
-            Ver Premium
-          </Link>
+          <div className="flex flex-wrap gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={handlePremiumRefresh}
+              disabled={resyncingPremium}
+              className="btn-cyber !py-2 !px-4 text-sm disabled:opacity-60"
+            >
+              {resyncingPremium ? "Actualizando..." : "Actualizar Premium"}
+            </button>
+            {authUser ? (
+              <button
+                type="button"
+                onClick={async () => {
+                  await signOut();
+                  toast.info("Sesión cerrada.");
+                  navigate({ to: "/login" });
+                }}
+                className="btn-ghost !py-2 !px-4 text-sm"
+              >
+                Cerrar sesión
+              </button>
+            ) : (
+              <Link to="/login" className="btn-ghost !py-2 !px-4 text-sm shrink-0">
+                Entrar
+              </Link>
+            )}
+            <Link to="/landing" className="btn-ghost !py-2 !px-4 text-sm shrink-0">
+              Salir
+            </Link>
+          </div>
         </div>
       </section>
 
+      {!authUser && (
       <section className="mb-6 rounded-[2rem] glass-panel glass-panel-interactive border border-white/10 p-6 shadow-[0_24px_90px_-50px_rgba(168,85,247,0.22)]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -252,7 +321,9 @@ function Home() {
           </Link>
         </div>
       </section>
+      )}
 
+      {!state.isPremium && (
       <section className="mb-6 rounded-[2rem] glass-panel glass-panel-interactive border border-white/10 p-6 shadow-[0_24px_90px_-50px_rgba(168,85,247,0.22)]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -271,6 +342,7 @@ function Home() {
           </Link>
         </div>
       </section>
+      )}
 
       {state.isPremium && (
         <section className="mb-6 rounded-[2rem] glass-panel border border-white/10 p-6 shadow-[0_24px_90px_-50px_rgba(168,85,247,0.22)]">
