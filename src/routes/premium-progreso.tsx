@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { useEffect, useMemo, useState } from "react";
 import { useUser } from "@/lib/user";
@@ -9,6 +9,7 @@ import {
   togglePremiumOnboardingTask,
 } from "@/lib/storage";
 import { CheckCircle2, Trophy, Shield } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/premium-progreso")({
   head: () => ({
@@ -87,12 +88,19 @@ function computeStreak(history: ProgressEntry[]) {
 
 function PremiumProgreso() {
   const { state } = useUser();
+  const navigate = useNavigate();
   const [progress, setProgress] = useState(loadPremiumOnboardingProgress());
   const [history, setHistory] = useState(loadPremiumProgressHistory());
 
   useEffect(() => {
     setProgress(loadPremiumOnboardingProgress());
   }, []);
+
+  useEffect(() => {
+    if (state.isPremium) return;
+    toast.info("Esta sección es exclusiva para Premium.");
+    navigate({ to: "/premium" });
+  }, [state.isPremium, navigate]);
 
   const completedCount = useMemo(
     () => PREMIUM_CHALLENGES.filter((task) => progress.completed[task.id]).length,
