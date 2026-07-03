@@ -117,13 +117,20 @@ export function UserProvider({ children }: { children: ReactNode }) {
         is_premium?: boolean;
         plan?: Plan | null;
       };
-      if (typeof metadata.is_premium === "boolean") {
-        setState((current) => ({
-          ...current,
-          isPremium: metadata.is_premium ?? current.isPremium,
-          plan: metadata.plan ?? current.plan,
-        }));
-      }
+      const isPremiumFromMetadata = metadata.is_premium === true;
+
+      setState((current) => ({
+        ...current,
+        // Never keep premium from a previous account when metadata is missing.
+        isPremium: isPremiumFromMetadata,
+        plan: isPremiumFromMetadata
+          ? metadata.plan === "annual"
+            ? "annual"
+            : metadata.plan === "monthly"
+              ? "monthly"
+              : null
+          : null,
+      }));
     };
 
     supabase.auth

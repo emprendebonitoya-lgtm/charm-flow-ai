@@ -269,14 +269,16 @@ function Home() {
             </p>
           </div>
           <div className="flex flex-wrap gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={handlePremiumRefresh}
-              disabled={resyncingPremium}
-              className="btn-cyber !py-2 !px-4 text-sm disabled:opacity-60"
-            >
-              {resyncingPremium ? "Actualizando..." : "Actualizar Premium"}
-            </button>
+            {!state.isPremium && (
+              <button
+                type="button"
+                onClick={handlePremiumRefresh}
+                disabled={resyncingPremium}
+                className="btn-cyber !py-2 !px-4 text-sm disabled:opacity-60"
+              >
+                {resyncingPremium ? "Actualizando..." : "Actualizar Premium"}
+              </button>
+            )}
             {authUser ? (
               <button
                 type="button"
