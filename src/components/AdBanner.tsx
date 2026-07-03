@@ -1,6 +1,8 @@
 import { isAdSenseConfigured } from "@/lib/plans";
+import { consumeAd } from "@/lib/ad-policy";
+import { useUser } from "@/lib/user";
 import { Megaphone } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type AdBannerProps = {
   slot?: "header" | "inline";
@@ -8,19 +10,33 @@ type AdBannerProps = {
 };
 
 export function AdBanner({ slot = "inline", className = "" }: AdBannerProps) {
+  const { state } = useUser();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [shouldRender, setShouldRender] = useState(false);
   const adClient = import.meta.env.VITE_ADSENSE_CLIENT as string | undefined;
   const adSlot = import.meta.env.VITE_ADSENSE_SLOT as string | undefined;
 
   useEffect(() => {
-    if (!isAdSenseConfigured() || !containerRef.current) return;
+    if (state.isPremium) {
+      setShouldRender(false);
+      return;
+    }
+    setShouldRender(consumeAd("banner"));
+  }, [state.isPremium]);
+
+  useEffect(() => {
+    if (!shouldRender || !isAdSenseConfigured() || !containerRef.current) return;
     try {
       ((window as unknown as { adsbygoogle?: unknown[] }).adsbygoogle =
         (window as unknown as { adsbygoogle?: unknown[] }).adsbygoogle || []).push({});
     } catch {
       // AdSense not loaded yet
     }
-  }, []);
+  }, [shouldRender]);
+
+  if (state.isPremium || !shouldRender) {
+    return null;
+  }
 
   if (isAdSenseConfigured() && adSlot) {
     return (

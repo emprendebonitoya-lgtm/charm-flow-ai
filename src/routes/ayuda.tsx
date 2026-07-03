@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { AdBanner } from "@/components/AdBanner";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { chatCompletion } from "@/lib/ai.functions";
@@ -103,6 +104,8 @@ function Asistente() {
             </div>
           )}
         </div>
+
+        <AdBanner slot="inline" />
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <input

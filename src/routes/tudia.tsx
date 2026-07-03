@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { AdBanner } from "@/components/AdBanner";
 import {
   Sun, Sparkles, Dumbbell, Brain, MessageCircleQuestion, Loader2, Send,
 } from "lucide-react";
@@ -102,6 +103,8 @@ function TuDia() {
           ))}
         </div>
       </Section>
+
+      <AdBanner slot="inline" className="mt-6" />
 
       <Section icon={Dumbbell} title="Ritual de la mañana" sub="40 minutos que te ponen por delante del 95%">
         <div className="neon-card rounded-2xl overflow-hidden">

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { AdBanner } from "@/components/AdBanner";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { chatCompletion } from "@/lib/ai.functions";
@@ -228,6 +229,8 @@ function DatePlanner() {
           )}
           {loading ? "Diseñando…" : "Generar plan de cita"}
         </button>
+
+        <AdBanner slot="inline" />
 
         {plan && (
           <div className="relative pl-8 mt-4 animate-fade-in">

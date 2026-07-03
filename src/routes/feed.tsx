@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { AdBanner } from "@/components/AdBanner";
+import { consumeAd } from "@/lib/ad-policy";
+import { useUser } from "@/lib/user";
 import {
   Flame, Eye, MessageCircle, Instagram, Heart, Copy, EyeOff, Shuffle,
 } from "lucide-react";
@@ -78,6 +81,7 @@ const PLATFORM_COLOR: Record<Platform, string> = {
 const ALL_PLATFORMS: ("Todas" | Platform)[] = ["Todas", "Instagram", "Tinder", "Bumble", "WhatsApp", "TikTok"];
 
 function Feed() {
+  const { state } = useUser();
   const [filter, setFilter] = useState<"Todas" | Platform>("Todas");
   const [seed, setSeed] = useState(0);
 
@@ -101,10 +105,21 @@ function Feed() {
               className={`chip whitespace-nowrap ${filter === p ? "chip-active" : ""}`}>{p}</button>
           ))}
         </div>
-        <button onClick={() => setSeed((s) => s + 1)} className="btn-ghost !py-2 !px-3 shrink-0" aria-label="Mezclar">
+        <button
+          onClick={() => {
+            if (!state.isPremium && consumeAd("interstitial")) {
+              toast.info("Contenido patrocinado: gracias por apoyar el plan gratis.");
+            }
+            setSeed((s) => s + 1);
+          }}
+          className="btn-ghost !py-2 !px-3 shrink-0"
+          aria-label="Mezclar"
+        >
           <Shuffle className="h-4 w-4" />
         </button>
       </div>
+
+      <AdBanner slot="inline" className="mb-3" />
 
       <div className="space-y-3">
         {list.map((p, i) => <Card key={`${seed}-${i}`} {...p} />)}

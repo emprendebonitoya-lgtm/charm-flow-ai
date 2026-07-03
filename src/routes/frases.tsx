@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { AdBanner } from "@/components/AdBanner";
+import { consumeAd } from "@/lib/ad-policy";
+import { useUser } from "@/lib/user";
 import { Copy, Instagram, MessageCircle, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { useMemo, useState } from "react";
@@ -65,6 +68,7 @@ const PICON: Record<Frase["platform"], any> = { Instagram, Tinder: Heart, Bumble
 const PCOLOR: Record<Frase["platform"], string> = { Instagram: "#E1306C", Tinder: "#FE3C72", Bumble: "#FFC629", WhatsApp: "#25D366", TikTok: "#69C9D0" };
 
 function Frases() {
+  const { state } = useUser();
   const [p, setP] = useState<Platform>("Todas");
   const [e, setE] = useState<Escenario>("Todos");
   const [r, setR] = useState<Rollo>("Todos");
@@ -83,6 +87,10 @@ function Frases() {
   const generate = () => {
     if (list.length === 0) {
       return toast.error("No hay frases con esa combinación");
+    }
+
+    if (!state.isPremium && consumeAd("interstitial")) {
+      toast.info("Contenido patrocinado: gracias por apoyar el plan gratis.");
     }
 
     const chosen = list[Math.floor(Math.random() * list.length)];
@@ -106,6 +114,7 @@ function Frases() {
         </button>
         <span className="text-[11px] text-muted-foreground">Usá los filtros y creá una frase que encaje con la situación.</span>
       </div>
+      <AdBanner slot="inline" className="mb-4" />
       {generated && (
         <div className="neon-card rounded-2xl p-4 border border-[rgba(168,85,247,0.18)] mb-4">
           <div className="text-[11px] uppercase tracking-[0.28em] text-[#D8B4FE]/80 mb-2">Frase generada</div>

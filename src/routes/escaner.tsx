@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { chatCompletion } from "@/lib/ai.functions";
 import { getProfile, pushHistory, toggleSaved } from "@/lib/storage";
+import { consumeAd, getAdPolicySnapshot } from "@/lib/ad-policy";
 import { loadScanUsage, recordScan, claimAdBonus, getAvailableScans, getFreeScansText } from "@/lib/scan-usage";
 import { useUser } from "@/lib/user";
 import {
@@ -132,6 +133,15 @@ function Escaner() {
   const watchAdForExtraScan = async () => {
     if (state.isPremium) return;
     if (adLoading) return;
+    if (!consumeAd("rewarded")) {
+      const snapshot = getAdPolicySnapshot();
+      toast.info(
+        snapshot.impactsRemaining <= 0
+          ? "Ya llegaste al límite de anuncios por sesión. Probá en unos minutos o pasate a Premium."
+          : "Anuncio no disponible por ahora. Intentá de nuevo en unos minutos.",
+      );
+      return;
+    }
     setAdLoading(true);
     toast.success("Viendo anuncio... esto te dará un escaneo extra.");
     await new Promise((resolve) => setTimeout(resolve, 1800));
