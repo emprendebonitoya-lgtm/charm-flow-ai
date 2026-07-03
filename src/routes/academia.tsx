@@ -1,11 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import {
   ChevronDown, Brain, Eye, MessageSquare, Heart, Flame, Compass,
   CheckCircle2, Circle, Lock,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "@/lib/user";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/academia")({
   head: () => ({
@@ -180,11 +181,18 @@ const MODULES: Module[] = [
 
 function Academia() {
   const { state } = useUser();
+  const navigate = useNavigate();
   const [open, setOpen] = useState<number | null>(0);
   const [done, setDone] = useState<Record<string, boolean>>({});
   const k = (m: number, l: number) => `${m}:${l}`;
   const count = (mi: number) => MODULES[mi].lessons.filter((_, li) => done[k(mi, li)]).length;
   const previewCount = state.isPremium ? MODULES.length : 2;
+
+  useEffect(() => {
+    if (state.isPremium) return;
+    toast.info("Academia completa es exclusiva para Premium.");
+    navigate({ to: "/premium" });
+  }, [state.isPremium, navigate]);
 
   return (
     <AppShell title="Academia" subtitle="6 módulos. 30 lecciones para subir de nivel.">

@@ -85,14 +85,45 @@ function parseCount(text: string, fallback = 5) {
   return match ? Number(match[1]) : fallback;
 }
 
+function lastUserMessage(messages: Input["messages"]) {
+  const users = messages.filter((m) => m.role === "user");
+  const last = users[users.length - 1];
+  if (!last) return "";
+  return stringifyMessageContent(last.content);
+}
+
+function extractPersonaReply(systemText: string, userText: string) {
+  const lower = systemText.toLowerCase();
+  const user = userText.trim();
+
+  if (lower.includes("sos valentina")) {
+    return `jaja, ${user ? `eso que dijiste de "${user.slice(0, 40)}"` : "esa energía"} me dio curiosidad. ¿Qué plan tranqui propondrías?`;
+  }
+  if (lower.includes("sos mía") || lower.includes("sos mia")) {
+    return `jajaja me caés bien. Si mantenés ese ritmo, te digo: ¿plan con música o algo más improvisado esta noche?`;
+  }
+  if (lower.includes("sos lucía") || lower.includes("sos lucia")) {
+    return `Interesante. Si vas en serio, decime una idea que te haya cambiado la forma de ver relaciones.`;
+  }
+  if (lower.includes("sos camila")) {
+    return `Ok, te leo seguro. ¿Qué tenés de diferente además de hablar bien? Convenceme en una línea.`;
+  }
+
+  return null;
+}
+
 function createMockResponse(data: Input) {
   const systemText = stringifyMessageContent(data.messages.find((m) => m.role === "system")?.content ?? "");
   const userText = extractPromptText(data.messages.filter((m) => m.role === "user"));
   const combined = `${systemText} ${userText}`.toLowerCase();
   const count = parseCount(systemText + " " + userText, 5);
+  const latestUser = lastUserMessage(data.messages);
   const isRescue = /rescate|rescat[eé]|2 respuestas|chat enfriado/.test(combined);
   const isScan = /coach de carisma|abridores|aperturas|escáner|escaner|perfil/.test(combined);
   const isDatePlanner = /planificador de citas|fases son|apertura|conexi[oó]n|cierre|3 fases/.test(combined);
+  const isFeedbackJson = /devolv[eé]\s+exactamente\s+un\s+json|"score"|"interest"|"tips"/.test(combined);
+  const isAssistant = /asistente experto|coach de carisma y seducci[oó]n para hombres t[ií]midos|consejo personal/.test(combined);
+  const isSimulator = /est[aá]s chateando por dm|100% en personaje|mostr[aá]s inter[eé]s gradual/.test(combined);
 
   if (isDatePlanner) {
     return JSON.stringify([
@@ -112,6 +143,18 @@ function createMockResponse(data: Input) {
         detalle: "Cerrá con una propuesta específica en dos opciones de día. Confirmá con tono seguro y dejá un mensaje corto de seguimiento.",
       },
     ]);
+  }
+
+  if (isFeedbackJson) {
+    return JSON.stringify({
+      score: 7,
+      interest: 6,
+      tips: [
+        "Abrí con una observación personal en vez de una pregunta genérica.",
+        "Mostrá dirección: proponé una micro-acción en la conversación.",
+        "Cerrá cada bloque con una frase que invite respuesta emocional.",
+      ],
+    });
   }
 
   const rescueOptions = [
@@ -151,10 +194,24 @@ function createMockResponse(data: Input) {
     );
   }
 
+  if (isSimulator) {
+    const personaReply = extractPersonaReply(systemText, latestUser);
+    return personaReply ?? "Interesante. Dame un mensaje más concreto y te sigo el juego.";
+  }
+
+  if (isAssistant) {
+    const base = latestUser || "tu situación";
+    return [
+      `Entiendo. Para ${base.toLowerCase()}, no te conviene sonar necesitado ni rebuscado.`,
+      "Hacé esto: línea corta + validación breve + propuesta concreta en una frase.",
+      "Ejemplo: 'Me gustó tu vibra. Si te copa, seguimos por acá con algo más interesante esta noche.'",
+    ].join("\n\n");
+  }
+
   return [
-    "Buena pregunta. Te conviene responder corto, seguro y con dirección.",
-    "Propuesta concreta: abrí con una línea simple, validá su contexto y cerrá con una invitación ligera.",
-    "Ejemplo: 'Me gustó cómo llevaste la charla. Si te copa, seguimos con algo más divertido mañana.'",
+    "Estoy en modo respaldo local porque la API de IA no está conectada.",
+    "Si querés respuestas totalmente personalizadas, activá LOVABLE_API_KEY en producción.",
+    "Mientras tanto, mantené tus mensajes cortos, claros y con una invitación concreta.",
   ].join("\n\n");
 }
 

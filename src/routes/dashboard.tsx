@@ -313,9 +313,8 @@ function Home() {
             <h2 className="mt-2 text-2xl font-semibold text-white">Probá MAGNETO sin pagar.</h2>
             <p className="mt-2 max-w-2xl text-sm text-slate-300">
               Escáner ({FREE_LIMITS.scannerDaily}/día), SOS, Sim, Asistente, Date Planner, Frases y
-              Feed incluidos. Academia ({FREE_LIMITS.academiaModules} módulos) y Biblioteca (
-              {FREE_LIMITS.bibliotecaPills} píldoras) con preview. Anuncios discretos en plan
-              gratis.
+              Feed incluidos. Academia y Biblioteca completas disponibles en Premium. Anuncios
+              discretos en plan gratis.
             </p>
           </div>
           <Link to="/login" className="btn-ghost shrink-0">

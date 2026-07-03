@@ -1,8 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { Play, Clock, Users, Lock } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useUser } from "@/lib/user";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/biblioteca")({
   head: () => ({
@@ -153,10 +154,17 @@ const VIP_PILLS: Pill[] = [
 
 function Biblioteca() {
   const { state } = useUser();
+  const navigate = useNavigate();
   const [cat, setCat] = useState<Cat>("Todo");
   const [selected, setSelected] = useState<number>(-1);
   const list = cat === "Todo" ? PILLS : PILLS.filter((p) => p.cat === cat);
   const previewLimit = state.isPremium ? list.length : 4;
+
+  useEffect(() => {
+    if (state.isPremium) return;
+    toast.info("Biblioteca completa es exclusiva para Premium.");
+    navigate({ to: "/premium" });
+  }, [state.isPremium, navigate]);
 
   useEffect(() => {
     setSelected(-1);
