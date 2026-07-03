@@ -222,29 +222,60 @@ export const chatCompletion = createServerFn({ method: "POST" })
     enforceRateLimit(getClientKey(context));
 
     const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) {
-      return { content: createMockResponse(data), mock: true as const };
+    if (apiKey) {
+      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: data.model,
+          messages: data.messages,
+          temperature: data.temperature ?? 0.9,
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`AI Gateway ${res.status}: ${text.slice(0, 200)}`);
+      }
+      const json = (await res.json()) as {
+        choices: { message: { content: string } }[];
+      };
+      return { content: json.choices?.[0]?.message?.content ?? "", mock: false as const };
     }
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: data.model,
-        messages: data.messages,
-        temperature: data.temperature ?? 0.9,
-      }),
-    });
+    const groqApiKey = process.env.GROQ_API_KEY;
+    if (groqApiKey) {
+      const groqModel = process.env.GROQ_MODEL || "llama-3.1-8b-instant";
+      const groqMessages = data.messages.map((message) => ({
+        role: message.role,
+        content: stringifyMessageContent(message.content),
+      }));
 
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`AI Gateway ${res.status}: ${text.slice(0, 200)}`);
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${groqApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: groqModel,
+          messages: groqMessages,
+          temperature: data.temperature ?? 0.9,
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Groq ${res.status}: ${text.slice(0, 200)}`);
+      }
+      const json = (await res.json()) as {
+        choices: { message: { content: string } }[];
+      };
+      return { content: json.choices?.[0]?.message?.content ?? "", mock: false as const };
     }
-    const json = (await res.json()) as {
-      choices: { message: { content: string } }[];
-    };
-    return { content: json.choices?.[0]?.message?.content ?? "", mock: false as const };
+
+    return { content: createMockResponse(data), mock: true as const };
   });
