@@ -110,6 +110,12 @@ export function AppShell({
                 Progreso
               </Link>
             )}
+            <Link
+              to="/landing"
+              className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15"
+            >
+              Salir
+            </Link>
             {authUser ? (
               <button
                 type="button"
