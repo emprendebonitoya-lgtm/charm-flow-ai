@@ -83,66 +83,62 @@ export function AppShell({
             </div>
           </Link>
           <div className="w-full sm:w-auto rounded-3xl border border-white/10 bg-white/5 px-3 py-2 shadow-[0_16px_40px_-28px_rgba(0,0,0,0.7)]">
-            <div className="flex flex-wrap items-center gap-2">
-            <div className="hidden sm:flex flex-col gap-1 rounded-full bg-purple-500/10 px-3 py-2 text-[11px] uppercase tracking-[0.24em] text-fuchsia-100">
-              <span>{planLabel}</span>
-              {state.isPremium && (
-                <span className="text-[10px] uppercase tracking-[0.28em] text-[#E0E7FF]/70">
-                  Racha {premiumStats.streak} · {premiumStats.days} días
-                </span>
-              )}
-            </div>
-            {planSubLabel && (
-              <div className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-[#E0E7FF]/85 shrink-0">
-                {planSubLabel}
+            <div className="flex flex-col gap-2 sm:gap-1">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="flex flex-col gap-1 rounded-full bg-purple-500/10 px-3 py-2 text-[10px] uppercase tracking-[0.2em] text-fuchsia-100 shrink-0">
+                  <span>{planLabel}</span>
+                  {state.isPremium && (
+                    <span className="text-[9px] uppercase tracking-[0.2em] text-[#E0E7FF]/70">
+                      Racha {premiumStats.streak} · {premiumStats.days} días
+                    </span>
+                  )}
+                </div>
+                {planSubLabel && (
+                  <div className="rounded-full bg-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-[#E0E7FF]/85 shrink-0">
+                    {planSubLabel}
+                  </div>
+                )}
+                {!state.isPremium && (
+                  <Link to="/premium" className="rounded-full bg-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-white transition hover:bg-white/15 shrink-0">
+                    Suscribite
+                  </Link>
+                )}
               </div>
-            )}
-            {!state.isPremium ? (
-              <Link to="/premium" className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15 shrink-0">
-                Suscribite
-              </Link>
-            ) : (
-              <Link to="/onboarding" className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15 shrink-0">
-                Onboarding
-              </Link>
-            )}
-            {state.isPremium && (
-              <Link to="/premium-progreso" className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15 shrink-0">
-                Progreso
-              </Link>
-            )}
-            <Link
-              to="/landing"
-              className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15 shrink-0"
-            >
-              Salir
-            </Link>
-            {authUser ? (
-              <button
-                type="button"
-                onClick={async () => {
-                  await signOut();
-                  toast.info("Sesión cerrada.");
-                  navigate({ to: "/login" });
-                }}
-                className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15 shrink-0"
-              >
-                Cerrar sesión
-              </button>
-            ) : (
-              <Link
-                to="/login"
-                className="rounded-full bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-white/15 shrink-0"
-              >
-                Entrar
-              </Link>
-            )}
-            <Link to="/guardados" aria-label="Guardados" className="p-2 rounded-full hover:bg-white/10 text-[#f8fafc]">
-              <Bookmark className="h-4 w-4" />
-            </Link>
-            <Link to="/historial" aria-label="Historial" className="p-2 rounded-full hover:bg-white/10 text-[#f8fafc]">
-              <History className="h-4 w-4" />
-            </Link>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  to="/landing"
+                  className="rounded-full bg-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-white transition hover:bg-white/15 shrink-0"
+                >
+                  Salir
+                </Link>
+                {authUser ? (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await signOut();
+                      toast.info("Sesión cerrada.");
+                      navigate({ to: "/login" });
+                    }}
+                    className="rounded-full bg-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-white transition hover:bg-white/15 shrink-0"
+                  >
+                    Cerrar sesión
+                  </button>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="rounded-full bg-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-white transition hover:bg-white/15 shrink-0"
+                  >
+                    Entrar
+                  </Link>
+                )}
+                <Link to="/guardados" aria-label="Guardados" className="p-2 rounded-full hover:bg-white/10 text-[#f8fafc] shrink-0">
+                  <Bookmark className="h-4 w-4" />
+                </Link>
+                <Link to="/historial" aria-label="Historial" className="p-2 rounded-full hover:bg-white/10 text-[#f8fafc] shrink-0">
+                  <History className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>

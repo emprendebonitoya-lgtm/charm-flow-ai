@@ -53,6 +53,64 @@ const VIBES = [
 
 type Plan = { fase: string; titulo: string; detalle: string }[];
 
+function buildFallbackPlan(vibe: (typeof VIBES)[number], budget: (typeof BUDGET)[number], interests: string[]): Plan {
+  const topic = interests.slice(0, 2).join(" y ") || "sus intereses";
+  return [
+    {
+      fase: "Apertura",
+      titulo: `Inicio ${vibe.toLowerCase()} y natural`,
+      detalle: `Elegí un punto de encuentro con presupuesto ${budget.toLowerCase()} y abrí con una observación real sobre ${topic}.`,
+    },
+    {
+      fase: "Conexión",
+      titulo: "Conversación con ritmo",
+      detalle: "Hacé preguntas concretas, compartí una anécdota corta y mantené humor ligero para generar confianza.",
+    },
+    {
+      fase: "Cierre",
+      titulo: "Segundo plan sin fricción",
+      detalle: "Cerrá con una propuesta específica en dos opciones de día y hora para mantener el impulso de la cita.",
+    },
+  ];
+}
+
+function parsePlanResponse(raw: string): Plan | null {
+  try {
+    const m = raw.match(/\[[\s\S]*\]/);
+    if (!m) return null;
+    const parsed = JSON.parse(m[0]);
+    if (!Array.isArray(parsed)) return null;
+
+    const normalized = parsed
+      .map((item, index) => {
+        if (typeof item === "string") {
+          const fallbackFases = ["Apertura", "Conexión", "Cierre"];
+          return {
+            fase: fallbackFases[index] ?? `Fase ${index + 1}`,
+            titulo: `Paso ${index + 1}`,
+            detalle: item,
+          };
+        }
+
+        if (item && typeof item === "object") {
+          const obj = item as { fase?: unknown; titulo?: unknown; detalle?: unknown };
+          const fase = typeof obj.fase === "string" ? obj.fase : `Fase ${index + 1}`;
+          const titulo = typeof obj.titulo === "string" ? obj.titulo : `Paso ${index + 1}`;
+          const detalle = typeof obj.detalle === "string" ? obj.detalle : "Definí una acción concreta para esta fase.";
+          return { fase, titulo, detalle };
+        }
+
+        return null;
+      })
+      .filter((item): item is { fase: string; titulo: string; detalle: string } => Boolean(item))
+      .slice(0, 3);
+
+    return normalized.length ? normalized : null;
+  } catch {
+    return null;
+  }
+}
+
 function DatePlanner() {
   const chat = useServerFn(chatCompletion);
   const [interest, setInterest] = useState<string[]>([]);
@@ -85,10 +143,16 @@ function DatePlanner() {
           temperature: 0.8,
         },
       });
-      const m = res.content.match(/\[[\s\S]*\]/);
-      if (m) setPlan(JSON.parse(m[0]));
-      else toast.error("No pude parsear el plan");
+      const parsedPlan = parsePlanResponse(res.content);
+      if (parsedPlan) {
+        setPlan(parsedPlan);
+      } else {
+        const fallback = buildFallbackPlan(vibe, budget, interest);
+        setPlan(fallback);
+        toast.info("Se mostró un plan de respaldo mientras se sincroniza la IA.");
+      }
     } catch (e: unknown) {
+      setPlan(buildFallbackPlan(vibe, budget, interest));
       toast.error(e instanceof Error ? e.message : "Algo falló");
     } finally {
       setLoading(false);

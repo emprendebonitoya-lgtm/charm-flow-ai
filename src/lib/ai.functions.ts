@@ -88,9 +88,31 @@ function parseCount(text: string, fallback = 5) {
 function createMockResponse(data: Input) {
   const systemText = stringifyMessageContent(data.messages.find((m) => m.role === "system")?.content ?? "");
   const userText = extractPromptText(data.messages.filter((m) => m.role === "user"));
+  const combined = `${systemText} ${userText}`.toLowerCase();
   const count = parseCount(systemText + " " + userText, 5);
-  const isRescue = /rescate|rescat[eé]|2 respuestas|respuestas/i.test(systemText + " " + userText);
-  const isScan = /coach de carisma|abridores|aperturas|escáner|perfil/i.test(systemText + " " + userText);
+  const isRescue = /rescate|rescat[eé]|2 respuestas|chat enfriado/.test(combined);
+  const isScan = /coach de carisma|abridores|aperturas|escáner|escaner|perfil/.test(combined);
+  const isDatePlanner = /planificador de citas|fases son|apertura|conexi[oó]n|cierre|3 fases/.test(combined);
+
+  if (isDatePlanner) {
+    return JSON.stringify([
+      {
+        fase: "Apertura",
+        titulo: "Plan breve con energía alta",
+        detalle: "Arrancá en un lugar con movimiento. Abrí con una observación divertida de su estilo y proponé un mini reto para romper el hielo.",
+      },
+      {
+        fase: "Conexión",
+        titulo: "Conversación con historias cortas",
+        detalle: "Alterná preguntas concretas sobre intereses y una anécdota tuya con humor. Buscá puntos en común para crear complicidad real.",
+      },
+      {
+        fase: "Cierre",
+        titulo: "Invitación clara al segundo encuentro",
+        detalle: "Cerrá con una propuesta específica en dos opciones de día. Confirmá con tono seguro y dejá un mensaje corto de seguimiento.",
+      },
+    ]);
+  }
 
   const rescueOptions = [
     "Ok, no le des más vueltas al silencio. Mandale: ‘Te dejé esto en caso de que quieras seguir con buena onda 😎’.",
@@ -113,24 +135,27 @@ function createMockResponse(data: Input) {
     "Un gancho directo: ‘Me quedó dando vueltas tu bio. ¿Qué preferís: una cita relajada o algo con más energía?’",
   ];
 
-  return JSON.stringify(
-    Array.from({ length: count }, (_, index) => {
-      if (isRescue) {
-        return rescueOptions[index % rescueOptions.length];
-      }
+  if (isRescue) {
+    return JSON.stringify(
+      Array.from({ length: Math.max(2, Math.min(count, 6)) }, (_, index) =>
+        rescueOptions[index % rescueOptions.length],
+      ),
+    );
+  }
 
-      if (isScan) {
-        return scanOpenings[index % scanOpenings.length];
-      }
+  if (isScan) {
+    return JSON.stringify(
+      Array.from({ length: Math.max(3, Math.min(count, 10)) }, (_, index) =>
+        scanOpenings[index % scanOpenings.length],
+      ),
+    );
+  }
 
-      const generic = [
-        "Esto es un respaldo para que la app siga funcionando sin conexión a Lovable.",
-        "Usá este resultado como ejemplo hasta que tengas la API de Lovable activa.",
-        "Si querés, podés reemplazar esto por respuestas generadas en vivo cuando el backend esté conectado.",
-      ];
-      return generic[index % generic.length];
-    }),
-  );
+  return [
+    "Buena pregunta. Te conviene responder corto, seguro y con dirección.",
+    "Propuesta concreta: abrí con una línea simple, validá su contexto y cerrá con una invitación ligera.",
+    "Ejemplo: 'Me gustó cómo llevaste la charla. Si te copa, seguimos con algo más divertido mañana.'",
+  ].join("\n\n");
 }
 
 export const chatCompletion = createServerFn({ method: "POST" })
