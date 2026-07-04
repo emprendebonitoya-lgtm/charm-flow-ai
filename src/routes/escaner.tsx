@@ -3,6 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { chatCompletion } from "@/lib/ai.functions";
+import { optimizeImageToDataUrl } from "@/lib/image";
 import { getProfile, pushHistory, toggleSaved } from "@/lib/storage";
 import { consumeAd, getAdPolicySnapshot } from "@/lib/ad-policy";
 import { loadScanUsage, recordScan, claimAdBonus, getAvailableScans, getFreeScansText } from "@/lib/scan-usage";
@@ -35,15 +36,6 @@ const PLATFORMS = [
   { id: "otra",      label: "Otra",      icon: Camera },
 ] as const;
 type PlatformId = (typeof PLATFORMS)[number]["id"];
-
-function fileToDataUrl(f: File) {
-  return new Promise<string>((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(r.result as string);
-    r.onerror = reject;
-    r.readAsDataURL(f);
-  });
-}
 
 function parseSuggestions(raw: string, max = 5): string[] {
   try {
@@ -117,8 +109,20 @@ function Escaner() {
 
   const handleFile = async (f: File | null) => {
     if (!f) return;
-    if (f.size > 6 * 1024 * 1024) return toast.error("Imagen muy grande (máx 6MB)");
-    setImgUrl(await fileToDataUrl(f));
+    if (f.size > 10 * 1024 * 1024) return toast.error("Imagen muy grande (máx 10MB)");
+
+    try {
+      const optimized = await optimizeImageToDataUrl(f, {
+        maxWidth: 1200,
+        maxHeight: 1200,
+        quality: 0.78,
+      });
+      setImgUrl(optimized);
+    } catch {
+      toast.error("No se pudo procesar la imagen.");
+      return;
+    }
+
     setObjectFit("cover");
   };
 

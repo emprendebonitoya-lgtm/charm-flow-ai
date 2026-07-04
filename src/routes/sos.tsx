@@ -3,6 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { chatCompletion } from "@/lib/ai.functions";
+import { optimizeImageToDataUrl } from "@/lib/image";
 import { Upload, LifeBuoy, Copy, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -15,15 +16,6 @@ export const Route = createFileRoute("/sos")({
   }),
   component: Salvavidas,
 });
-
-function fileToDataUrl(f: File) {
-  return new Promise<string>((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(r.result as string);
-    r.onerror = reject;
-    r.readAsDataURL(f);
-  });
-}
 
 function parseTwo(raw: string): string[] {
   try {
@@ -46,8 +38,18 @@ function Salvavidas() {
 
   const handleFile = async (f: File | null) => {
     if (!f) return;
-    if (f.size > 6 * 1024 * 1024) return toast.error("Imagen muy grande (máx 6MB)");
-    setImgUrl(await fileToDataUrl(f));
+    if (f.size > 10 * 1024 * 1024) return toast.error("Imagen muy grande (máx 10MB)");
+
+    try {
+      const optimized = await optimizeImageToDataUrl(f, {
+        maxWidth: 1200,
+        maxHeight: 1200,
+        quality: 0.78,
+      });
+      setImgUrl(optimized);
+    } catch {
+      toast.error("No se pudo procesar la imagen.");
+    }
   };
 
   const run = async () => {
